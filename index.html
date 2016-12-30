@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The Relay Project</title>
+        <meta name="keywords" CONTENT="relay, project, webrtc, secure, encryption, security, pgp, keyspace, socket, websocket, irc, chat, free, open-source">
+        <script src="relay.js"></script>
+        <script>
+            // Launch Chat room windows
+            relay('CHAT mychannel');             // GET ~/mychannel => GET /home/ABCD1234/mychannel
+            relay('CHAT /common');
+
+            // Play songs and movies
+            relay('PLAY mysongs/myfirstsong');
+            relay('QUEUE mymovies/myfirstmovie');
+
+            // Open Browser with home page
+            relay('GET');                       // GET ~/ => GET /home/ABCD1234/
+
+        </script>
+    </head>
+</html>

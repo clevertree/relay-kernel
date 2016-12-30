@@ -2,14 +2,14 @@
  * Created by ari on 6/19/2015.
  */
 
-(function() {
-    // If we're in a worker thread, set up the worker
-    if (typeof importScripts !== 'undefined')
-        return initWorkerThread(importScripts);
-
+var relay = (function() {
     // If we're in the document scope, included as a script
     if (typeof document !== 'undefined')
         return initWorkerListener(document);
+
+    // If we're in a worker thread, set up the worker
+    if (typeof importScripts !== 'undefined')
+        return initWorkerThread(importScripts);
 
     if (typeof require !== 'undefined')
         // If we're in a cli environment, set up CLI
@@ -77,10 +77,10 @@
         // Set up WebWorker or SharedWorker
 
         var worker, port;
-        //document.FORCE_WEB_WORKER = true;
+        document.USE_SHARED_WORKER = true;
 
         // Set up SharedWorker or WebWorker
-        if(typeof SharedWorker == 'function' && !document.FORCE_WEB_WORKER) {
+        if(typeof SharedWorker == 'function' && !document.USE_SHARED_WORKER) {
             // Create Shared WebWorker
             worker = new SharedWorker('relay.js');
             port = worker.port;
@@ -130,6 +130,14 @@
             console.error("Unhandled command (type=" + type + "): " + commandString);
         });
 
+        return function (commandString, elm) {
+            var commandEvent = new CustomEvent('message', {detail: commandString, cancelable: true});
+            if(!elm) elm = document;
+            elm.dispatchEvent(commandEvent);
+            if(!commandEvent.defaultPrevented)
+                throw new Error("Command was unhandled: " + commandString);
+        };
+
     }
 
 
@@ -138,5 +146,6 @@
         CLIPrompt.start();
     }
 
-
+    
+    
 })();

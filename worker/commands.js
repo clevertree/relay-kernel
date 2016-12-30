@@ -7,7 +7,7 @@ module.exports.initWorkerCommands = function(worker) {
     worker.addEventListener('message', handleMessage);
 
     var availableCommands = {
-        'echo':'command/echo.js'
+        'echo':'commands/echo.js'
     };
 
     var typeCommands = {};

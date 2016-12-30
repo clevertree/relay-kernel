@@ -5,10 +5,12 @@
 if (!module) var module = {exports:{}};
 module.exports.handleWorkerCommand = function(e, commandString) {
     
-    // Include client-side javascript support files
-    e.target.postMessage("INCLUDE command/echo.js;"
+    e.target.postMessage(
+        // Include client-side javascript support files
+        "INCLUDE commands/echo.js;" +
         // Echo command back to client
-        + commandString);
+        commandString
+    );
 };
 
 // Handle client-side response

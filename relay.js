@@ -84,19 +84,22 @@ var relay = (function() {
         // Set up message handling
         port.addEventListener('message', function (e) {
             var commandString = e.data;
-            if(!commandString)
-                throw new Error("Ignoring empty message");
-
             if(e.defaultPrevented)
                 return;
+            handleWorkerResponse(commandString)
+        }, true);
+
+        function handleWorkerResponse (commandString ) {
+            if(!commandString)
+                throw new Error("Ignoring empty message");
 
             var type = commandString.split(/[^\w]+/)[0].toLowerCase();
             switch(type) {
                 case 'include':
-                    includeHeadScript(commandString.substr(8));
+                    includeHeadScript(commandString);
                     return;
             }
-            
+
             var responseEvent = new CustomEvent('response:' + type, {
                 detail: commandString,
                 cancelable: true
@@ -106,26 +109,37 @@ var relay = (function() {
                 return;
 
             console.error("Unhandled worker Response (type=" + type + "): " + commandString);
-        }, true);
-
+        }
 
         function executeWorkerCommand(commandString) {
             worker.postMessage(commandString);
             // console.log("Passing command to worker: " + commandString);
         }
 
+        function includeHeadScript(commandString) {
+            var nextCommand = '';
+            var p = commandString.indexOf(';');
+            if(p > -1) {
+                nextCommand = commandString.substr(p+1);
+                commandString = commandString.substr(0, p);
+            }
+            var scriptPath = commandString.substr(8);
+            if (document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']').length === 0) {
+                // console.log("Including " + scriptPath);
+                var scriptElm = document.createElement('script');
+                scriptElm.src = scriptPath;
+                scriptElm.onload = function() { handleWorkerResponse(nextCommand); };
+                document.head.appendChild(scriptElm);
+
+            } else {
+                handleWorkerResponse(nextCommand)
+            }
+        }
+
         return executeWorkerCommand;
     }
 
-    function includeHeadScript(scriptPath) {
-        var scriptElm = document.createElement('script');
-        scriptElm.src = scriptPath;
-        if (document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']').length === 0) {
-            console.log("Including " + scriptPath);
-            document.head.appendChild(scriptElm);
-        }
-    }
-    
+
 
     function initCLI(require) {
         var CLIPrompt = require('./client/cli/cli-prompt.js').CLIPrompt;

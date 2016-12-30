@@ -19,14 +19,20 @@ module.exports.initWorkerCommands = function(worker) {
             throw new Error("Ignoring empty message");
         var type = commandString.split(/[^\w]+/)[0].toLowerCase();
 
-        if(typeof typeCommands[type] !== 'undefined') {
+        if(typeof typeCommands[type] !== 'undefined')
             return typeCommands[type](e, commandString);
-        }
 
+        if(typeof availableCommands[type] === 'undefined')
+            throw new Error("Invalid command type: " + type);
 
-        // TODO LOAD COMMANDS!
+        var filePath = availableCommands[type];
+        importScripts(filePath);
+        if(!module.exports.handleWorkerCommand)
+            throw new Error("module.exports.handleWorkerCommand not found in " + filePath);
 
-        throw new Error("Unhandled Worker Command: " + commandString);
+        typeCommands[type] = module.exports.handleWorkerCommand;
+        console.log("Imported " + filePath, typeCommands);
+        return typeCommands[type](e, commandString);
     }
     
     

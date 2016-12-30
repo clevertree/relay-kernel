@@ -86,32 +86,46 @@ var relay = (function() {
             var commandString = e.data;
             if(!commandString)
                 throw new Error("Ignoring empty message");
+
+            if(e.defaultPrevented)
+                return;
+
             var type = commandString.split(/[^\w]+/)[0].toLowerCase();
+            switch(type) {
+                case 'include':
+                    includeHeadScript(commandString.substr(8));
+                    return;
+            }
+            
+            var responseEvent = new CustomEvent('response:' + type, {
+                detail: commandString,
+                cancelable: true
+            });
+            document.dispatchEvent(responseEvent);
+            if(responseEvent.defaultPrevented) // Check to see if it was handled by another listener
+                return;
 
             console.error("Unhandled worker Response (type=" + type + "): " + commandString);
         }, true);
 
 
-        function executeDOMCommand(commandString, elm) {
-            var type = commandString.split(/[^\w]+/)[0].toLowerCase();
-            var commandEvent = new CustomEvent('message:' + type, {
-                detail: commandString,
-                cancelable: true
-            });
-            if(!elm) elm = document;
-            elm.dispatchEvent(commandEvent);
-            if(commandEvent.defaultPrevented) // Check to see if it was handled by another listener
-                return commandEvent;
-
-            // If unhandled, pass to worker thread
+        function executeWorkerCommand(commandString) {
             worker.postMessage(commandString);
-            commandEvent.preventDefault();
-            return commandEvent;
+            // console.log("Passing command to worker: " + commandString);
         }
 
-        return executeDOMCommand;
+        return executeWorkerCommand;
     }
 
+    function includeHeadScript(scriptPath) {
+        var scriptElm = document.createElement('script');
+        scriptElm.src = scriptPath;
+        if (document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']').length === 0) {
+            console.log("Including " + scriptPath);
+            document.head.appendChild(scriptElm);
+        }
+    }
+    
 
     function initCLI(require) {
         var CLIPrompt = require('./client/cli/cli-prompt.js').CLIPrompt;

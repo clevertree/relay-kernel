@@ -16,6 +16,9 @@
             // Open Browser with home page
             relay('GET');                       // GET ~/ => GET /home/ABCD1234/
 
+            setTimeout(function() {
+                relay('ECHO omg');
+            }, 500);
         </script>
     </head>
 </html>

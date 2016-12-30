@@ -5,7 +5,7 @@
 var relay = (function() {
     // If we're in the document scope, included as a script
     if (typeof document !== 'undefined')
-        return initWorkerListener(document);
+        return initDOMListeners(document);
 
     // If we're in a worker thread, set up the worker
     if (typeof importScripts !== 'undefined')
@@ -27,55 +27,41 @@ var relay = (function() {
 
     function initWorkerThread(importScripts) {
 
+        importScripts('worker/commands.js');
+        var initWorkerCommands = module.exports.initWorkerCommands;
+
         // If we're in a worker thread
         if(self.SharedWorkerGlobalScope && self instanceof SharedWorkerGlobalScope) {
             // Listen for connecting ports
             self.addEventListener('connect', onConnect);
             console.log("Initiated SharedWorker thread", self);
 
+            var portCount=0;
+            function onConnect(e) {
+                var port = e.ports[0];
+                port.i = ++portCount;
+                // Listen for port messages
+                initWorkerCommands(port);
+                // port.addEventListener('message', onMessageCommand);
+
+                // Required when using addEventListener. Otherwise called implicitly by onmessage setter.
+                port.start();
+                //port.postMessage("INFO New SharedWorker port connected #" + port.i);
+                console.info("New SharedWorker port connected #", port.i, port);
+            }
+
         } else if (self.DedicatedWorkerGlobalScope && self instanceof DedicatedWorkerGlobalScope) {
             // Listen for main thread messages
-            self.addEventListener('message', onMessageCommand);
+            initWorkerCommands(self);
+            // self.addEventListener('message', onMessageCommand);
             console.log("Initiated WebWorker thread", self);
         }
 
 
-        function onMessageCommand(e) {
-            var commandString = e.data;
-            if(!commandString)
-                throw new Error("Ignoring empty message");
-            var type = commandString.split(/[^\w]+/)[0].toLowerCase();
-
-            var messageEvent = new CustomEvent('message:'+type, {
-                detail: commandString,
-                cancelable: true
-            });
-            self.dispatchEvent(messageEvent);
-            if(messageEvent.defaultPrevented)
-                return;
-
-            throw new Error("Unhandled command (type=" + type + "): " + commandString);
-        }
-
-        // For Shared Workers
-
-        var portCount=0;
-        function onConnect(e) {
-            var port = e.ports[0];
-            port.i = ++portCount;
-            port.addEventListener('message', onMessageCommand);
-
-            // Required when using addEventListener. Otherwise called implicitly by onmessage setter.
-            port.start();
-            //port.postMessage("INFO New SharedWorker port connected #" + port.i);
-            console.log("New SharedWorker port connected #", port.i, port);
-        }
-
     }
 
-    function initWorkerListener(document) {
+    function initDOMListeners(document) {
         // Set up WebWorker or SharedWorker
-
         var worker, port;
         document.USE_SHARED_WORKER = true;
 
@@ -101,43 +87,29 @@ var relay = (function() {
             if(!commandString)
                 throw new Error("Ignoring empty message");
             var type = commandString.split(/[^\w]+/)[0].toLowerCase();
-            console.log("IN:  ", commandString);
-            var messageEvent = new CustomEvent('message:' + type, {
-                detail: commandString,
-                cancelable: true
-            });
-            document.dispatchEvent(messageEvent);
-            if(messageEvent.defaultPrevented)
-                return;
 
-            console.error("Unhandled worker response (type=" + type + "): " + commandString);
+            console.error("Unhandled worker Response (type=" + type + "): " + commandString);
         }, true);
 
-        // Set up execution handling
-        document.addEventListener('message', function(e) {
-            var commandString = e.detail;
+
+        function executeDOMCommand(commandString, elm) {
             var type = commandString.split(/[^\w]+/)[0].toLowerCase();
-            console.log("OUT: ", commandString);
-            var messageEvent = new CustomEvent('command:' + type, {
+            var commandEvent = new CustomEvent('message:' + type, {
                 detail: commandString,
                 cancelable: true
             });
-            document.dispatchEvent(messageEvent);
-            if(messageEvent.defaultPrevented)
-                return;
-            e.preventDefault();
-            // Don't pass commands to worker.
-            console.error("Unhandled command (type=" + type + "): " + commandString);
-        });
-
-        return function (commandString, elm) {
-            var commandEvent = new CustomEvent('message', {detail: commandString, cancelable: true});
             if(!elm) elm = document;
             elm.dispatchEvent(commandEvent);
-            if(!commandEvent.defaultPrevented)
-                throw new Error("Command was unhandled: " + commandString);
-        };
+            if(commandEvent.defaultPrevented) // Check to see if it was handled by another listener
+                return commandEvent;
 
+            // If unhandled, pass to worker thread
+            worker.postMessage(commandString);
+            commandEvent.preventDefault();
+            return commandEvent;
+        }
+
+        return executeDOMCommand;
     }
 
 

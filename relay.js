@@ -124,15 +124,26 @@ var relay = (function() {
                 commandString = commandString.substr(0, p);
             }
             var scriptPath = commandString.substr(8);
-            if (document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']').length === 0) {
+            var foundScript = document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']');
+            if (foundScript.length === 0) {
                 // console.log("Including " + scriptPath);
                 var scriptElm = document.createElement('script');
                 scriptElm.src = scriptPath;
-                scriptElm.onload = function() { handleWorkerResponse(nextCommand); };
+                if(typeof scriptElm.pendingCommands != 'object') scriptElm.pendingCommands = [];
+                // Queue pending command until script is loaded
+                scriptElm.pendingCommands.push(nextCommand);
+                scriptElm.onload = function() {
+                    for(var i=0; i<scriptElm.pendingCommands.length; i++)
+                        handleWorkerResponse(scriptElm.pendingCommands[i]);
+                    delete scriptElm.pendingCommands;
+                };
                 document.head.appendChild(scriptElm);
 
             } else {
-                handleWorkerResponse(nextCommand)
+                if(typeof foundScript[0].pendingCommands == 'object')
+                    foundScript[0].pendingCommands.push(nextCommand);
+                else
+                    handleWorkerResponse(nextCommand)
             }
         }
 

@@ -45,7 +45,7 @@ module.exports.initWorkerCommands = function(worker) {
 
     function req(filePath) {
         if(typeof require !== 'undefined')
-            return require('../' + filePath);
+            return require('../../' + filePath);
         importScripts(filePath);
         return module.exports;
     }

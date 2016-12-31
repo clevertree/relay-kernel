@@ -96,7 +96,8 @@ var relay = (function() {
                 scriptElm.src = scriptPath;
                 if(typeof scriptElm.pendingCommands != 'object') scriptElm.pendingCommands = [];
                 // Queue pending command until script is loaded
-                scriptElm.pendingCommands.push(nextCommand);
+                if(nextCommand)
+                    scriptElm.pendingCommands.push(nextCommand);
                 scriptElm.onload = function() {
                     for(var i=0; i<scriptElm.pendingCommands.length; i++)
                         handleWorkerResponse(scriptElm.pendingCommands[i]);
@@ -119,7 +120,7 @@ var relay = (function() {
 
     function initWorkerThread(importScripts) {
 
-        importScripts('worker/commands.js');
+        importScripts('system/worker/commands.js');
         var initWorkerCommands = module.exports.initWorkerCommands;
 
         // If we're in a worker thread
@@ -152,9 +153,9 @@ var relay = (function() {
 
 
     function initCLI(require) {
-        var initWorkerCommands = require('./worker/commands.js').initWorkerCommands;
+        var initWorkerCommands = require('./system/worker/commands.js').initWorkerCommands;
 
-        var CLIPrompt = require('./worker/cli/cli-prompt.js').CLIPrompt;
+        var CLIPrompt = require('./system/worker/cli/cli-prompt.js').CLIPrompt;
         initWorkerCommands(CLIPrompt);
         CLIPrompt.start();
     }

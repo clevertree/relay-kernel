@@ -5,22 +5,24 @@
         <meta name="keywords" CONTENT="relay, project, webrtc, secure, encryption, security, pgp, keyspace, socket, websocket, irc, chat, free, open-source">
         <script src="relay.js"></script>
         <script>
-            // Launch Chat room windows
-            relay('CHAT mychannel');             // GET ~/mychannel => GET /home/ABCD1234/mychannel
-            relay('CHAT /common');
+            relay('RENDER <pre class="text-div">Hello World<hr/></pre>');
+            relay('RENDER.SELECTOR .text-div Goodbye World<hr/>');
 
-            // Play songs and movies
-//            relay('PLAY mysongs/myfirstsong');
+            // Play music and movies
+            relay('PLAY /tests/files/music/song1.js');
 //            relay('QUEUE mymovies/myfirstmovie');
 
+
+            // Launch Chat room windows
+            //            relay('CHAT mychannel');             // GET ~/mychannel => GET /home/ABCD1234/mychannel
+            //            relay('CHAT /common');
+
+
             // Open Browser with home page
-//            relay('GET');                       // GET ~/ => GET /home/ABCD1234/
+            //            relay('GET');                       // GET ~/ => GET /home/ABCD1234/
 
-            relay('RENDER <pre>Hello World<hr/></pre>');
 
-            setTimeout(function() { relay('ECHO omg'); }, 500);
-            setTimeout(function() { relay('ECHO omg'); }, 1500);
-            setTimeout(function() { relay('ECHO omg'); }, 2500);
+
         </script>
     </head>
 </html>

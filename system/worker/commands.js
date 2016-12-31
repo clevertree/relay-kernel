@@ -7,18 +7,19 @@ module.exports.initWorkerCommands = function(worker) {
     worker.addEventListener('message', handleMessage);
 
     var availableCommands = {
-        'chat':'commands/chat.js',
+        'chat':'system/commands/chat.js',
 
-        'play':'commands/play.js',
-        'queue':'commands/queue.js',
+        'play':'system/commands/play.js',
+        'queue':'system/commands/queue.js',
 
-        'get':'commands/get.js',
-        'render':'commands/render.js',
-        'echo':'commands/echo.js'
+        'get':'system/commands/get.js',
+        'render':'system/commands/render.js',
+        'echo':'system/commands/echo.js'
     };
 
     var typeCommands = {};
 
+    
     // Define command
     function handleMessage(e) {
         var commandString = e.data || e.detail;
@@ -33,13 +34,7 @@ module.exports.initWorkerCommands = function(worker) {
             throw new Error("Invalid command type: " + type);
 
         var filePath = availableCommands[type];
-        var handleWorkerCommand;
-        if(typeof importScripts !== 'undefined') {
-            importScripts(filePath);
-            handleWorkerCommand = module.exports.handleWorkerCommand;
-        } else {
-            handleWorkerCommand = require('../' + filePath).handleWorkerCommand;
-        }
+        var handleWorkerCommand = req(filePath).handleWorkerCommand;
         if(!handleWorkerCommand)
             throw new Error("module.exports.handleWorkerCommand not found in " + filePath);
 
@@ -47,6 +42,11 @@ module.exports.initWorkerCommands = function(worker) {
         // console.log("Imported " + filePath, typeCommands);
         return typeCommands[type](e, commandString);
     }
-    
-    
+
+    function req(filePath) {
+        if(typeof require !== 'undefined')
+            return require('../' + filePath);
+        importScripts(filePath);
+        return module.exports;
+    }
 };

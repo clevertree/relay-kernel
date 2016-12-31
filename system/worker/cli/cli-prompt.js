@@ -1,6 +1,3 @@
-if (typeof self !== 'undefined')
-    throw new Error("self already defined");
-
 
 if (!module) var module = {exports: {}};
 module.exports.CLIPrompt = new CLIPrompt();
@@ -50,7 +47,7 @@ function CLIPrompt() {
     };
 
     this.postMessage = function (message) {
-        console.log("! ", message);
+        console.info(message);
     };
 
     this.executeCommand = executeCommand;
@@ -79,14 +76,13 @@ function CLIPrompt() {
         var util = require('util');
 
         process.stdin.on('data', function (text) {
-            // util.inspect()
-
-            executeCommand(text);
+            if(text.trim())
+                executeCommand(text);
 
             if (text === 'quit\n') {
                 done();
             }
-            process.stdout.write("\n\n> ");
+            process.stdout.write("\n> ");
         });
 
         function done() {

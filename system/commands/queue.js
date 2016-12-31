@@ -9,7 +9,7 @@ module.exports.handleWorkerCommand = function(e, commandString) {
     
     e.target.postMessage(
         // Include client-side javascript support files
-        "INCLUDE commands/queue.js;" +
+        "INCLUDE system/commands/queue.js;" +
         // Queue command back to client
         commandString
     );

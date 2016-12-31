@@ -6,21 +6,20 @@
 // Handle worker command
 if (!module) var module = {exports:{}};
 module.exports.handleWorkerCommand = function(e, commandString) {
-
-    console.log("Handling " + commandString);
+    
     e.target.postMessage(
         // Include client-side javascript support files
-        "INCLUDE commands/chat.js;" +
-        // Chat command back to client
+        "INCLUDE system/commands/get.js;" +
+        // Get command back to client
         commandString
     );
 };
 
 // Handle client-side response
 if (typeof document !== 'undefined') (function(){
-    document.addEventListener('response:chat', handleChatResponse);
+    document.addEventListener('response:get', handleGetResponse);
     
-    function handleChatResponse (e) {
+    function handleGetResponse (e) {
         var commandString = e.data || e.detail;
         console.log("TODO " + commandString); 
         e.preventDefault();

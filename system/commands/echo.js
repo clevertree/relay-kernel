@@ -6,22 +6,25 @@
 // Handle worker command
 if (!module) var module = {exports:{}};
 module.exports.handleWorkerCommand = function(e, commandString) {
-    
+
+    // Include client-side javascript support files
+    commandString = "INCLUDE system/commands/echo.js;" + commandString; // TODO: better hack needed
+
     e.target.postMessage(
-        // Include client-side javascript support files
-        "INCLUDE commands/render.js;" +
-        // Render command back to client
+        // Echo command back to client or console
         commandString
     );
+    e.preventDefault();
 };
 
 // Handle client-side response
 if (typeof document !== 'undefined') (function(){
-    document.addEventListener('response:render', handleRenderResponse);
+    document.addEventListener('response:echo', handleEchoResponse);
     
-    function handleRenderResponse (e) {
+    function handleEchoResponse (e) {
+        // Echo to console
         var commandString = e.data || e.detail;
-        console.log("TODO " + commandString); 
+        console.log('ECHO', commandString.substr(5));
         e.preventDefault();
     }
 })();

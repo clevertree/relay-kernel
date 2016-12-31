@@ -33,11 +33,17 @@ module.exports.initWorkerCommands = function(worker) {
             throw new Error("Invalid command type: " + type);
 
         var filePath = availableCommands[type];
-        importScripts(filePath);
-        if(!module.exports.handleWorkerCommand)
+        var handleWorkerCommand;
+        if(typeof importScripts !== 'undefined') {
+            importScripts(filePath);
+            handleWorkerCommand = module.exports.handleWorkerCommand;
+        } else {
+            handleWorkerCommand = require('../' + filePath).handleWorkerCommand;
+        }
+        if(!handleWorkerCommand)
             throw new Error("module.exports.handleWorkerCommand not found in " + filePath);
 
-        typeCommands[type] = module.exports.handleWorkerCommand;
+        typeCommands[type] = handleWorkerCommand;
         // console.log("Imported " + filePath, typeCommands);
         return typeCommands[type](e, commandString);
     }

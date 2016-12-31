@@ -1,0 +1,26 @@
+{
+  "name": "relay-kernel",
+  "description": "Relay Kernel",
+  "version": "0.0.1",
+  "homepage": "http://relayproject.net/",
+  "main": "relay.js",
+  "directories": {
+    "lib": "src"
+  },
+  "scripts": {
+    "test": "node relay.js"
+  },
+  "dependencies": {
+    "indexeddb-js": "0.0.14",
+    "openpgp": "^1.6.2",
+    "sqlite3": "3.1.0",
+    "ws": "^0.8.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://clevertree@github.com/clevertree/relay-kernel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clevertree/relay-kernel/issues"
+  }
+}

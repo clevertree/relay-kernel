@@ -6,13 +6,17 @@
 // Handle worker command
 if (!module) var module = {exports:{}};
 module.exports.handleWorkerCommand = function(e, commandString) {
-    
-    e.target.postMessage(
+
+    if(!e.isCLI) {
         // Include client-side javascript support files
-        "INCLUDE commands/echo.js;" +
+        commandString = "INCLUDE commands/echo.js;" + commandString;
+    }
+
+    e.target.postMessage(
         // Echo command back to client
         commandString
     );
+    e.preventDefault();
 };
 
 // Handle client-side response

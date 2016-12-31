@@ -25,41 +25,6 @@ var relay = (function() {
 
     // init Methods
 
-    function initWorkerThread(importScripts) {
-
-        importScripts('worker/commands.js');
-        var initWorkerCommands = module.exports.initWorkerCommands;
-
-        // If we're in a worker thread
-        if(self.SharedWorkerGlobalScope && self instanceof SharedWorkerGlobalScope) {
-            // Listen for connecting ports
-            self.addEventListener('connect', onConnect);
-            console.log("Initiated SharedWorker thread", self);
-
-            var portCount=0;
-            function onConnect(e) {
-                var port = e.ports[0];
-                port.i = ++portCount;
-                // Listen for port messages
-                initWorkerCommands(port);
-                // port.addEventListener('message', onMessageCommand);
-
-                // Required when using addEventListener. Otherwise called implicitly by onmessage setter.
-                port.start();
-                //port.postMessage("INFO New SharedWorker port connected #" + port.i);
-                console.info("New SharedWorker port connected #", port.i, port);
-            }
-
-        } else if (self.DedicatedWorkerGlobalScope && self instanceof DedicatedWorkerGlobalScope) {
-            // Listen for main thread messages
-            initWorkerCommands(self);
-            // self.addEventListener('message', onMessageCommand);
-            console.log("Initiated WebWorker thread", self);
-        }
-
-
-    }
-
     function initDOMListeners(document) {
         // Set up WebWorker or SharedWorker
         var worker, port;
@@ -152,8 +117,45 @@ var relay = (function() {
 
 
 
+    function initWorkerThread(importScripts) {
+
+        importScripts('worker/commands.js');
+        var initWorkerCommands = module.exports.initWorkerCommands;
+
+        // If we're in a worker thread
+        if(self.SharedWorkerGlobalScope && self instanceof SharedWorkerGlobalScope) {
+            // Listen for connecting ports
+            self.addEventListener('connect', onConnect);
+            console.log("Initiated SharedWorker thread", self);
+
+            var portCount=0;
+            function onConnect(e) {
+                var port = e.ports[0];
+                port.i = ++portCount;
+                // Listen for port messages
+                initWorkerCommands(port);
+                // port.addEventListener('message', onMessageCommand);
+
+                // Required when using addEventListener. Otherwise called implicitly by onmessage setter.
+                port.start();
+                //port.postMessage("INFO New SharedWorker port connected #" + port.i);
+                console.info("New SharedWorker port connected #", port.i, port);
+            }
+
+        } else if (self.DedicatedWorkerGlobalScope && self instanceof DedicatedWorkerGlobalScope) {
+            // Listen for main thread messages
+            initWorkerCommands(self);
+            // self.addEventListener('message', onMessageCommand);
+            console.log("Initiated WebWorker thread", self);
+        }
+    }
+
+
     function initCLI(require) {
-        var CLIPrompt = require('./client/cli/cli-prompt.js').CLIPrompt;
+        var initWorkerCommands = require('./worker/commands.js').initWorkerCommands;
+
+        var CLIPrompt = require('./worker/cli/cli-prompt.js').CLIPrompt;
+        initWorkerCommands(CLIPrompt);
         CLIPrompt.start();
     }
 

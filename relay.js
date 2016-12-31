@@ -51,7 +51,7 @@ var relay = (function() {
             var commandString = e.data;
             if(e.defaultPrevented)
                 return;
-            handleWorkerResponse(commandString)
+            handleWorkerResponse(commandString);
         }, true);
 
         function handleWorkerResponse (commandString ) {
@@ -109,7 +109,7 @@ var relay = (function() {
                 if(typeof foundScript[0].pendingCommands == 'object')
                     foundScript[0].pendingCommands.push(nextCommand);
                 else
-                    handleWorkerResponse(nextCommand)
+                    handleWorkerResponse(nextCommand);
             }
         }
 

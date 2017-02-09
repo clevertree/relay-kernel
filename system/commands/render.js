@@ -35,11 +35,18 @@ if (typeof document !== 'undefined') (function(){
                 var selector = content.split(' ')[0].toLowerCase();
                 if(!selector)
                     throw new Error("Invalid Selector");
-                target = target.querySelector(selector);
-                if(!target)
-                    throw new Error("Render Error: Could not find selector: " + selector);
                 content = content.substr(selector.length+1);
-                target.innerHTML = content;
+
+                target = target.querySelectorAll(selector);
+                if(target.length > 0) {
+                    for(var i=0; i<target.length; i++) {
+                        target[i].innerHTML = content;
+                    }
+
+                } else {
+                    console.error("Render Error: Could not find selector: " + selector);
+
+                }
                 break;
         }
 

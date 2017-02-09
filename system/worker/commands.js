@@ -47,6 +47,8 @@ module.exports.initWorkerCommands = function(worker) {
         if(typeof require !== 'undefined')
             return require('../../' + filePath);
         importScripts(filePath);
-        return module.exports;
+        var exp = module.exports;
+        module = null;
+        return exp;
     }
 };

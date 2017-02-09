@@ -73,7 +73,7 @@ var relay = (function() {
             if(responseEvent.defaultPrevented) // Check to see if it was handled by another listener
                 return;
 
-            console.error("Unhandled worker Response (type=" + type + "): " + commandString);
+            console.error("Missing event listener 'response:" + type + "' " + commandString);
         }
 
         function executeWorkerCommand(commandString) {

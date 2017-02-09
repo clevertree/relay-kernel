@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a08764d-d074-4a6e-b968-7d2d2b87606d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/system/worker/commands.js" afterPath="$PROJECT_DIR$/system/worker/commands.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/system/commands/play.js" afterPath="$PROJECT_DIR$/system/commands/play.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/system/media/playlist.js" afterPath="$PROJECT_DIR$/system/media/playlist.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/relay.js" afterPath="$PROJECT_DIR$/relay.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/system/commands/render.js" afterPath="$PROJECT_DIR$/system/commands/render.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/music/song1.js" afterPath="$PROJECT_DIR$/tests/files/music/song1.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="relay-kernel.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,11 +27,11 @@
       <file leaf-file-name="song1.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/music/song1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5745375">
-              <caret line="123" column="19" selection-start-line="123" selection-start-column="19" selection-end-line="123" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.7214363">
+              <caret line="135" column="56" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <element signature="e#1355#3092#0" expanded="false" />
+                <element signature="e#1359#3096#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -438,7 +430,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#1355#3092#0" expanded="false" />
+            <element signature="e#1359#3096#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -520,7 +512,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#1355#3092#0" expanded="false" />
+            <element signature="e#1359#3096#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -602,7 +594,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#1355#3092#0" expanded="false" />
+            <element signature="e#1359#3096#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -817,11 +809,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/music/song1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5745375">
-          <caret line="123" column="19" selection-start-line="123" selection-start-column="19" selection-end-line="123" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.7214363">
+          <caret line="135" column="56" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <element signature="e#1355#3092#0" expanded="false" />
+            <element signature="e#1359#3096#0" expanded="false" />
           </folding>
         </state>
       </provider>

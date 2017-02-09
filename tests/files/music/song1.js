@@ -25,7 +25,7 @@ if (typeof document !== 'undefined') (function(){
 
         var NF = NOTE_FREQUENCIES, NL = NOTE_LENGTH;
 
-        var sine = getOscillatorInstrument('sine');
+        var sine = getOscillatorInstrument('sine', 16);
 
         // Play Notes
         sine.play(NF.F6, s+NL*1, NL/2, 1.0);
@@ -118,21 +118,29 @@ if (typeof document !== 'undefined') (function(){
 
     // Instruments
 
-    function getOscillatorInstrument(type) {
-        var oscillator = context.createOscillator();
-        oscillator.type = type;
-// TODO:  polyphony
-        var gainNode = context.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-        oscillator.gainNode = gainNode;
-        oscillator.play = function(frequency, start, length, gain) {
-            if(frequency !== null) oscillator.frequency.value = frequency;
-            if(gain !== null) gainNode.gain.value = gain;
-            oscillator.start(start);
-            if(length !== null) oscillator.stop(start+length);
+    var oscillators = {};
+    function getOscillatorInstrument(type, polyCount) {
+
+        function create() {
+            var oscillator = context.createOscillator();
+            oscillator.type = type;
+            var gainNode = context.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            oscillator.gainNode = gainNode;
+            return oscillator;
+        }
+
+        return {
+            play: function(frequency, start, length, gain) {
+                // TODO:  create new or use existing osc
+                // TODO: allow channel/dest
+                if(frequency !== null) oscillator.frequency.value = frequency;
+                if(gain !== null) gainNode.gain.value = gain;
+                oscillator.start(start);
+                if(length !== null) oscillator.stop(start+length);
+            }
         };
-        return oscillator;
     }
 
 

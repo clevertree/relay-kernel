@@ -20,14 +20,22 @@ if (typeof document !== 'undefined') (function(){
     }
 
     function p1(s, l) {
+        // Check for matching time
         if(processedTime > s + l)
             return false;
 
+        // Variable Shortcuts
         var NF = NOTE_FREQUENCIES, NL = NOTE_LENGTH;
 
-        var sine = getOscillatorInstrument('sine', 16);
+        // Load Instruments
+        var sine = new OscillatorInstrument('sawtooth', 16);
 
         // Play Notes
+        sine.play(NF.F6, s+NL*1, NL/2, 1.0);
+        sine.play(NF.A4, s+NL*2, NL/2, 0.2);
+        sine.play(NF.A3, s+NL*3, NL/2, 0.7);
+
+        s+=1;
         sine.play(NF.F6, s+NL*1, NL/2, 1.0);
         sine.play(NF.A4, s+NL*2, NL/2, 0.2);
         sine.play(NF.A3, s+NL*3, NL/2, 0.7);
@@ -118,29 +126,80 @@ if (typeof document !== 'undefined') (function(){
 
     // Instruments
 
-    var oscillators = {};
-    function getOscillatorInstrument(type, polyCount) {
+    function OscillatorInstrument(type, polyCount) {
+        this.play = function(frequency, start, length, gain) {
+            // TODO:  create new or use existing osc
+            // TODO: allow channel/dest
 
-        function create() {
-            var oscillator = context.createOscillator();
-            oscillator.type = type;
-            var gainNode = context.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            oscillator.gainNode = gainNode;
+            var oscillator = getNextOscillator(type, polyCount);
+
+            if(frequency !== null) oscillator.frequency.value = frequency;
+            if(gain !== null) oscillator.gainNode.gain.value = gain;
+            oscillator.start(start);
+            if(length !== null) oscillator.stop(start+length);
+        };
+    }
+
+    var oscTypes = {};
+    function getNextOscillator(type, polyCount) {
+
+        if(typeof oscTypes[type] == 'undefined')
+            oscTypes[type] = [];
+
+        var oscillator, oscillators = oscTypes[type];
+
+        // Check for available oscillators
+        for(var i=0; i<oscillators.length; i++) {
+            oscillator = oscillators[i];
+            if(!oscillator.isAvailable)
+                continue;
+            oscillators.splice(i, 1);
+            oscillators.push(oscillator);       // Move to end of array
             return oscillator;
         }
 
-        return {
-            play: function(frequency, start, length, gain) {
-                // TODO:  create new or use existing osc
-                // TODO: allow channel/dest
-                if(frequency !== null) oscillator.frequency.value = frequency;
-                if(gain !== null) gainNode.gain.value = gain;
-                oscillator.start(start);
-                if(length !== null) oscillator.stop(start+length);
-            }
-        };
+        // Check if poly count reached
+        if(polyCount && polyCount <= oscillators.length) {
+            oscillator = oscillators.shift();   // Use first available oscillator;
+            oscillators.push(oscillator);       // Move to end of array
+            return oscillator;
+        }
+
+        // Create new oscillator
+        oscillator = context.createOscillator();
+        oscillator.type = type;
+
+        // Create gain node
+        var gainNode = context.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        oscillator.gainNode = gainNode;
+
+        // Set to unavailable
+        oscillator.isAvailable = false;
+        oscillator.addEventListener('ended', function(e) {
+            oscillator.isAvailable = true;
+            console.log("Note Ended", e);
+        });
+        oscillator.addEventListener('play', function(e) {
+            oscillator.isAvailable = false;
+            console.log("Note Playing", e);
+        });
+
+        oscillators.push(oscillator);
+
+        return oscillator;
+        //
+        //return {
+        //    play: function(frequency, start, length, gain) {
+        //        // TODO:  create new or use existing osc
+        //        // TODO: allow channel/dest
+        //        if(frequency !== null) oscillator.frequency.value = frequency;
+        //        if(gain !== null) gainNode.gain.value = gain;
+        //        oscillator.start(start);
+        //        if(length !== null) oscillator.stop(start+length);
+        //    }
+        //};
     }
 
 

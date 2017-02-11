@@ -7,51 +7,58 @@ if (typeof document !== 'undefined') (function(){
     document.addEventListener('response:start', handleStartResponse);
 
     // Song Variables
-
-    var FREQUENCY_A4 = 440;
-    var HALF_STEP = Math.pow(2, 1/12);
-
-    var PATTERN_LENGTH = 4;
-    var NOTE_LENGTH = PATTERN_LENGTH / 16;
+    var iOsc0;
 
     // Initiate Song
     function init() {
-        calculateNoteFrequencies(FREQUENCY_A4, HALF_STEP);
-    }
-
-    function p1(s, l) {
-        // Check for matching time
-        if(processedTime > s + l)
-            return false;
-
-        // Variable Shortcuts
-        var NF = NOTE_FREQUENCIES, NL = NOTE_LENGTH;
+        // Set Config Variables
+        // FREQUENCY_A4 = 440;
 
         // Load Instruments
-        var sine = new OscillatorInstrument('sawtooth', 16);
+        iOsc0 = new OscillatorInstrument(4);
+    }
 
-        // Play Notes
-        sine.play(NF.F6, s+NL*1, NL/2, 1.0);
-        sine.play(NF.A4, s+NL*2, NL/2, 0.2);
-        sine.play(NF.A3, s+NL*3, NL/2, 0.7);
+    // Song Patterns
 
-        s+=1;
-        sine.play(NF.F6, s+NL*1, NL/2, 1.0);
-        sine.play(NF.A4, s+NL*2, NL/2, 0.2);
-        sine.play(NF.A3, s+NL*3, NL/2, 0.7);
+    function measure1() {
+        // Queue Notes
+        iOsc0.play('square', 'F4', 0.0, 0.5, 0.6);
+        iOsc0.play('triangle', 'D4', 1.0);
+        iOsc0.play('sine', 'B4', 2.0, 1.5, 0.6);
 
-        return true;
+        // Set Measure Length
+        measureCounter += 1.0;
+    }
+
+    // Song Structure
+
+
+
+    function processMeasures() {
+        measure1();
+        measure1();
+        measure1();
+
+        for(var i=0; i<100; i++)
+        measure1();
     }
 
 
-    function processPattern() {
-        var pl = PATTERN_LENGTH;
-        p1(0 * pl, pl) ||
-        p2(1 * pl, pl) ||
-        p3(2 * pl, pl) ||
-        p4(3 * pl, pl);
 
-    }
+
+    // Support Variables
+
+    var audioContext;
+    var songStartTime = 0;
+    var measureCounter = 0;
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    // Config Variables
+
+    var FREQUENCY_A4 = 440;
+    var HALF_STEP = Math.pow(2, 1/12);
+    var MEASURE_LENGTH = 4;
+    var BEAT_LENGTH = MEASURE_LENGTH / 4;
 
     // Music Variables
 
@@ -60,15 +67,40 @@ if (typeof document !== 'undefined') (function(){
     };
 
 
-    // Support Variables
+    // Instruments
 
-    var context;
-    var startTime = 0;
-    var processedTime = 0;
-    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    function OscillatorInstrument(polyCount) {
+
+        this.play = function(type, frequency, beat, length, gainValue) {
+            // Create new oscillator
+            var oscillator = audioContext.createOscillator();
+            oscillator.type = type;
+            if(typeof frequency == 'string')
+                frequency = NOTE_FREQUENCIES[frequency];
+            oscillator.frequency.value = frequency;
+
+            // Create gain node
+            if(gainValue !== null) {
+                var gainNode = audioContext.createGain();
+                gainNode.gain.value = gainValue||1.0;
+                gainNode.connect(audioContext.destination);
+                oscillator.connect(gainNode);
+            } else {
+                oscillator.connect(audioContext.destination);
+            }
+
+            var startTime = songStartTime
+                + measureCounter * MEASURE_LENGTH
+                + beat * BEAT_LENGTH;
+            oscillator.start(startTime);
+            oscillator.stop(startTime + ((length||1.0) * BEAT_LENGTH));
+
+            console.log("Playing Note: ", songStartTime, oscillator, arguments);
+        };
+    }
+
 
     // Support Methods
-
 
     function calculateNoteFrequencies(freqA4, halfStep) {
         var octaveOffset = 4;
@@ -77,21 +109,21 @@ if (typeof document !== 'undefined') (function(){
             var stepOffset = 12*(octave - octaveOffset);
             nf['A' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['As' + octave] =
-            nf['Bb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
+                nf['Bb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['B' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['C' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['Cs' + octave] =
-            nf['Db' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
+                nf['Db' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['D' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['Ds' + octave] =
-            nf['Eb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
+                nf['Eb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['E' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['F' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['Fs' + octave] =
-            nf['Gb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
+                nf['Gb' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['G' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
             nf['Gs' + octave] =
-            nf['Ab' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
+                nf['Ab' + octave] = freqA4 * Math.pow(halfStep, stepOffset++);
         }
         nf['A'] = nf['A4'];
         nf['As'] = nf['As4'];
@@ -113,98 +145,16 @@ if (typeof document !== 'undefined') (function(){
     }
 
     function process(newStartTime) {
-        if(!context) {
-            context = new AudioContext();
-            processedTime = startTime = context.currentTime;
+        if(!audioContext)
+            audioContext = new AudioContext();
+        songStartTime = newStartTime || 0; // audioContext.currentTime;
 
-        } else if(newStartTime !== null) {
-            processedTime = startTime = newStartTime;
-        }
-
-        processPattern();
-    }
-
-    // Instruments
-
-    function OscillatorInstrument(type, polyCount) {
-        this.play = function(frequency, start, length, gain) {
-            // TODO:  create new or use existing osc
-            // TODO: allow channel/dest
-
-            var oscillator = getNextOscillator(type, polyCount);
-
-            if(frequency !== null) oscillator.frequency.value = frequency;
-            if(gain !== null) oscillator.gainNode.gain.value = gain;
-            oscillator.start(start);
-            if(length !== null) oscillator.stop(start+length);
-        };
-    }
-
-    var oscTypes = {};
-    function getNextOscillator(type, polyCount) {
-
-        if(typeof oscTypes[type] == 'undefined')
-            oscTypes[type] = [];
-
-        var oscillator, oscillators = oscTypes[type];
-
-        // Check for available oscillators
-        for(var i=0; i<oscillators.length; i++) {
-            oscillator = oscillators[i];
-            if(!oscillator.isAvailable)
-                continue;
-            oscillators.splice(i, 1);
-            oscillators.push(oscillator);       // Move to end of array
-            return oscillator;
-        }
-
-        // Check if poly count reached
-        if(polyCount && polyCount <= oscillators.length) {
-            oscillator = oscillators.shift();   // Use first available oscillator;
-            oscillators.push(oscillator);       // Move to end of array
-            return oscillator;
-        }
-
-        // Create new oscillator
-        oscillator = context.createOscillator();
-        oscillator.type = type;
-
-        // Create gain node
-        var gainNode = context.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-        oscillator.gainNode = gainNode;
-
-        // Set to unavailable
-        oscillator.isAvailable = false;
-        oscillator.addEventListener('ended', function(e) {
-            oscillator.isAvailable = true;
-            console.log("Note Ended", e);
-        });
-        oscillator.addEventListener('play', function(e) {
-            oscillator.isAvailable = false;
-            console.log("Note Playing", e);
-        });
-
-        oscillators.push(oscillator);
-
-        return oscillator;
-        //
-        //return {
-        //    play: function(frequency, start, length, gain) {
-        //        // TODO:  create new or use existing osc
-        //        // TODO: allow channel/dest
-        //        if(frequency !== null) oscillator.frequency.value = frequency;
-        //        if(gain !== null) gainNode.gain.value = gain;
-        //        oscillator.start(start);
-        //        if(length !== null) oscillator.stop(start+length);
-        //    }
-        //};
+        measureCounter = 0;
+        processMeasures();
     }
 
 
-
-
+    // Event Listeners
 
     function handleStartResponse (e) {
         var commandString = e.data || e.detail;
@@ -214,11 +164,9 @@ if (typeof document !== 'undefined') (function(){
         var type = split[0].toLowerCase();
         var offset = parseFloat(split[1]);
 
-        console.log("TODO HANDLE AUDIO: " + commandString);
-
         init();
+        calculateNoteFrequencies(FREQUENCY_A4, HALF_STEP);
         process(offset);
-
     }
 
 

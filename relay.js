@@ -63,7 +63,19 @@ var relay = (function() {
             var type = commandString.split(/[^\w]+/)[0].toLowerCase();
             switch(type) {
                 case 'include':
-                    includeHeadScript(commandString);
+                    var scriptPath = commandString.substr(8).trim().replace(';', '');
+                    var ext = scriptPath.split('.').pop().toLowerCase();
+
+                    switch(ext) {
+                        case 'js':
+                            includeHeadScript(scriptPath);
+                            break;
+                        case 'css':
+                            includeHeadCSS(scriptPath);
+                            break;
+                        default:
+                            throw new Error("Invalid Include file: " + ext);
+                    }
                     return;
             }
 
@@ -92,16 +104,9 @@ var relay = (function() {
         }
 
 
-        function includeHeadScript(commandString) {
-            var p = commandString.indexOf(';');
-            if(p > -1) {
-                var nextCommand = commandString.substr(p+1);
-                commandString = commandString.substr(0, p);
-                if(nextCommand.trim().length > 0)
-                    queuedCommands.push(nextCommand);
-            }
-            var scriptPath = commandString.substr(8);
-            var foundScript = document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']');
+        function includeHeadScript(scriptPath) {
+            var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
+            var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
             if (foundScript.length === 0) {
 //                 console.log("Including " + scriptPath);
                 var scriptElm = document.createElement('script');
@@ -116,6 +121,20 @@ var relay = (function() {
             } else {
                 // If script is already in place, resume next command, if any
                 executeNextWorkerCommand();
+            }
+        }
+
+
+        function includeHeadCSS(cssPath) {
+            var cssPathEsc = cssPath.replace(/[/.]/g, '\\$&');
+            var foundCSS = document.head.querySelectorAll('link[href=' + cssPathEsc + ']');
+            if (foundCSS.length === 0) {
+//                 console.log("Including " + scriptPath);
+                var linkElm = document.createElement('link');
+                linkElm.setAttribute('rel', 'stylesheet');
+                linkElm.setAttribute('type', 'text/css');
+                linkElm.setAttribute('href', cssPath);
+                document.head.appendChild(linkElm);
             }
         }
 
@@ -141,9 +160,6 @@ var relay = (function() {
 
 
     function initWorkerThread(importScripts) {
-
-        importScripts('system/worker/commands.js');
-        var initWorkerCommands = module.exports.initWorkerCommands;
 
         // If we're in a worker thread
         if(self.SharedWorkerGlobalScope && self instanceof SharedWorkerGlobalScope) {
@@ -175,7 +191,6 @@ var relay = (function() {
 
 
     function initCLI(require) {
-        var initWorkerCommands = require('./system/worker/commands.js').initWorkerCommands;
 
         var CLIPrompt = require('./system/cli/cli-prompt.js').CLIPrompt;
         initWorkerCommands(CLIPrompt);
@@ -183,5 +198,43 @@ var relay = (function() {
     }
 
 
+
+    function initWorkerCommands(worker) {
+        worker.addEventListener('message', handleMessage);
+
+        var PATHS = ['exec'];
+
+        var typeCommands = {};
+
+
+        // Define command
+        function handleMessage(e) {
+            var commandString = e.data || e.detail;
+            if (!commandString)
+                throw new Error("Ignoring empty message");
+            var type = commandString.split(/[^\w]+/)[0].toLowerCase();
+
+            if(typeof typeCommands[type] !== 'undefined')
+                return typeCommands[type](e, commandString);
+
+            // Attempt to load command file
+            var handleWorkerCommand = null;
+            for(var i=0; i<PATHS.length; i++) {
+                try {
+                    var path = PATHS[i] + '/' + type + '.js';
+                    importScripts(path);
+                    handleWorkerCommand = module.exports.handleWorkerCommand;
+                } catch (ex) {
+                }
+            }
+
+            if(!handleWorkerCommand)
+                throw new Error("module.exports.handleWorkerCommand not found: " + type + ". PATHS=" + PATHS.join(', '));
+
+            typeCommands[type] = handleWorkerCommand;
+            // console.log("Imported " + filePath, typeCommands);
+            return typeCommands[type](e, commandString);
+        }
+    }
 
 })();

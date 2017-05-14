@@ -1,23 +1,7 @@
 /**
  * Created by Ari on 12/29/2016.
  */
-
-
-// Handle worker command
-if (!module) var module = {exports:{}};
-module.exports.handleWorkerCommand = function(e, commandString) {
-
-    // Include client-side javascript support files
-    commandString = "INCLUDE system/commands/render.js;" + commandString; // TODO: better hack needed
-    
-    e.target.postMessage(
-        // Render command back to client
-        commandString
-    );
-};
-
-// Handle client-side response
-if (typeof document !== 'undefined') (function(){
+(function(){
     document.addEventListener('response:render', handleRenderResponse);
     
     function handleRenderResponse (e) {
@@ -44,7 +28,7 @@ if (typeof document !== 'undefined') (function(){
                     }
 
                 } else {
-                    console.error("Render Error: Could not find selector: " + selector);
+                    throw new Error("Render Error: Could not find selector: " + selector);
 
                 }
                 break;

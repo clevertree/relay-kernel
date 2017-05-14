@@ -23,21 +23,23 @@ var relay = (function() {
 
 
 
-    // init Methods
+    // Client-side DOM Methods
 
     function initDOMListeners(document) {
         // Set up WebWorker or SharedWorker
         var worker, port;
+        var queuedCommands = [];
+        var headersLoading = [];
         document.USE_SHARED_WORKER = true;
 
         // Set up SharedWorker or WebWorker
-        if(typeof SharedWorker == 'function' && !document.USE_SHARED_WORKER) {
+        if(typeof SharedWorker === 'function' && !document.USE_SHARED_WORKER) {
             // Create Shared WebWorker
             worker = new SharedWorker('relay.js');
             port = worker.port;
             port.start();
 
-        } else if (typeof Worker == 'function') {
+        } else if (typeof Worker === 'function') {
             // Create Normal WebWorker
             worker = new Worker('relay.js');
             port = worker;
@@ -54,7 +56,7 @@ var relay = (function() {
             handleWorkerResponse(commandString);
         }, true);
 
-        function handleWorkerResponse (commandString ) {
+        function handleWorkerResponse (commandString) {
             if(!commandString)
                 throw new Error("Ignoring empty message");
 
@@ -65,6 +67,19 @@ var relay = (function() {
                     return;
             }
 
+            if(headersLoading > 0) {
+//                 console.info("Queuing command: ", commandString);
+                queuedCommands.push(commandString);
+                return;
+            }
+
+            // Check for previously queued commands
+            if(queuedCommands.length > 0) {
+                console.info("Queuing early command: ", commandString);
+                queuedCommands.push(commandString);
+                return executeNextWorkerCommand();
+            }
+
             var responseEvent = new CustomEvent('response:' + type, {
                 detail: commandString,
                 cancelable: true
@@ -73,44 +88,51 @@ var relay = (function() {
             if(responseEvent.defaultPrevented) // Check to see if it was handled by another listener
                 return;
 
-            console.error("Missing event listener 'response:" + type + "' " + commandString);
+            throw new Error("Missing event listener 'response:" + type + "' " + commandString);
+        }
+
+
+        function includeHeadScript(commandString) {
+            var p = commandString.indexOf(';');
+            if(p > -1) {
+                var nextCommand = commandString.substr(p+1);
+                commandString = commandString.substr(0, p);
+                if(nextCommand.trim().length > 0)
+                    queuedCommands.push(nextCommand);
+            }
+            var scriptPath = commandString.substr(8);
+            var foundScript = document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']');
+            if (foundScript.length === 0) {
+//                 console.log("Including " + scriptPath);
+                var scriptElm = document.createElement('script');
+                headersLoading++;
+                scriptElm.src = scriptPath;
+                scriptElm.onload = function() {
+                    headersLoading--;
+                    executeNextWorkerCommand();
+                };
+                document.head.appendChild(scriptElm);
+
+            } else {
+                // If script is already in place, resume next command, if any
+                executeNextWorkerCommand();
+            }
+        }
+
+        function executeNextWorkerCommand() {
+            if(queuedCommands.length===0)
+                return false;
+            if(headersLoading > 0)
+                return false;
+            var nextCommand = queuedCommands.shift();
+//             console.log("Executing Queued Command: ", nextCommand, queuedCommands);
+            executeWorkerCommand(nextCommand);
+            executeNextWorkerCommand();
         }
 
         function executeWorkerCommand(commandString) {
             worker.postMessage(commandString);
             // console.log("Passing command to worker: " + commandString);
-        }
-
-        function includeHeadScript(commandString) {
-            var nextCommand = '';
-            var p = commandString.indexOf(';');
-            if(p > -1) {
-                nextCommand = commandString.substr(p+1);
-                commandString = commandString.substr(0, p);
-            }
-            var scriptPath = commandString.substr(8);
-            var foundScript = document.head.querySelectorAll('script[src=' + scriptPath.replace(/[/.]/g, '\\$&') + ']');
-            if (foundScript.length === 0) {
-                // console.log("Including " + scriptPath);
-                var scriptElm = document.createElement('script');
-                scriptElm.src = scriptPath;
-                if(typeof scriptElm.pendingCommands != 'object') scriptElm.pendingCommands = [];
-                // Queue pending command until script is loaded
-                if(nextCommand)
-                    scriptElm.pendingCommands.push(nextCommand);
-                scriptElm.onload = function() {
-                    for(var i=0; i<scriptElm.pendingCommands.length; i++)
-                        handleWorkerResponse(scriptElm.pendingCommands[i]);
-                    delete scriptElm.pendingCommands;
-                };
-                document.head.appendChild(scriptElm);
-
-            } else {
-                if(typeof foundScript[0].pendingCommands == 'object')
-                    foundScript[0].pendingCommands.push(nextCommand);
-                else
-                    handleWorkerResponse(nextCommand);
-            }
         }
 
         return executeWorkerCommand;
@@ -155,11 +177,11 @@ var relay = (function() {
     function initCLI(require) {
         var initWorkerCommands = require('./system/worker/commands.js').initWorkerCommands;
 
-        var CLIPrompt = require('./system/worker/cli/cli-prompt.js').CLIPrompt;
+        var CLIPrompt = require('./system/cli/cli-prompt.js').CLIPrompt;
         initWorkerCommands(CLIPrompt);
         CLIPrompt.start();
     }
 
-    
-    
+
+
 })();

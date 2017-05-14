@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../misc/.idea/misc.iml" filepath="$PROJECT_DIR$/../misc/.idea/misc.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/relay-kernel.iml" filepath="$PROJECT_DIR$/.idea/relay-kernel.iml" />
     </modules>
   </component>

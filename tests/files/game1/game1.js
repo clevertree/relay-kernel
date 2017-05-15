@@ -15,7 +15,7 @@ module.exports = (function () {
                 return;
             includesLoaded = true;
             e.target.postMessage("INCLUDE " + DIR + "client/game1.listener.js;");
-            e.target.postMessage("INCLUDE " + DIR + "client/game1.renderer.js;");
+            // e.target.postMessage("INCLUDE " + DIR + "client/game1.render.map.js;");
             e.target.postMessage("INCLUDE " + DIR + "client/game1.css;");
         };
     }

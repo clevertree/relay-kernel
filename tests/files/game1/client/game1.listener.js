@@ -8,8 +8,9 @@
 
     document.addEventListener('response:play', handlePlayResponse);
 
+    var DIR = 'tests/files/game1/';
 
-    // Event Listeners
+    // Canvas Loading
 
     function handlePlayResponse (e) {
         // var commandString = e.data || e.detail;
@@ -22,8 +23,6 @@
         }
     }
 
-
-    // Loading
 
     function play() {
         // console.info("Loading game1...");
@@ -40,15 +39,46 @@
 
         for(var i=0; i<canvasList.length; i++) {
             var canvas = canvasList[i];
+            loadStage(canvas, DEFAULT_STAGE);
+        }
+    }
 
-            var event = new CustomEvent('render:start', {
+    // Stage Loading
+
+    var DEFAULT_STAGE = DIR + 'stage/default.stage.js';
+
+    function loadStage (canvas, scriptPath) {
+        var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
+        var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
+        if (foundScript.length === 0) {
+            console.log("Including Stage " + stagePath);
+            var scriptElm = document.createElement('script');
+            scriptElm.src = scriptPath;
+            scriptElm.onload = function() {
+                triggerRender();
+            };
+            document.head.appendChild(scriptElm);
+        } else {
+            triggerRender();
+        }
+
+
+
+        function triggerRender() {
+            var event = new CustomEvent('render:stage', {
+                'detail': scriptPath,
                 'cancelable': true,
                 'bubbles': true
             });
 
             canvas.dispatchEvent(event);
-            if(!event.defaultPrevented)
+            if (!event.defaultPrevented)
                 throw new Error("Render event was not handled");
         }
     }
+
+    // Util functions
+
+
+
 })();

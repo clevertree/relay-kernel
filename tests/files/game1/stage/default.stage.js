@@ -7,131 +7,48 @@
 (function() {
 
     document.addEventListener('render:stage', handleRenderStage);
-    document.addEventListener('resize', handleResizeEvent);
 
     var DIR = 'tests/files/game1/';
     var PATH = DIR + 'stage/default.stage.js';
     var LAYERS = [
         function(e, gl) {
-            var canvas = e.target;
-            if(canvas.nodeName.toLowerCase() !== 'canvas')
-                throw new Error("Invalid canvas element: " + canvas);
 
-            var tileSize = 16;
-            var tileScale = 1;
-            var spriteSheetSize = 512;
-
-            // Load Resources
             var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
             var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
-            // Create Shaders
-            var vertexShader = compileShader(gl, tilemapVS, gl.VERTEX_SHADER);
-            var fragmentShader = compileShader(gl, tilemapFS, gl.FRAGMENT_SHADER);
-            var program = createProgram(gl, vertexShader, fragmentShader);
+            return getTileMapRenderer(gl, tMap, tSpriteSheet, 2);
+        },
+        function(e, gl) {
 
+            var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
+            var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
-            // Tell WebGL how to draw quadrangles.
-            var quadVerts = [
-                //x  y  u  v
-                -1, -1, 0, 1,
-                1, -1, 1, 1,
-                1,  1, 1, 0,
+            return getTileMapRenderer(gl, tMap, tSpriteSheet, 4);
+        },
+        function(e, gl) {
 
-                -1, -1, 0, 1,
-                1,  1, 1, 0,
-                -1,  1, 0, 0
-            ];
-            // Create and load the buffer for quad verts.
-            var quadVertBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, quadVertBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW); // STATIC_DRAW means it won't change again
+            var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
+            var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
-            // Load all attributes and uniforms from the compiled shaders
-            var attributes = {};
-            var uniforms = {};
+            return getTileMapRenderer(gl, tMap, tSpriteSheet, 8);
+        },
+        function(e, gl) {
 
-            var count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-            for (var i = 0; i < count; i++) {
-                var attrib = gl.getActiveAttrib(program, i);
-                attributes[attrib.name] = gl.getAttribLocation(program, attrib.name);
-            }
+            var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
+            var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
-            count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-            for (i = 0; i < count; i++) {
-                var uniform = gl.getActiveUniform(program, i);
-                var name = uniform.name.replace("[0]", "");
-                uniforms[name] = gl.getUniformLocation(program, name);
-            }
-            console.info("Attribs", attributes, " Uniforms", uniforms);
+            return getTileMapRenderer(gl, tMap, tSpriteSheet, 16);
+        },
+        function(e, gl) {
 
-            // Load program
-            gl.useProgram(program);
+            var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
+            var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
-            gl.enableVertexAttribArray(attributes.position);
-            gl.enableVertexAttribArray(attributes.texture);
-            gl.vertexAttribPointer(attributes.position, 2, gl.FLOAT, false, 16, 0);
-            gl.vertexAttribPointer(attributes.texture, 2, gl.FLOAT, false, 16, 8);
-
-            gl.uniform2fv(uniforms.inverseSpriteTextureSize, new Float32Array([1/spriteSheetSize,1/spriteSheetSize]));
-            gl.uniform1f(uniforms.tileSize, tileSize);
-            gl.uniform1f(uniforms.inverseTileSize, 1/tileSize);
-
-
-            // Load Sprite Sheet
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
-            gl.uniform1i(uniforms.sprites, 0);
-
-            gl.uniform1i(uniforms.tiles, 1);
-            gl.uniform2fv(uniforms.inverseTileTextureSize, new Float32Array([1/512,1/512]));
-            gl.uniform1i(uniforms.repeatTiles, 1);
-            gl.activeTexture(gl.TEXTURE1);
-            gl.bindTexture(gl.TEXTURE_2D, tMap);
-
-            var zoom = 1;
-            var x = 1, y = 1;
-
-            // Render routine
-            return function() {
-                if(!tMap.loaded || !tSpriteSheet.loaded)
-                    return false;
-
-                // zoom *= 0.999;
-                x+=1;
-                y+=2;
-
-                // Set background color
-                gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-                gl.clearColor(0.3, 0.9, 0.3, 0.5);
-                gl.clearDepth(1.0);
-
-                // Set viewport size (Todo: optimize)
-                if(canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-                    canvas.width = canvas.clientWidth;
-                    canvas.height = canvas.clientHeight;
-                    gl.viewport(0, 0, canvas.width, canvas.height);
-                    console.log("Resizing: ", canvas.width, canvas.height);
-                }
-
-                var viewportSize = new Float32Array([canvas.offsetWidth*zoom, canvas.offsetHeight*zoom]);
-                gl.uniform2fv(uniforms.viewportSize, viewportSize);
-
-
-                gl.uniform2f(uniforms.viewOffset, x, y);
-
-                gl.activeTexture(gl.TEXTURE1);
-                gl.bindTexture(gl.TEXTURE_2D, tMap);
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
-            }
+            return getTileMapRenderer(gl, tMap, tSpriteSheet, 32);
         }
     ];
 
     // Event Listeners
-
-    function handleResizeEvent(e) {
-        console.log("RESIZE", e);
-    }
 
     function handleRenderStage (e) {
         var canvas = e.target;
@@ -159,10 +76,127 @@
         window.requestAnimationFrame(onFrame);
         function onFrame(e){
             window.requestAnimationFrame(onFrame);
+
+
+            // Set viewport size (Todo: optimize)
+            if(canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+                console.log("Resizing: ", canvas.width, canvas.height);
+            }
+
+            // Clear background
+            gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+            gl.clearColor(0.3, 0.9, 0.3, 0.5);
+            gl.clearDepth(1.0);
+
             for(var i=0; i<loadedLayers.length; i++)
                 loadedLayers[i](e, gl);
         }
 
+    }
+
+    // Rendering
+
+    function getTileMapRenderer(gl, textureMap, textureSpriteSheet, special) {
+        var canvas = gl.canvas;
+        var tileSize = 16;
+        var spriteSheetSize = 512;
+
+        // Create Shaders (TODO: reuse)
+        var vertexShader = compileShader(gl, tilemapVS, gl.VERTEX_SHADER);
+        var fragmentShader = compileShader(gl, tilemapFS, gl.FRAGMENT_SHADER);
+        var program = createProgram(gl, vertexShader, fragmentShader);
+
+
+        // Tell WebGL how to draw quadrangles.
+        var quadVerts = [
+            //x  y  u  v
+            -1, -1, 0, 1,
+            1, -1, 1, 1,
+            1,  1, 1, 0,
+
+            -1, -1, 0, 1,
+            1,  1, 1, 0,
+            -1,  1, 0, 0
+        ];
+        // Create and load the buffer for quad verts.
+        var quadVertBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadVertBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW); // STATIC_DRAW means it won't change again
+
+        // Load all attributes and uniforms from the compiled shaders
+        var attributes = {};
+        var uniforms = {};
+
+        var count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+        for (var i = 0; i < count; i++) {
+            var attrib = gl.getActiveAttrib(program, i);
+            attributes[attrib.name] = gl.getAttribLocation(program, attrib.name);
+        }
+
+        count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+        for (i = 0; i < count; i++) {
+            var uniform = gl.getActiveUniform(program, i);
+            var name = uniform.name.replace("[0]", "");
+            uniforms[name] = gl.getUniformLocation(program, name);
+        }
+
+
+        var zoom = 1;
+        var x = 1, y = 1;
+
+        // Render routine
+        return function() {
+            if(!textureMap.loaded || !textureSpriteSheet.loaded)
+                return false;
+
+            // zoom *= 0.999;
+            x+=special;
+            y+=2;
+            if(x > 80000) x=-100;
+            if(y > 1000) y=-100;
+
+            // Enable blending
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            gl.enable(gl.BLEND);
+
+            // Load program
+            gl.useProgram(program);
+
+            gl.enableVertexAttribArray(attributes.position);
+            gl.enableVertexAttribArray(attributes.texture);
+            gl.vertexAttribPointer(attributes.position, 2, gl.FLOAT, false, 16, 0);
+            gl.vertexAttribPointer(attributes.texture, 2, gl.FLOAT, false, 16, 8);
+
+            gl.uniform2fv(uniforms.inverseSpriteTextureSize, new Float32Array([1/spriteSheetSize,1/spriteSheetSize]));
+            gl.uniform1f(uniforms.tileSize, tileSize);
+            gl.uniform1f(uniforms.inverseTileSize, 1/tileSize);
+
+
+            // Load Sprite Sheet
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textureSpriteSheet);
+            gl.uniform1i(uniforms.sprites, 0);
+
+            gl.uniform1i(uniforms.tiles, 1);
+            gl.uniform2fv(uniforms.inverseTileTextureSize, new Float32Array([1/512,1/512]));
+            gl.uniform1i(uniforms.repeatTiles, 0);
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, textureMap);
+
+            var viewportSize = new Float32Array([canvas.offsetWidth*zoom, canvas.offsetHeight*zoom]);
+            gl.uniform2fv(uniforms.viewportSize, viewportSize);
+
+
+            gl.uniform2f(uniforms.viewOffset, x, y);
+
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, textureMap);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        }
     }
 
 

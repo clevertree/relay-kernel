@@ -33,6 +33,8 @@
             var newCanvas = document.createElement('canvas');
             newCanvas.setAttribute('id', 'play:canvas');
             newCanvas.setAttribute('class', 'play:canvas game1-default-canvas');
+            // newCanvas.setAttribute('width', 600);
+            // newCanvas.setAttribute('height', 300);
             document.body.appendChild(newCanvas);
             canvasList = document.getElementsByClassName('play:canvas');
         }
@@ -51,7 +53,7 @@
         var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
         var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
         if (foundScript.length === 0) {
-            console.log("Including Stage " + stagePath);
+            console.log("Including Stage " + scriptPath);
             var scriptElm = document.createElement('script');
             scriptElm.src = scriptPath;
             scriptElm.onload = function() {

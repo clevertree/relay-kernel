@@ -6,71 +6,134 @@
 
 (function() {
 
-    document.addEventListener('render:map', handleRenderMap);
+    document.addEventListener('render:stage', handleRenderStage);
+    document.addEventListener('resize', handleResizeEvent);
 
     var DIR = 'tests/files/game1/';
     var PATH = DIR + 'stage/default.stage.js';
     var LAYERS = [
         function(e, gl) {
+            var canvas = e.target;
+            if(canvas.nodeName.toLowerCase() !== 'canvas')
+                throw new Error("Invalid canvas element: " + canvas);
+
+            var tileSize = 16;
+            var tileScale = 1;
+            var spriteSheetSize = 512;
+
             // Load Resources
-            var tMap = loadMap(DIR + 'stage/map/default.map.png');
-            var tTiles = loadTiles(DIR + 'stage/tiles/default.tiles.png');
+            var tMap = loadMap(gl, DIR + 'stage/map/default.map.png');
+            var tSpriteSheet = loadSpriteSheet(gl, DIR + 'stage/tiles/default.tiles.png');
 
             // Create Shaders
             var vertexShader = compileShader(gl, tilemapVS, gl.VERTEX_SHADER);
             var fragmentShader = compileShader(gl, tilemapFS, gl.FRAGMENT_SHADER);
             var program = createProgram(gl, vertexShader, fragmentShader);
 
+
+            // Tell WebGL how to draw quadrangles.
+            var quadVerts = [
+                //x  y  u  v
+                -1, -1, 0, 1,
+                1, -1, 1, 1,
+                1,  1, 1, 0,
+
+                -1, -1, 0, 1,
+                1,  1, 1, 0,
+                -1,  1, 0, 0
+            ];
+            // Create and load the buffer for quad verts.
+            var quadVertBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, quadVertBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW); // STATIC_DRAW means it won't change again
+
+            // Load all attributes and uniforms from the compiled shaders
+            var attributes = {};
+            var uniforms = {};
+
+            var count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+            for (var i = 0; i < count; i++) {
+                var attrib = gl.getActiveAttrib(program, i);
+                attributes[attrib.name] = gl.getAttribLocation(program, attrib.name);
+            }
+
+            count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+            for (i = 0; i < count; i++) {
+                var uniform = gl.getActiveUniform(program, i);
+                var name = uniform.name.replace("[0]", "");
+                uniforms[name] = gl.getUniformLocation(program, name);
+            }
+            console.info("Attribs", attributes, " Uniforms", uniforms);
+
+            // Load program
+            gl.useProgram(program);
+
+            gl.enableVertexAttribArray(attributes.position);
+            gl.enableVertexAttribArray(attributes.texture);
+            gl.vertexAttribPointer(attributes.position, 2, gl.FLOAT, false, 16, 0);
+            gl.vertexAttribPointer(attributes.texture, 2, gl.FLOAT, false, 16, 8);
+
+            gl.uniform2fv(uniforms.inverseSpriteTextureSize, new Float32Array([1/spriteSheetSize,1/spriteSheetSize]));
+            gl.uniform1f(uniforms.tileSize, tileSize);
+            gl.uniform1f(uniforms.inverseTileSize, 1/tileSize);
+
+
+            // Load Sprite Sheet
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+            gl.uniform1i(uniforms.sprites, 0);
+
+            gl.uniform1i(uniforms.tiles, 1);
+            gl.uniform2fv(uniforms.inverseTileTextureSize, new Float32Array([1/512,1/512]));
+            gl.uniform1i(uniforms.repeatTiles, 1);
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, tMap);
+
+            var zoom = 1;
+            var x = 1, y = 1;
+
             // Render routine
             return function() {
+                if(!tMap.loaded || !tSpriteSheet.loaded)
+                    return false;
+
+                // zoom *= 0.999;
+                x+=1;
+                y+=2;
+
+                // Set background color
+                gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
                 gl.clearColor(0.3, 0.9, 0.3, 0.5);
                 gl.clearDepth(1.0);
-                gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-                /*gl.enable(gl.BLEND);
-                 gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);*/
 
-                gl.useProgram(program);
+                // Set viewport size (Todo: optimize)
+                if(canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+                    canvas.width = canvas.clientWidth;
+                    canvas.height = canvas.clientHeight;
+                    gl.viewport(0, 0, canvas.width, canvas.height);
+                    console.log("Resizing: ", canvas.width, canvas.height);
+                }
 
-                // gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertBuffer);
-                //
-                // gl.enableVertexAttribArray(shader.attribute.position);
-                // gl.enableVertexAttribArray(shader.attribute.texture);
-                // gl.vertexAttribPointer(shader.attribute.position, 2, gl.FLOAT, false, 16, 0);
-                // gl.vertexAttribPointer(shader.attribute.texture, 2, gl.FLOAT, false, 16, 8);
-                //
-                // gl.uniform2fv(shader.uniform.viewportSize, this.scaledViewportSize);
-                // gl.uniform2fv(shader.uniform.inverseSpriteTextureSize, this.inverseSpriteTextureSize);
-                // gl.uniform1f(shader.uniform.tileSize, this.tileSize);
-                // gl.uniform1f(shader.uniform.inverseTileSize, 1/this.tileSize);
-                //
-                // gl.activeTexture(gl.TEXTURE0);
-                // gl.uniform1i(shader.uniform.sprites, 0);
-                // gl.bindTexture(gl.TEXTURE_2D, this.spriteSheet);
-                //
-                // gl.activeTexture(gl.TEXTURE1);
-                // gl.uniform1i(shader.uniform.tiles, 1);
+                var viewportSize = new Float32Array([canvas.offsetWidth*zoom, canvas.offsetHeight*zoom]);
+                gl.uniform2fv(uniforms.viewportSize, viewportSize);
 
-                // // Draw each layer of the map
-                // var i, layer;
-                // for(i = this.layers.length; i >= 0; --i) {
-                //     layer = this.layers[i];
-                //     if(layer) {
-                //         gl.uniform2f(shader.uniform.viewOffset, Math.floor(x * layer.scrollScaleX), Math.floor(y * layer.scrollScaleY));
-                //         gl.uniform2fv(shader.uniform.inverseTileTextureSize, layer.inverseTextureSize);
-                //         gl.uniform1i(shader.uniform.repeatTiles, layer.repeat ? 1 : 0);
-                //
-                //         gl.bindTexture(gl.TEXTURE_2D, layer.tileTexture);
-                //
-                //         gl.drawArrays(gl.TRIANGLES, 0, 6);
-                //     }
-                // }
+
+                gl.uniform2f(uniforms.viewOffset, x, y);
+
+                gl.activeTexture(gl.TEXTURE1);
+                gl.bindTexture(gl.TEXTURE_2D, tMap);
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
             }
         }
     ];
 
     // Event Listeners
 
-    function handleRenderMap (e) {
+    function handleResizeEvent(e) {
+        console.log("RESIZE", e);
+    }
+
+    function handleRenderStage (e) {
         var canvas = e.target;
         if(canvas.nodeName.toLowerCase() !== 'canvas')
             throw new Error("Invalid canvas element: " + canvas);
@@ -94,40 +157,66 @@
 
         // Rendering
         window.requestAnimationFrame(onFrame);
-        function onFrame(){
+        function onFrame(e){
             window.requestAnimationFrame(onFrame);
             for(var i=0; i<loadedLayers.length; i++)
-                loadedLayers[i]();
+                loadedLayers[i](e, gl);
         }
+
     }
 
 
     // Loading
 
-    function loadMap(mapPath) {
-        return loadTexture(mapPath);
-    }
-
-    function loadTiles(tilesPath) {
-        return loadTexture(tilesPath, function(gl, texture, image) {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        });
-    }
-
-    function loadTexture(texturePath, callback) {
+    function loadMap(gl, mapPath) {
         var image = new Image();
-        var texture = null;
+        var texture = gl.createTexture();
+        texture.loaded = false;
 
-        image.setAttribute('src', texturePath);
+        image.setAttribute('src', mapPath);
         image.addEventListener("load", function() {
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+            // MUST be filtered with NEAREST or tile lookup fails
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            if(callback)
-                callback(gl, texture, image);
-            gl.generateMipmap(gl.TEXTURE_2D);
+
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); // Repeats tiles
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+
+            console.info("Map Texture Loaded: ", image.width + 'x' + image.height, image);
+            texture.loaded = true;
+        });
+        return texture;
+    }
+
+    function loadSpriteSheet(gl, tilesPath) {
+        var image = new Image();
+        var texture = gl.createTexture();
+        texture.loaded = false;
+
+
+        image.setAttribute('src', tilesPath);
+        image.addEventListener("load", function() {
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); // Worth it to mipmap here?
+
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); // Repeats map
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            // gl.generateMipmap(gl.TEXTURE_2D);
+            console.info("TileSheet Texture loaded: ", image.width + 'x' + image.height, image);
+            texture.loaded = true;
         });
         return texture;
     }

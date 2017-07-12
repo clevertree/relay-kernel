@@ -79,8 +79,5 @@
         }
     }
 
-    // Util functions
-
-
 
 })();

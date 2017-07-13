@@ -8,7 +8,12 @@
     if(typeof window['games'] === 'undefined')
         window.games = {};
 
+    var DIR = 'tests/files/game1/';
     window.games['game1'] = {
+        "dir": {
+            "root": DIR,
+            "stage_default": DIR + 'stage/default.stage.js'
+        },
         "util": {
             "getTileMapRenderer": getTileMapRenderer,
             "getOrCreateProgram": getOrCreateProgram,

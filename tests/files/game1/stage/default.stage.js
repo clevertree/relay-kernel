@@ -6,9 +6,9 @@
 
 (function() {
 
-    var UTIL = window.games.game1.util;
+    var CONFIG = window.games.game1;
 
-    var DIR = 'tests/files/game1/';
+    var DIR = CONFIG.dir.root;
     var PATH = DIR + 'stage/default.stage.js';
     var PATH_TILE_DEFAULT = DIR + 'stage/tiles/default.tiles.png';
     var PATH_MAP_BKLAYER = DIR + 'stage/map/bklayer.map.png';
@@ -21,28 +21,22 @@
             throw new Error("Invalid canvas element: " + canvas);
 
         var gl = canvas.getContext('webgl');
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+
 
         // Load resources
 
-        var BKLayer = UTIL.getTileMapRenderer(gl, PATH_MAP_BKLAYER, PATH_TILE_DEFAULT, 64, 4);
+        var BKLayer = CONFIG.util.getTileMapRenderer(gl, PATH_MAP_BKLAYER, PATH_TILE_DEFAULT, 64, 4);
 
         // Set up Stage Logic
-
-
 
         // Set up render loop
         window.requestAnimationFrame(onFrame);
         function onFrame(e){
             window.requestAnimationFrame(onFrame);
 
-
-            // Set viewport size (Todo: optimize)
-            if(canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-                canvas.width = canvas.clientWidth;
-                canvas.height = canvas.clientHeight;
-                gl.viewport(0, 0, canvas.width, canvas.height);
-                console.log("Resizing: ", canvas.width, canvas.height);
-            }
 
             // Clear background
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);

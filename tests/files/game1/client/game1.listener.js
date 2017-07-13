@@ -7,8 +7,9 @@
 (function() {
 
     document.addEventListener('response:play', handlePlayResponse);
+    window.addEventListener('resize', handleWindowResize);
 
-    var DIR = 'tests/files/game1/';
+    var CONFIG = window.games.game1;
 
     // Canvas Loading
 
@@ -20,6 +21,18 @@
 
         } else {
             document.addEventListener("DOMContentLoaded", play);
+        }
+    }
+
+    function handleWindowResize (e) {
+        console.log('resize ', e);
+
+        // Set viewport size (Todo: optimize)
+        if(canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            console.log("Resizing: ", canvas.width, canvas.height);
         }
     }
 
@@ -41,13 +54,11 @@
 
         for(var i=0; i<canvasList.length; i++) {
             var canvas = canvasList[i];
-            loadStage(canvas, DEFAULT_STAGE);
+            loadStage(canvas, CONFIG.dir.stage_default);
         }
     }
 
     // Stage Loading
-
-    var DEFAULT_STAGE = DIR + 'stage/default.stage.js';
 
     function loadStage (canvas, scriptPath) {
         var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');

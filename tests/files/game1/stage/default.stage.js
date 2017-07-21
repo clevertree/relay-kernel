@@ -29,6 +29,7 @@
         // Load resources
 
         var BKLayer = CONFIG.util.getTileMapRenderer(gl, PATH_MAP_BKLAYER, PATH_TILE_DEFAULT, 64, 4);
+        var Sprite1 = CONFIG.util.getGradientRenderer(gl);
 
         // Set up Stage Logic
 
@@ -45,6 +46,7 @@
 
             // Render
             BKLayer(e, gl);
+            Sprite1(e, gl);
         }
 
     }

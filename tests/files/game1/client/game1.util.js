@@ -16,8 +16,7 @@
         },
         "util": {
             "getTileMapRenderer": getTileMapRenderer,
-            "getOrCreateProgram": getOrCreateProgram,
-            "loadTexture": loadTexture
+            "getGradientRenderer": getGradientRenderer,
         },
         "shader": {
             "tileMapVS": tilemapVS,
@@ -30,6 +29,115 @@
 
     // Renders
 
+    function getGradientRenderer(gl, vertexColorList) {
+
+        // gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
+        // gl.clearDepth(1.0);                 // Clear everything
+        // gl.enable(gl.DEPTH_TEST);           // Enable depth testing
+        // gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+
+
+        // Get Program
+        var program = compileProgram(gl, gradientVS, gradientFS);
+        var attributes = program.attributes;
+        var uniforms = program.uniforms;
+
+        gl.enableVertexAttribArray(attributes.aVertexPosition);
+        gl.enableVertexAttribArray(attributes.aVertexColor);
+
+        // Create a buffer for the square's vertices.
+
+        var squareVerticesBuffer = gl.createBuffer();
+
+        // Select the squareVerticesBuffer as the one to apply vertex
+        // operations to from here out.
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+
+        // Now create an array of vertices for the square. Note that the Z
+        // coordinate is always 0 here.
+
+        var vertices = [
+            1.0,  1.0,  0.0,
+            -1.0, 1.0,  0.0,
+            1.0,  -1.0, 0.0,
+            -1.0, -1.0, 0.0
+        ];
+
+        // Now pass the list of vertices into WebGL to build the shape. We
+        // do this by creating a Float32Array from the JavaScript array,
+        // then use it to fill the current vertex buffer.
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+        // Now set up the colors for the vertices
+
+        var colors = vertexColorList || [
+            1.0,  1.0,  1.0,  1.0,    // white
+            1.0,  0.0,  0.0,  1.0,    // red
+            0.0,  1.0,  0.0,  1.0,    // green
+            0.0,  0.0,  1.0,  1.0     // blue
+        ];
+
+        var squareVerticesColorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+
+        var mvMatrix = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
+        var perspectiveMatrix = new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
+
+        return function() {
+
+            // Clear the canvas before we start drawing on it.
+
+//             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            // Establish the perspective with which we want to view the
+            // scene. Our field of view is 45 degrees, with a width/height
+            // ratio of 640:480, and we only want to see objects between 0.1 units
+            // and 100 units away from the camera.
+
+            // var perspectiveMatrix = makePerspective(45, 640.0/480.0, 0.1, 100.0);
+
+            // Set the drawing position to the "identity" point, which is
+            // the center of the scene.
+
+            // loadIdentity();
+            // mvMatrix = Matrix.I(4);
+
+            // Now move the drawing position a bit to where we want to start
+            // drawing the square.
+
+            // mvTranslate([-0.0, 0.0, -6.0]);
+            // mvMatrix.x(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
+
+            // Draw the square by binding the array buffer to the square's vertices
+            // array, setting attributes, and pushing it to GL.
+
+            // Load program
+            gl.useProgram(program);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+            gl.vertexAttribPointer(attributes.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+
+            // Set the colors attribute for the vertices.
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
+            gl.vertexAttribPointer(attributes.aVertexColor, 4, gl.FLOAT, false, 0, 0);
+
+            // Draw the square.
+
+            gl.uniformMatrix4fv(uniforms.uPMatrix, false, perspectiveMatrix);
+
+            gl.uniformMatrix4fv(uniforms.uMVMatrix, false, mvMatrix);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+    }
+
+
+
+
     function getTileMapRenderer(gl, textureMapPath, textureSpriteSheetPath, tileSize, special) {
 
         var textureMap = loadTexture(gl, textureMapPath);
@@ -40,14 +148,12 @@
         var inverseSpriteTextureSize = null;
 
         // Get Program
-        var program = getOrCreateProgram(gl);
+        var program = compileProgram(gl, tilemapVS, tilemapFS);
         var attributes = program.attributes;
         var uniforms = program.uniforms;
 
         // Create and load the buffer for quad verts.
         var quadVertBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, quadVertBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW); // STATIC_DRAW means it won't change again
 
 
         var zoom = 1;
@@ -76,6 +182,9 @@
 
             // Load program
             gl.useProgram(program);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, quadVertBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW); // STATIC_DRAW means it won't change again
 
             var viewportSize = new Float32Array([canvas.offsetWidth*zoom, canvas.offsetHeight*zoom]); // TODO: optimize
             gl.uniform2fv(uniforms.viewportSize, viewportSize);
@@ -112,14 +221,11 @@
     // Shaders & Program
 
 
-    var programCache=null;
-    function getOrCreateProgram(gl) {
-        if(programCache)
-            return programCache;
+    function compileProgram(gl, vertexShaderSource, fragmentShaderSource) {
 
         // Create the shader object
         var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-        gl.shaderSource(vertexShader, tilemapVS);
+        gl.shaderSource(vertexShader, vertexShaderSource);
         gl.compileShader(vertexShader);
 
         // Check if it compiled
@@ -128,7 +234,7 @@
             throw "could not compile shader:" + gl.getShaderInfoLog(vertexShader);
 
         var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-        gl.shaderSource(fragmentShader, tilemapFS);
+        gl.shaderSource(fragmentShader, fragmentShaderSource);
         gl.compileShader(fragmentShader);
 
         // Check if it compiled
@@ -171,7 +277,6 @@
             program.uniforms[name] = gl.getUniformLocation(program, name);
         }
 
-        programCache = program;
         return program;
     }
 
@@ -227,7 +332,7 @@
         -1,  1, 0, 0
     ];
 
-    // Shader
+    // TileMap Shader
 
     var tilemapVS = [
         "attribute vec2 position;",
@@ -273,5 +378,29 @@
         "}"
     ].join("\n");
 
+    // Gradient Shader
+
+    var gradientVS = [
+        "attribute vec3 aVertexPosition;",
+        "attribute vec4 aVertexColor;",
+
+        "uniform mat4 uMVMatrix;",
+        "uniform mat4 uPMatrix;",
+
+        "varying lowp vec4 vColor;",
+
+        "void main(void) {",
+        "   gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
+        "   vColor = aVertexColor;",
+        "}"
+    ].join("\n");
+
+    var gradientFS = [
+        "varying lowp vec4 vColor;",
+
+        "void main(void) {",
+        "   gl_FragColor = vColor;",
+        "}"
+    ].join("\n");
 
 })();

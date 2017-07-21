@@ -9,8 +9,6 @@
     document.addEventListener('response:play', handlePlayResponse);
     window.addEventListener('resize', handleWindowResize);
 
-    var CONFIG = window.games.game1;
-
     // Canvas Loading
 
     function handlePlayResponse (e) {
@@ -38,6 +36,8 @@
 
 
     function play() {
+        var CONFIG = window.games.game1;
+
         // console.info("Loading game1...");
         // Find game canvas(es)
         var canvasList = document.getElementsByClassName('play:canvas');

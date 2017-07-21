@@ -5,17 +5,17 @@
 // Set up client-side listeners
 
 (function() {
+    var PATH_TILE_DEFAULT = 'stage/tiles/default.tiles.png';
+    var PATH_MAP_BKLAYER = 'stage/map/bklayer.map.png';
 
-    var CONFIG = window.games.game1;
-
-    var DIR = CONFIG.dir.root;
-    var PATH = DIR + 'stage/default.stage.js';
-    var PATH_TILE_DEFAULT = DIR + 'stage/tiles/default.tiles.png';
-    var PATH_MAP_BKLAYER = DIR + 'stage/map/bklayer.map.png';
 
     // Load and Render
 
     function run(e) {
+        var CONFIG = window.games.game1;
+        var UTIL = CONFIG.util;
+        var ROOT = CONFIG.dir.root;
+
         var canvas = e.target;
         if(canvas.nodeName.toLowerCase() !== 'canvas')
             throw new Error("Invalid canvas element: " + canvas);
@@ -26,10 +26,13 @@
         gl.viewport(0, 0, canvas.width, canvas.height);
 
 
-        // Load resources
+        // Backgrounds
+        var BKLayer = UTIL.getTileMapRenderer(gl, ROOT+PATH_MAP_BKLAYER, ROOT+PATH_TILE_DEFAULT, 64, 4);
 
-        var BKLayer = CONFIG.util.getTileMapRenderer(gl, PATH_MAP_BKLAYER, PATH_TILE_DEFAULT, 64, 4);
-        var Sprite1 = CONFIG.util.getGradientRenderer(gl);
+        // Sprites
+        var Sprite1 = UTIL.getGradientRenderer(gl, 1);
+        var Sprite2 = UTIL.getGradientRenderer(gl, 5);
+        var Sprite3 = UTIL.getGradientRenderer(gl, 50);
 
         // Set up Stage Logic
 
@@ -47,6 +50,8 @@
             // Render
             BKLayer(e, gl);
             Sprite1(e, gl);
+            Sprite2(e, gl);
+            Sprite3(e, gl);
         }
 
     }
@@ -60,6 +65,8 @@
             throw new Error("Invalid Map Path");
         var scriptPath = e.detail;
 
+        var CONFIG = window.games.game1;
+        var PATH = CONFIG.dir.root + 'stage/default.stage.js';
         if(scriptPath !== PATH)
             return;     // TODO: disable active maps on canvas
 

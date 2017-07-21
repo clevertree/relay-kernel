@@ -16,7 +16,7 @@
         },
         "util": {
             "getTileMapRenderer": getTileMapRenderer,
-            "getGradientRenderer": getGradientRenderer,
+            "getGradientRenderer": getGradientRenderer
         },
         "shader": {
             "tileMapVS": tilemapVS,
@@ -27,18 +27,37 @@
     // Util functions
 
 
-    // Renders
+    // Gradient Shader
 
-    function getGradientRenderer(gl, vertexColorList) {
+    var gradientVS = [
+        "attribute vec3 aVertexPosition;",
+        "attribute vec4 aVertexColor;",
 
-        // gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
-        // gl.clearDepth(1.0);                 // Clear everything
-        // gl.enable(gl.DEPTH_TEST);           // Enable depth testing
-        // gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+        "uniform mat4 uMVMatrix;",
+        "uniform mat4 uPMatrix;",
+
+        "varying lowp vec4 vColor;",
+
+        "void main(void) {",
+        "   gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
+        "   vColor = aVertexColor;",
+        "}"
+    ].join("\n");
+
+    var gradientFS = [
+        "varying lowp vec4 vColor;",
+
+        "void main(void) {",
+        "   gl_FragColor = vColor;",
+        "}"
+    ].join("\n");
 
 
+    var gradientRendererProgram = null;
+    function getGradientRenderer(gl, i) {
         // Get Program
-        var program = compileProgram(gl, gradientVS, gradientFS);
+        var program = gradientRendererProgram || compileProgram(gl, gradientVS, gradientFS);
+        gradientRendererProgram = program;
         var attributes = program.attributes;
         var uniforms = program.uniforms;
 
@@ -72,11 +91,11 @@
 
         // Now set up the colors for the vertices
 
-        var colors = vertexColorList || [
-            1.0,  1.0,  1.0,  1.0,    // white
-            1.0,  0.0,  0.0,  1.0,    // red
-            0.0,  1.0,  0.0,  1.0,    // green
-            0.0,  0.0,  1.0,  1.0     // blue
+        var colors = [
+            0.4,  0.5,  0.6,  1.0,    // white
+            0.4,  0.5,  0.4,  1.0,    // white
+            0.0,  0.0,  0.0,  1.0,    // green
+            0.0,  0.0,  0.0,  1.0     // blue
         ];
 
         var squareVerticesColorBuffer = gl.createBuffer();
@@ -84,38 +103,14 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
 
-        var mvMatrix = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
-        var perspectiveMatrix = new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, 0, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
+        var mvMatrix = new Float32Array([i, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
+        var perspectiveMatrix = new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, i/10, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
 
-        return function() {
-
+        function render() {
             // Clear the canvas before we start drawing on it.
-
 //             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-            // Establish the perspective with which we want to view the
-            // scene. Our field of view is 45 degrees, with a width/height
-            // ratio of 640:480, and we only want to see objects between 0.1 units
-            // and 100 units away from the camera.
-
-            // var perspectiveMatrix = makePerspective(45, 640.0/480.0, 0.1, 100.0);
-
-            // Set the drawing position to the "identity" point, which is
-            // the center of the scene.
-
-            // loadIdentity();
-            // mvMatrix = Matrix.I(4);
-
-            // Now move the drawing position a bit to where we want to start
-            // drawing the square.
-
-            // mvTranslate([-0.0, 0.0, -6.0]);
-            // mvMatrix.x(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
-
-            // Draw the square by binding the array buffer to the square's vertices
-            // array, setting attributes, and pushing it to GL.
-
-            // Load program
+            // Select program
             gl.useProgram(program);
 
             gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
@@ -133,6 +128,8 @@
             gl.uniformMatrix4fv(uniforms.uMVMatrix, false, mvMatrix);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
+
+        return render;
     }
 
 
@@ -375,31 +372,6 @@
         "   vec2 spriteCoord = mod(pixelCoord, tileSize);",
         "   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) * inverseSpriteTextureSize);",
         //"   gl_FragColor = tile;",
-        "}"
-    ].join("\n");
-
-    // Gradient Shader
-
-    var gradientVS = [
-        "attribute vec3 aVertexPosition;",
-        "attribute vec4 aVertexColor;",
-
-        "uniform mat4 uMVMatrix;",
-        "uniform mat4 uPMatrix;",
-
-        "varying lowp vec4 vColor;",
-
-        "void main(void) {",
-        "   gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
-        "   vColor = aVertexColor;",
-        "}"
-    ].join("\n");
-
-    var gradientFS = [
-        "varying lowp vec4 vColor;",
-
-        "void main(void) {",
-        "   gl_FragColor = vColor;",
         "}"
     ].join("\n");
 

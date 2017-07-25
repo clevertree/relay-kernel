@@ -25,14 +25,13 @@
         canvas.height = canvas.clientHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
 
+        // Point of View / Perspective
+        var POV = UTIL.getPOV(gl);
 
         // Backgrounds
-        var BKLayer = UTIL.getTileMapRenderer(gl, ROOT+PATH_MAP_BKLAYER, ROOT+PATH_TILE_DEFAULT, 64, 4);
+        var BKLayer = UTIL.getGradientRenderer(gl, 1);
 
         // Sprites
-        var Sprite1 = UTIL.getGradientRenderer(gl, 1);
-        var Sprite2 = UTIL.getGradientRenderer(gl, 5);
-        var Sprite3 = UTIL.getGradientRenderer(gl, 50);
 
         // Set up Stage Logic
 
@@ -49,9 +48,6 @@
 
             // Render
             BKLayer(e, gl);
-            Sprite1(e, gl);
-            Sprite2(e, gl);
-            Sprite3(e, gl);
         }
 
     }

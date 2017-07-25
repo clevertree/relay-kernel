@@ -14,6 +14,9 @@
             "root": DIR,
             "stage_default": DIR + 'stage/default.stage.js'
         },
+        "sprites": {
+            "getGradientBackgroundRenderer": getGradientBackgroundRenderer
+        },
         "util": {
             "m4" : {
                 "projection": projection,
@@ -34,6 +37,32 @@
         }
     };
 
+    // Sprites
+
+    function getGradientBackgroundRenderer(gl, colorHandler, positionHandler, povHandler) {
+        if(!colorHandler)       colorHandler = function () { return null; };
+        if(!positionHandler)    positionHandler = function () { return null; };
+        if(!povHandler)         povHandler = function () { return null; };
+
+        var colors = colorHandler() || [
+            0.4,  0.5,  0.6,  1.0,    // white
+            0.4,  0.5,  0.4,  1.0,    // white
+            0.0,  0.0,  0.0,  1.0,    // green
+            0.0,  0.0,  0.0,  1.0     // blue
+        ];
+
+        var BK = getGradientRenderer(gl, colors);
+
+        function GradientBackgroundRenderer() {
+            BK(
+                colorHandler(),
+                positionHandler(),
+                povHandler()
+            );
+        }
+
+        return GradientBackgroundRenderer;
+    }
 
     // Gradient Shader
 
@@ -51,7 +80,6 @@
         "   vColor = aVertexColor;",
         "}"
     ].join("\n");
-
     var gradientFS = [
         "varying lowp vec4 vColor;",
 
@@ -60,9 +88,9 @@
         "}"
     ].join("\n");
 
-
     var gradientRendererProgram = null;
-    function getGradientRenderer(gl, i) {
+    function getGradientRenderer(gl, colors) {
+        var i=1;
         // Get Program
         var program = gradientRendererProgram || compileProgram(gl, gradientVS, gradientFS);
         gradientRendererProgram = program;
@@ -97,24 +125,27 @@
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-        // Now set up the colors for the vertices
-
-        var colors = [
-            0.4,  0.5,  0.6,  1.0,    // white
-            0.4,  0.5,  0.4,  1.0,    // white
-            0.0,  0.0,  0.0,  1.0,    // green
-            0.0,  0.0,  0.0,  1.0     // blue
-        ];
 
         var squareVerticesColorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors));
 
 
         var mvMatrix = new Float32Array([i, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
         var perspectiveMatrix = new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, i/10, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
 
-        function render() {
+        function render(newColors, newPositionMatrix, newPOVMatrix) {
+            if(newColors) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(newColors)); // , gl.STATIC_DRAW
+            }
+
+            if(newPositionMatrix) {
+                mvMatrix = new Float32Array(newPositionMatrix);
+            }
+            if(newPOVMatrix) {
+                perspectiveMatrix = new Float32Array(newPOVMatrix);
+            }
             // Clear the canvas before we start drawing on it.
 //             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

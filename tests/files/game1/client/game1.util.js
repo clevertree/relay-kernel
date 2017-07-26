@@ -15,7 +15,6 @@
             "stage_default": DIR + 'stage/default.stage.js'
         },
         "sprites": {
-            "getGradientBackgroundRenderer": getGradientBackgroundRenderer
         },
         "util": {
             "m4" : {
@@ -39,30 +38,6 @@
 
     // Sprites
 
-    function getGradientBackgroundRenderer(gl, colorHandler, positionHandler, povHandler) {
-        if(!colorHandler)       colorHandler = function () { return null; };
-        if(!positionHandler)    positionHandler = function () { return null; };
-        if(!povHandler)         povHandler = function () { return null; };
-
-        var colors = colorHandler() || [
-            0.4,  0.5,  0.6,  1.0,    // white
-            0.4,  0.5,  0.4,  1.0,    // white
-            0.0,  0.0,  0.0,  1.0,    // green
-            0.0,  0.0,  0.0,  1.0     // blue
-        ];
-
-        var BK = getGradientRenderer(gl, colors);
-
-        function GradientBackgroundRenderer() {
-            BK(
-                colorHandler(),
-                positionHandler(),
-                povHandler()
-            );
-        }
-
-        return GradientBackgroundRenderer;
-    }
 
     // Gradient Shader
 
@@ -89,7 +64,7 @@
     ].join("\n");
 
     var gradientRendererProgram = null;
-    function getGradientRenderer(gl, colors) {
+    function getGradientRenderer(gl, positionHandler, povHandler, colorHandler) {
         var i=1;
         // Get Program
         var program = gradientRendererProgram || compileProgram(gl, gradientVS, gradientFS);
@@ -126,26 +101,34 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
 
+        var colors = colorHandler() || [
+            0.4,  0.5,  0.6,  1.0,    // white
+            0.4,  0.5,  0.4,  1.0,    // white
+            0.0,  0.0,  0.0,  1.0,    // green
+            0.0,  0.0,  0.0,  1.0     // blue
+        ];
+
         var squareVerticesColorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors));
+        colors = null;
 
 
-        var mvMatrix = new Float32Array([i, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
-        var perspectiveMatrix = new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, i/10, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
+        var mvMatrix = positionHandler() || new Float32Array([i, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1]);
+        var perspectiveMatrix = povHandler() || new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, i/10, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
 
-        function render(newColors, newPositionMatrix, newPOVMatrix) {
-            if(newColors) {
+        function render() {
+            if(colors = colorHandler()) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(newColors)); // , gl.STATIC_DRAW
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors)); // , gl.STATIC_DRAW
             }
 
-            if(newPositionMatrix) {
-                mvMatrix = new Float32Array(newPositionMatrix);
-            }
-            if(newPOVMatrix) {
-                perspectiveMatrix = new Float32Array(newPOVMatrix);
-            }
+            // Set Position Matrix
+            mvMatrix = positionHandler() || mvMatrix;
+
+            // Set Perspective Matrix
+            perspectiveMatrix = povHandler() || perspectiveMatrix;
+
             // Clear the canvas before we start drawing on it.
 //             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -163,7 +146,6 @@
             // Draw the square.
 
             gl.uniformMatrix4fv(uniforms.uPMatrix, false, perspectiveMatrix);
-
             gl.uniformMatrix4fv(uniforms.uMVMatrix, false, mvMatrix);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
@@ -175,6 +157,18 @@
 
 
     function getTileMapRenderer(gl, textureMapPath, textureSpriteSheetPath, tileSize, special) {
+
+        // Tell WebGL how to draw quadrangles.
+        var quadVerts = [
+            //x  y  u  v
+            -1, -1, 0, 1,
+            1, -1, 1, 1,
+            1,  1, 1, 0,
+
+            -1, -1, 0, 1,
+            1,  1, 1, 0,
+            -1,  1, 0, 0
+        ];
 
         var textureMap = loadTexture(gl, textureMapPath);
         var textureSpriteSheet = loadTexture(gl, textureSpriteSheetPath);
@@ -355,18 +349,6 @@
         return texture;
     }
 
-
-    // Tell WebGL how to draw quadrangles.
-    var quadVerts = [
-        //x  y  u  v
-        -1, -1, 0, 1,
-        1, -1, 1, 1,
-        1,  1, 1, 0,
-
-        -1, -1, 0, 1,
-        1,  1, 1, 0,
-        -1,  1, 0, 0
-    ];
 
     // TileMap Shader
 

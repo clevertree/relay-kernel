@@ -5,22 +5,18 @@
 // Set up client-side listeners
 
 (function() {
+    if(typeof window['games'] === 'undefined')
+        window.games = {};
+    if(typeof window['games']['game1'] === 'undefined')
+        window.games.game1 = {"util": {}, "sprite": {}};
+
+    var ROOT = 'tests/files/game1/';
+    var DEFAULT_STAGE = ROOT + 'stages/stage1/stage1.stage.js';
 
     document.addEventListener('response:play', handlePlayResponse);
     window.addEventListener('resize', handleWindowResize);
 
     // Canvas Loading
-
-    function handlePlayResponse (e) {
-        // var commandString = e.data || e.detail;
-        e.preventDefault();
-        if(document.readyState === 'complete') {
-            setTimeout(play, 100);
-
-        } else {
-            document.addEventListener("DOMContentLoaded", play);
-        }
-    }
 
     function handleWindowResize (e) {
         console.log('resize ', e);
@@ -34,10 +30,21 @@
         }
     }
 
+    function handlePlayResponse (e) {
+        // var commandString = e.data || e.detail;
+        e.preventDefault();
+        if(document.readyState === 'complete') {
+            setTimeout(play, 100);
+
+        } else {
+            document.addEventListener("DOMContentLoaded", play);
+        }
+    }
+
 
     function play() {
         var CONFIG = window.games.game1;
-
+        var UTIL = CONFIG.util;
         // console.info("Loading game1...");
         // Find game canvas(es)
         var canvasList = document.getElementsByClassName('play:canvas');
@@ -52,43 +59,23 @@
             canvasList = document.getElementsByClassName('play:canvas');
         }
 
-        for(var i=0; i<canvasList.length; i++) {
-            var canvas = canvasList[i];
-            loadStage(canvas, CONFIG.dir.stage_default);
-        }
-    }
-
-    // Stage Loading
-
-    function loadStage (canvas, scriptPath) {
-        var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
-        var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
-        if (foundScript.length === 0) {
-            console.log("Including Stage " + scriptPath);
-            var scriptElm = document.createElement('script');
-            scriptElm.src = scriptPath;
-            scriptElm.onload = function() {
-                triggerRender();
-            };
-            document.head.appendChild(scriptElm);
-        } else {
-            triggerRender();
-        }
-
-
-
-        function triggerRender() {
-            var event = new CustomEvent('render:stage', {
-                'detail': scriptPath,
+        var stagePath = DEFAULT_STAGE;
+        UTIL.loadScript(stagePath, function() {
+            var event = new CustomEvent('render:stages', {
+                'detail': stagePath,
                 'cancelable': true,
                 'bubbles': true
             });
 
-            canvas.dispatchEvent(event);
+            for(var i=0; i<canvasList.length; i++) {
+                var canvas = canvasList[i];
+                canvas.dispatchEvent(event);
+            }
             if (!event.defaultPrevented)
                 throw new Error("Render event was not handled");
-        }
+        });
     }
+
 
 
 })();

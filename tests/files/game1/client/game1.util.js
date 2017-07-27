@@ -5,38 +5,26 @@
 // Set up client-side listeners
 
 (function() {
-    if(typeof window['games'] === 'undefined')
-        window.games = {};
-
-    var DIR = 'tests/files/game1/';
-    window.games['game1'] = {
-        "dir": {
-            "root": DIR,
-            "stage_default": DIR + 'stage/default.stage.js'
+    window.games.game1.util = {
+        "m4" : {
+            "projection": projection,
+            "multiply": multiply,
+            "translation": translation,
+            "xRotation": xRotation,
+            "yRotation": yRotation,
+            "zRotation": zRotation,
+            "scaling": scaling,
+            "translate": translate,
+            "xRotate": xRotate,
+            "yRotate": yRotate,
+            "zRotate": zRotate,
+            "scale": scale
         },
-        "sprites": {
-        },
-        "util": {
-            "m4" : {
-                "projection": projection,
-                "multiply": multiply,
-                "translation": translation,
-                "xRotation": xRotation,
-                "yRotation": yRotation,
-                "zRotation": zRotation,
-                "scaling": scaling,
-                "translate": translate,
-                "xRotate": xRotate,
-                "yRotate": yRotate,
-                "zRotate": zRotate,
-                "scale": scale
-            },
-            "getTileMapRenderer": getTileMapRenderer,
-            "getGradientRenderer": getGradientRenderer
-        }
+        "getTileMapRenderer": getTileMapRenderer,
+        "getGradientRenderer": getGradientRenderer,
+        "loadScript": loadScript,
+        "loadScripts": loadScripts
     };
-
-    // Sprites
 
 
     // Gradient Shader
@@ -395,6 +383,39 @@
         //"   gl_FragColor = tile;",
         "}"
     ].join("\n");
+
+    // Scripts
+
+    function loadScript(scriptPath, callback) {
+        var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
+        var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
+        if (foundScript.length === 0) {
+            console.log("Including Script " + scriptPath);
+            var scriptElm = document.createElement('script');
+            scriptElm.src = scriptPath;
+            scriptElm.onload = callback;
+            document.head.appendChild(scriptElm);
+
+        } else {
+            if(callback) callback();
+        }
+    }
+
+    function loadScripts(scriptPathList, callback) {
+        var counter = 0;
+        for(var i=0; i<scriptPathList.length; i++) {
+            counter++;
+            loadScript(scriptPathList[i], scriptLoaded);
+        }
+        if(counter === 0)
+            callback();
+
+        function scriptLoaded() {
+            counter--;
+            if(counter === 0 && callback)
+                callback();
+        }
+    }
 
     // Matrix Utils
 

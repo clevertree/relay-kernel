@@ -98,7 +98,7 @@
 
         var squareVerticesColorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors));
+        gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
         colors = null;
 
 
@@ -106,10 +106,10 @@
         var perspectiveMatrix = povHandler() || new Float32Array([1.8106601717798214, 0, 0, 0, 0, 2.4142135623730954, 0, 0, 0, i/10, -1.002002002002002, -1, 0, 0, -0.20020020020020018, 0]);
 
         function render() {
-            if(colors = colorHandler()) {
-                gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors)); // , gl.STATIC_DRAW
-            }
+            // if(colors = colorHandler()) {
+            //     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
+            //     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW); // , gl.STATIC_DRAW
+            // }
 
             // Set Position Matrix
             mvMatrix = positionHandler() || mvMatrix;

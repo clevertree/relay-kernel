@@ -11,7 +11,8 @@
     var PATH_MAP_BKLAYER = DIR_STAGE + 'map/bklayer.map.png';
     var SCRIPT_ASSETS = [
         DIR + 'sprites/player1.sprite.js',
-        DIR + 'sprites/player2.sprite.js'
+        DIR + 'sprites/player2.sprite.js',
+        DIR + 'sprites/level1.sprite.js'
     ];
 
     // Load and Render
@@ -31,24 +32,20 @@
         // Point of View / Perspective
         // var POV = UTIL.getPOV(gl);
 
-        // Controllers
-        var Player1 = new Sprite.Player1(0);
+        // Players
+        var Player1 = new Sprite.Player1(gl);
 
-        // Sprites
-        var Sprite1 = new Util.Sprite();
-        Sprite1.setController(Player1);
+        // Level Sprites
+        var Level1 = new Sprite.Level1(gl);
+        Player1.addHitBox(Level1);
 
-
-        // Backgrounds
-        var BKLayer = Util.getGradientRenderer(gl, 1);
-
-
-        // Set up Stage Logic
+        var startTime = new Date();
 
         // Set up render loop
         window.requestAnimationFrame(onFrame);
         function onFrame(e){
             window.requestAnimationFrame(onFrame);
+            var duration = new Date() - startTime;
 
 
             // Clear background
@@ -56,8 +53,12 @@
             gl.clearColor(0.3, 0.9, 0.3, 0.5);
             gl.clearDepth(1.0);
 
+            // Update Sprite Logic
+            Player1.update(duration);
+
             // Render
-            BKLayer(e, gl);
+            Level1.render(e, gl);
+            Player1.render(e, gl);
         }
 
     }
@@ -79,7 +80,7 @@
         var canvas = e.target;
         if(canvas.nodeName.toLowerCase() !== 'canvas')
             throw new Error("Invalid canvas element: " + canvas);
-        
+
         e.preventDefault();
 
         var CONFIG = window.games.game1;

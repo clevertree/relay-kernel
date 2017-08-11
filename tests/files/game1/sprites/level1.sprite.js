@@ -10,13 +10,6 @@
     function Level1(gl) {
         var Config = window.games.game1;
         var Util = Config.util;
-        window.games.game1.sprite.Level1 = Level1;
-        this.gradientRenderer = Util.getGradientRenderer(
-            gl,
-            this.positionHandler,
-            this.povHandler,
-            this.colorHandler
-        )
     }
 
     Level1.prototype.positionHandler = function() {
@@ -51,6 +44,6 @@
      * @param gl WebGL Instance
      */
     Level1.prototype.render = function(e, gl) {
-        this.gradientRenderer(e, gl);
+        // this.gradientRenderer(e, gl);
     };
 })();

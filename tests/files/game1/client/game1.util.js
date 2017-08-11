@@ -23,7 +23,8 @@
         "getTileMapRenderer": getTileMapRenderer,
         "getGradientRenderer": getGradientRenderer,
         "loadScript": loadScript,
-        "loadScripts": loadScripts
+        "loadScripts": loadScripts,
+        "compileProgram": compileProgram
     };
 
 

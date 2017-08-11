@@ -12,7 +12,10 @@
     var SCRIPT_ASSETS = [
         DIR + 'sprites/player1.sprite.js',
         DIR + 'sprites/player2.sprite.js',
-        DIR + 'sprites/level1.sprite.js'
+        DIR + 'sprites/level1.sprite.js',
+
+        DIR + 'fragments/triangle.fragment.js',
+        DIR + 'fragments/rectangle.fragment.js'
     ];
 
     // Load and Render
@@ -32,7 +35,7 @@
         // Point of View / Perspective
         // var POV = UTIL.getPOV(gl);
 
-        // Players
+        // PlayersTriangle
         var Player1 = new Sprite.Player1(gl);
 
         // Level Sprites

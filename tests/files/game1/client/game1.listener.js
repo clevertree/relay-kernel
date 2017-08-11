@@ -8,7 +8,7 @@
     if(typeof window['games'] === 'undefined')
         window.games = {};
     if(typeof window['games']['game1'] === 'undefined')
-        window.games.game1 = {"util": {}, "sprite": {}};
+        window.games.game1 = {"util": {}, "sprite": {}, "fragment": {}};
 
     var ROOT = 'tests/files/game1/';
     var DEFAULT_STAGE = ROOT + 'stages/stage1/stage1.stage.js';

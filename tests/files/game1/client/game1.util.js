@@ -66,11 +66,7 @@
             return program;
         },
 
-
-
-
         // Textures
-
         "loadTexture": function(gl, mapPath) {
             var image = new Image();
             var texture = gl.createTexture();
@@ -101,7 +97,6 @@
         },
 
         // Scripts
-
         "loadScript": function(scriptPath, callback) {
             var scriptPathEsc = scriptPath.replace(/[/.]/g, '\\$&');
             var foundScript = document.head.querySelectorAll('script[src=' + scriptPathEsc + ']');
@@ -116,7 +111,6 @@
                 if(callback) callback();
             }
         },
-
         "loadScripts": function(scriptPathList, callback) {
             var counter = 0;
             for(var i=0; i<scriptPathList.length; i++) {
@@ -304,7 +298,7 @@
         "varying vec2 texCoord;",
 
         "uniform sampler2D tiles;",
-        "uniform sampler2D sprites;",
+        "uniform sampler2D sprite;",
 
         "uniform vec2 inverseTileTextureSize;",
         "uniform vec2 inverseSpriteTextureSize;",
@@ -317,7 +311,7 @@
         "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;",
         "   vec2 spriteCoord = mod(pixelCoord, tileSize);",
-        "   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) * inverseSpriteTextureSize);",
+        "   gl_FragColor = texture2D(sprite, (spriteOffset + spriteCoord) * inverseSpriteTextureSize);",
         //"   gl_FragColor = tile;",
         "}"
     ].join("\n");

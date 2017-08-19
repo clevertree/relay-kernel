@@ -5,7 +5,7 @@
 // Set up client-side listeners
 
 (function() {
-    window.games.game1.sprite.Level1 = Level1;
+    window.games.game1.level.Level1 = Level1;
 
     function Level1(gl) {
         var Config = window.games.game1;

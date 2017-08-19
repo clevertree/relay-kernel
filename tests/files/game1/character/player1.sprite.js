@@ -5,15 +5,15 @@
 // Set up client-side listeners
 
 (function() {
-    window.games.game1.sprite.Player1 = Player1;
+    window.games.game1.character.Player1 = Player1;
 
     function Player1(gl) {
         var Config = window.games.game1;
-        this.triangle = Config.fragment.Fragment.addColorFragment(gl);
+        var ColorFragment = Config.fragment.ColorFragment;
+        this.fragment = new ColorFragment();
 
-        this.triangle.setAcceleration(0,0,-0.001);
-        this.triangle.setVelocity(-0.02,0,0.1);
-        // this.rectangle = new Config.fragment.Rectangle(gl);
+        this.fragment.setAcceleration(0,0,-0.001);
+        this.fragment.setVelocity(-0.02,0,0.1);
         this.hitBoxes = [];
     }
 
@@ -36,6 +36,6 @@
      */
     Player1.prototype.render = function(e, gl) {
         // this.rectangle.render(e, gl);
-        this.triangle.render(e, gl);
+        this.fragment.render(e, gl);
     };
 })();

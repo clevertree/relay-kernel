@@ -10,11 +10,12 @@
     var PATH_TILE_DEFAULT = DIR_STAGE + 'tiles/default.tiles.png';
     var PATH_MAP_BKLAYER = DIR_STAGE + 'map/bklayer.map.png';
     var SCRIPT_ASSETS = [
-        DIR + 'sprites/player1.sprite.js',
-        DIR + 'sprites/player2.sprite.js',
-        DIR + 'sprites/level1.sprite.js',
+        DIR + 'fragment/color.fragment.js',
+        DIR + 'fragment/texture.fragment.js',
 
-        DIR + 'fragments/fragment.js',
+        DIR + 'character/player1.sprite.js',
+        DIR + 'character/player2.sprite.js',
+        DIR + 'level/level1.sprite.js',
     ];
 
     // Load and Render
@@ -22,7 +23,6 @@
     function run(e) {
         var Config = window.games.game1;
         var Util = Config.util;
-        var Sprite = Config.sprite;
 
         var canvas = e.target;
 
@@ -35,10 +35,10 @@
         // var POV = UTIL.getPOV(gl);
 
         // PlayersTriangle
-        var Player1 = new Sprite.Player1(gl);
+        var Player1 = new Config.character.Player1(gl);
 
         // Level Sprites
-        var Level1 = new Sprite.Level1(gl);
+        var Level1 = new Config.level.Level1(gl);
         Player1.addHitBox(Level1);
 
         var startTime = new Date();

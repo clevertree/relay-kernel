@@ -23,7 +23,7 @@ if (typeof document !== 'undefined') (function(){
     function measure1() {
         // Queue Notes
         iOsc0.play('square', 'F4', 0.0, 0.5, 0.6);
-        iOsc0.play('triangle', 'D4', 1.0);
+        iOsc0.play('fragment', 'D4', 1.0);
         iOsc0.play('sine', 'B4', 2.0, 1.5, 0.6);
 
         // Set Measure Length

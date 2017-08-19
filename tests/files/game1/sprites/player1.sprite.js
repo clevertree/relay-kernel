@@ -9,7 +9,10 @@
 
     function Player1(gl) {
         var Config = window.games.game1;
-        this.triangle = new Config.fragment.Triangle(gl);
+        this.triangle = Config.fragment.Fragment.addColorFragment(gl);
+
+        this.triangle.setAcceleration(0,0,-0.001);
+        this.triangle.setVelocity(-0.02,0,0.1);
         // this.rectangle = new Config.fragment.Rectangle(gl);
         this.hitBoxes = [];
     }

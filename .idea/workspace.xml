@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a08764d-d074-4a6e-b968-7d2d2b87606d" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/relay-kernel.iml" afterPath="$PROJECT_DIR$/.idea/relay-kernel.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/fragments/fragment.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/fragments/rectangle.fragment.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/fragments/triangle.fragment.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.util.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.util.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/sprites/player1.sprite.js" afterPath="$PROJECT_DIR$/tests/files/game1/sprites/player1.sprite.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
     </list>
     <ignored path="relay-kernel.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -20,84 +23,47 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="relay-kernel" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="song1.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/music/song1.js">
+      <file leaf-file-name="fragment.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragments/fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="41" column="32" lean-forward="false" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-                <element signature="e#2551#4308#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="41" lean-forward="false" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+            <state relative-caret-position="1200">
+              <caret line="66" column="24" lean-forward="false" selection-start-line="66" selection-start-column="24" selection-end-line="66" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game1.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/games/game1.js">
+      <file leaf-file-name="game1.util.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.util.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+            <state relative-caret-position="715">
+              <caret line="311" column="35" lean-forward="true" selection-start-line="311" selection-start-column="35" selection-end-line="311" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WebGL Sprite Atlas Demo.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo.html">
+      <file leaf-file-name="stage1.stage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="71" column="30" lean-forward="false" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="30" />
-              <folding>
-                <marker date="1494379058731" expanded="false" signature="7282:7311" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7334:7363" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7387:7416" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7440:7468" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7492:7521" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7545:7574" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7598:7627" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7651:7680" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7704:7733" ph="..." />
-                <marker date="1494379058731" expanded="false" signature="7823:7838" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SpriteLibrary.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/SpriteLibrary.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="229" column="47" lean-forward="false" selection-start-line="229" selection-start-column="47" selection-end-line="229" selection-end-column="47" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/base.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2550">
+            <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="player1.sprite.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/sprites/player1.sprite.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="11" column="68" lean-forward="false" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -116,7 +82,13 @@
     <findStrings>
       <find>.download</find>
       <find>spriteVertexShader</find>
+      <find>this.</find>
+      <find>prgColor</find>
     </findStrings>
+    <replaceStrings>
+      <replace>var</replace>
+      <replace>PRGColor</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -149,12 +121,22 @@
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/tests/files/games/game1.js" />
         <option value="$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo.html" />
+        <option value="$PROJECT_DIR$/tests/files/game1/client/game1.util.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/sprites/player1.sprite.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragments/fragment.js" />
       </list>
     </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER">
     <package-json value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>false</service-enabled>
+    <exe-path />
+    <annotation-enable>false</annotation-enable>
+    <other-services-enabled>false</other-services-enabled>
+    <auto-save>true</auto-save>
   </component>
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
@@ -163,11 +145,11 @@
   <component name="PhpServers">
     <servers />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds">
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1936" />
+    <option name="width" value="1932" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
@@ -185,48 +167,94 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="relay-kernel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="misc" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="relay-kernel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="misc" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="WebGL Sprite Atlas Demo_files" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
+          <expand>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="system" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="client" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="fragments" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="sprites" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stages" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stages" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stage1" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+          </expand>
+          <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../misc" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="js.buildTools.grunt.grunt-cli.package" value="" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="" />
     <property name="recentsLimit" value="5" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="FullScreen" value="false" />
-    <property name="restartRequiresConfirmation" value="true" />
     <property name="js.buildTools.grunt.node_interpreter" value="" />
     <property name="js.buildTools.gulp.node_interpreter" value="" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -255,9 +283,22 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration default="false" name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/relay-kernel/index.html">
-      <method />
+  <component name="RunManager" selected="PHP Built-in Web Server.Localhost">
+    <configuration name="Localhost" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="$PROJECT_DIR$" />
+    <configuration name="Unnamed" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="C:/Program Files/nodejs/node" path-to-js-file="relay.js" working-dir="$PROJECT_DIR$" />
+    <configuration default="true" type="js.build_tools.grunt" factoryName="Grunt.js">
+      <node-interpreter value="project" />
+      <pass-parent-env-vars value="true" />
+      <envs />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <pass-parent-envs>true</pass-parent-envs>
+      <envs />
     </configuration>
     <configuration default="true" type="AppEnginePhpConfigurationType" factoryName="App Engine for PHP">
       <method />
@@ -340,22 +381,6 @@
       <JdkChoice value="FROM_MODULE" />
       <method />
     </configuration>
-    <configuration default="true" type="js.build_tools.grunt" factoryName="Grunt.js">
-      <node-interpreter value="project" />
-      <pass-parent-env-vars value="true" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <gulpfile />
-      <tasks />
-      <arguments />
-      <pass-parent-envs>true</pass-parent-envs>
-      <envs />
-      <method />
-    </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
       <command value="run" />
       <scripts />
@@ -376,10 +401,8 @@
       <recursive>false</recursive>
       <method />
     </configuration>
-    <configuration default="false" name="Unnamed" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="C:/Program Files/nodejs/node" path-to-js-file="relay.js" working-dir="$PROJECT_DIR$">
-      <method />
-    </configuration>
-    <configuration default="false" name="test" type="js.build_tools.npm" factoryName="npm" nameIsGenerated="true">
+    <configuration name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/relay-kernel/index.html" />
+    <configuration name="test" type="js.build_tools.npm" factoryName="npm" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
@@ -387,12 +410,12 @@
       </scripts>
       <node-interpreter value="C:/Dev/tools/nodejs/node" />
       <envs />
-      <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Node.js.Unnamed" />
-      <item index="1" class="java.lang.String" itemvalue="npm.test" />
-      <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.index.html" />
+      <item index="1" class="java.lang.String" itemvalue="PHP Built-in Web Server.Localhost" />
+      <item index="2" class="java.lang.String" itemvalue="npm.test" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.index.html" />
     </list>
     <recent_temporary>
       <list size="1">
@@ -418,11 +441,12 @@
       <workItem from="1483113810347" duration="2396000" />
       <workItem from="1483148831302" duration="9768000" />
       <workItem from="1494378496022" duration="873000" />
+      <workItem from="1503027389870" duration="10731000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25570000" />
+    <option name="totallyTimeSpent" value="36301000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -434,15 +458,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1858" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.121875" sideWeight="0.49369085" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12649295" sideWeight="0.49369085" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34256244" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284055" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.50630915" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -456,11 +479,12 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32946146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="processedProjectFiles" value="true" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -478,34 +502,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="10" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/relay.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/cli/cli-prompt.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="59" column="23" lean-forward="false" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/commands.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/media/playlist.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -513,26 +509,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/render.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/play.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/render.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/play.js" />
     <entry file="file://$PROJECT_DIR$/tests/files/music/song1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
             <element signature="e#2551#4308#0" expanded="false" />
           </folding>
         </state>
@@ -546,20 +530,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/chat.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="12" column="17" lean-forward="false" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="10" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/chat.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/echo.js" />
     <entry file="file://$PROJECT_DIR$/relay.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -567,20 +539,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/cli/cli-prompt.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="59" column="23" lean-forward="false" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/commands.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/worker/cli/cli-prompt.js" />
+    <entry file="file://$PROJECT_DIR$/system/worker/commands.js" />
     <entry file="file://$PROJECT_DIR$/system/media/playlist.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -588,26 +548,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/render.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/play.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="11" column="59" lean-forward="false" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/render.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/play.js" />
     <entry file="file://$PROJECT_DIR$/tests/files/music/song1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
             <element signature="e#2551#4308#0" expanded="false" />
           </folding>
         </state>
@@ -621,20 +569,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/chat.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="12" column="17" lean-forward="false" selection-start-line="12" selection-start-column="17" selection-end-line="12" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="10" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/chat.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/echo.js" />
     <entry file="file://$PROJECT_DIR$/relay.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -649,20 +585,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/commands.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/worker/commands.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/echo.js" />
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -678,20 +602,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/commands.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="5" column="15" lean-forward="false" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/worker/commands.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/echo.js" />
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -714,34 +626,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/get.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="22" column="25" lean-forward="false" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/queue.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="21" column="24" lean-forward="false" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/echo.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="10" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/cli/cli-prompt.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="59" column="23" lean-forward="false" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/get.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/queue.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/echo.js" />
+    <entry file="file://$PROJECT_DIR$/system/worker/cli/cli-prompt.js" />
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -749,13 +637,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/render.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/commands/render.js" />
     <entry file="file://$PROJECT_DIR$/system/media/playlist.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -770,27 +652,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/worker/commands.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="50" column="22" lean-forward="false" selection-start-line="50" selection-start-column="22" selection-end-line="50" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/chat.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="24" column="43" lean-forward="false" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/commands/play.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/system/worker/commands.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/chat.js" />
+    <entry file="file://$PROJECT_DIR$/system/commands/play.js" />
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/EcmaScript.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -810,7 +674,7 @@
         <state relative-caret-position="663">
           <caret line="41" column="32" lean-forward="false" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
             <element signature="e#2551#4308#0" expanded="false" />
           </folding>
         </state>
@@ -818,53 +682,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
+        <state relative-caret-position="220">
           <caret line="11" column="41" lean-forward="false" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/games/game1.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/games/game1.js" />
+    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/base.js" />
+    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo.html" />
+    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/SpriteLibrary.js" />
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/base.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.util.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2550">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="715">
+          <caret line="311" column="35" lean-forward="true" selection-start-line="311" selection-start-column="35" selection-end-line="311" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo.html">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/sprites/player1.sprite.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="71" column="30" lean-forward="false" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="30" />
-          <folding>
-            <marker date="1494379058731" expanded="false" signature="7282:7311" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7334:7363" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7387:7416" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7440:7468" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7492:7521" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7545:7574" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7598:7627" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7651:7680" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7704:7733" ph="..." />
-            <marker date="1494379058731" expanded="false" signature="7823:7838" ph="..." />
-          </folding>
+        <state relative-caret-position="220">
+          <caret line="11" column="68" lean-forward="false" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../misc/WebGL Sprite Atlas Demo_files/SpriteLibrary.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragments/fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="229" column="47" lean-forward="false" selection-start-line="229" selection-start-column="47" selection-end-line="229" selection-end-column="47" />
+        <state relative-caret-position="1200">
+          <caret line="66" column="24" lean-forward="false" selection-start-line="66" selection-start-column="24" selection-end-line="66" selection-end-column="24" />
           <folding />
         </state>
       </provider>

@@ -14,8 +14,7 @@
         DIR + 'sprites/player2.sprite.js',
         DIR + 'sprites/level1.sprite.js',
 
-        DIR + 'fragments/triangle.fragment.js',
-        DIR + 'fragments/rectangle.fragment.js'
+        DIR + 'fragments/fragment.js',
     ];
 
     // Load and Render
@@ -53,8 +52,12 @@
 
             // Clear background
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-            gl.clearColor(0.3, 0.9, 0.3, 0.5);
+            gl.clearColor(0.3, 0.1, 0.3, 0.1);
             gl.clearDepth(1.0);
+
+            // Enable blending
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            gl.enable(gl.BLEND);
 
             // Update Sprite Logic
             Player1.update(duration);

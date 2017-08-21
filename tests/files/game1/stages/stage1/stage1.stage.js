@@ -5,24 +5,25 @@
 // Set up client-side listeners
 
 (function() {
-    var DIR = 'tests/files/game1/';
-    var DIR_STAGE = 'tests/files/game1/stages/stage1/';
+    var Config = window.games.game1;
+    var ROOT = Config.path.root;
+    var DIR_STAGE = ROOT + 'stages/stage1/';
     var PATH_TILE_DEFAULT = DIR_STAGE + 'tiles/default.tiles.png';
     var PATH_MAP_BKLAYER = DIR_STAGE + 'map/bklayer.map.png';
     var SCRIPT_ASSETS = [
-        DIR + 'fragment/color.fragment.js',
-        DIR + 'fragment/texture.fragment.js',
+        ROOT + 'fragment/color.fragment.js',
+        ROOT + 'fragment/texture.fragment.js',
 
-        DIR + 'character/player1.sprite.js',
-        DIR + 'character/player2.sprite.js',
-        DIR + 'level/level1.sprite.js',
+        ROOT + 'sprite/player1.sprite.js',
+        ROOT + 'sprite/player2.sprite.js',
+        ROOT + 'level/level1.sprite.js',
     ];
 
     // Load and Render
 
-    function run(e) {
+    function Stage1(e) {
         var Config = window.games.game1;
-        var Util = Config.util;
+        // var Util = Config.util;
 
         var canvas = e.target;
 
@@ -41,14 +42,21 @@
         var Level1 = new Config.level.Level1(gl);
         Player1.addHitBox(Level1);
 
-        var startTime = new Date();
+
+        // Default FOV
+        this.mProjection = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+        this.startRender = function () {
+            window.requestAnimationFrame(onFrame);
+        };
 
         // Set up render loop
-        window.requestAnimationFrame(onFrame);
-        function onFrame(e){
-            window.requestAnimationFrame(onFrame);
-            var duration = new Date() - startTime;
 
+        var lastTime = 0;
+        function onFrame(t){
+            var elapsedTime = t - lastTime;
+            lastTime = t;
+
+            window.requestAnimationFrame(onFrame);
 
             // Clear background
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -59,12 +67,13 @@
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             gl.enable(gl.BLEND);
 
-            // Update Sprite Logic
-            Player1.update(duration);
+            // Enable Depth testing
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LESS);
 
             // Render
-            Level1.render(e, gl);
-            Player1.render(e, gl);
+            Level1.render(elapsedTime, gl, this);
+            Player1.render(elapsedTime, gl, this);
         }
 
     }
@@ -91,7 +100,8 @@
 
         var CONFIG = window.games.game1;
         CONFIG.util.loadScripts(SCRIPT_ASSETS, function() {
-            run(e);
+            var stage = new Stage1(e);
+            stage.startRender();
         });
     }
 

@@ -5,19 +5,20 @@
 // Set up client-side listeners
 
 (function() {
-    var DIR = 'tests/files/game1/';
-    var DIR_CHARACTER = DIR + 'character/';
-    var DIR_GRAPHICS = DIR + 'graphics/';
-    window.games.game1.character.Player1 = Player1;
+    var Config = window.games.game1;
+    var Util = Config.util;
+    var ROOT = Config.path.root;
+    var DIR_CHARACTER = ROOT + 'sprite/';
+    var DIR_GRAPHICS = ROOT + 'graphics/';
+    Config.character.Player1 = Player1;
 
     function Player1(gl) {
-        var Config = window.games.game1;
         var Fragment = Config.fragment;
         var ColorFragment = Fragment.ColorFragment;
         var TextureFragment = Fragment.TextureFragment;
 
         this.textures = {
-            'default': TextureFragment.loadTexture(gl, DIR_GRAPHICS + 'misc/test-shape-square.png')
+            'default': Util.loadTexture(gl, DIR_GRAPHICS + 'misc/test-shape-square.png')
         };
 
         this.renders = [
@@ -71,11 +72,12 @@
      * Render Sprite
      * @param e Event
      * @param gl WebGL Instance
+     * @param stage
      */
-    Player1.prototype.render = function(e, gl) {
+    Player1.prototype.render = function(e, gl, stage) {
         for(var i=0; i<this.renders.length; i++) {
             var render = this.renders[i];
-            render.render(e, gl);
+            render.render(e, gl, stage);
         }
     };
 })();

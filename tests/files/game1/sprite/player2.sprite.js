@@ -5,9 +5,9 @@
 // Set up client-side listeners
 
 (function() {
-    window.games.game1.character.Player2 = Player1;
+    window.games.game1.character.Player2 = Player2;
 
-    function Player1() {
+    function Player2() {
 
     }
 })();

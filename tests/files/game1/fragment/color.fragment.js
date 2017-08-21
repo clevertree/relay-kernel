@@ -97,12 +97,12 @@
     }
 
     // Shapes
-    ColorFragment.V_TRIANGLE_EQUILATERAL = new Float32Array([           // /*  2
+    ColorFragment.V_TRIANGLE_ISOSCELES = new Float32Array([           // /*  2
         0.0,  1.0,  0.0,                                                //    /\
         -1.0, -1.0,  0.0,                                               //   /. \
         1.0, -1.0,  0.0                                                 // 0/____\1
     ]);                                                                 // */
-    ColorFragment.V_DEFAULT = ColorFragment.V_TRIANGLE_EQUILATERAL;
+    ColorFragment.V_DEFAULT = ColorFragment.V_TRIANGLE_ISOSCELES;
 
 
     // Colors

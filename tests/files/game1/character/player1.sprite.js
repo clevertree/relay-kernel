@@ -5,15 +5,53 @@
 // Set up client-side listeners
 
 (function() {
+    var DIR = 'tests/files/game1/';
+    var DIR_CHARACTER = DIR + 'character/';
+    var DIR_GRAPHICS = DIR + 'graphics/';
     window.games.game1.character.Player1 = Player1;
 
     function Player1(gl) {
         var Config = window.games.game1;
-        var ColorFragment = Config.fragment.ColorFragment;
-        this.fragment = new ColorFragment();
+        var Fragment = Config.fragment;
+        var ColorFragment = Fragment.ColorFragment;
+        var TextureFragment = Fragment.TextureFragment;
 
-        this.fragment.setAcceleration(0,0,-0.001);
-        this.fragment.setVelocity(-0.02,0,0.1);
+        this.textures = {
+            'default': TextureFragment.loadTexture(gl, DIR_GRAPHICS + 'misc/test-shape-square.png')
+        };
+
+        this.renders = [
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+            new ColorFragment(),
+            new TextureFragment(this.textures.default),
+        ];
+
+        for(var i=0; i<this.renders.length; i++) {
+            var render = this.renders[i];
+            render.setAcceleration(0,0,0.0001 * i);
+            render.setVelocity(-0.01,-0.003,-0.1);
+        }
+
+
         this.hitBoxes = [];
     }
 
@@ -35,7 +73,9 @@
      * @param gl WebGL Instance
      */
     Player1.prototype.render = function(e, gl) {
-        // this.rectangle.render(e, gl);
-        this.fragment.render(e, gl);
+        for(var i=0; i<this.renders.length; i++) {
+            var render = this.renders[i];
+            render.render(e, gl);
+        }
     };
 })();

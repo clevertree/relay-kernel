@@ -47,53 +47,23 @@
 
 
             // Load all attributes and uniforms from the compiled shaders
-            program.attributes = {};
-            program.uniforms = {};
+            program.attribute = {};
+            program.uniform = {};
 
             var count = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
             for (var i = 0; i < count; i++) {
                 var attrib = gl.getActiveAttrib(program, i);
-                program.attributes[attrib.name] = gl.getAttribLocation(program, attrib.name);
+                program.attribute[attrib.name] = gl.getAttribLocation(program, attrib.name);
             }
 
             count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
             for (i = 0; i < count; i++) {
                 var uniform = gl.getActiveUniform(program, i);
                 var name = uniform.name.replace("[0]", "");
-                program.uniforms[name] = gl.getUniformLocation(program, name);
+                program.uniform[name] = gl.getUniformLocation(program, name);
             }
 
             return program;
-        },
-
-        // Textures
-        "loadTexture": function(gl, mapPath) {
-            var image = new Image();
-            var texture = gl.createTexture();
-
-            texture.loaded = false;
-
-            image.setAttribute('src', mapPath);
-            image.addEventListener("load", function() {
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-                // MUST be filtered with NEAREST or tile lookup fails
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT); // Repeats tiles
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-
-                console.info("Map Texture Loaded: ", image.width + 'x' + image.height, image);
-                texture.width = image.width;
-                texture.height = image.height;
-                texture.loaded = true;
-            });
-            return texture;
         },
 
         // Scripts

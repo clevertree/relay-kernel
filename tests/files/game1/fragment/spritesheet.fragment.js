@@ -23,7 +23,7 @@
         this.setAcceleration =  setAcceleration;
 
         // Load Sprite Sheet Texture
-        // var tilePos = [0, 0];
+        var tilePos = [0, 0];
         var mTextureCoordinates = defaultTextureCoordinates;
         var tSpriteSheet = Util.loadTexture(gl, pathSpriteSheet, onLoadTexture);
         var iSpriteSheet = null;
@@ -32,10 +32,10 @@
             iSpriteSheet = image;
             console.log("Sprite Sheet Texture Loaded: ", image, texture);
 
-            rowCount = image.width / tileSizeX;
-            if(rowCount % 1 !== 0) console.error("Sprite sheet width (" + image.width + ") is not divisible by " + tileSizeX);
-            colCount = image.width / tileSizeY;
-            if(colCount % 1 !== 0) console.error("Sprite sheet height (" + image.width + ") is not divisible by " + tileSizeY);
+            colCount = image.width / tileSizeX;
+            if(colCount % 1 !== 0) console.error("Sprite sheet width (" + image.width + ") is not divisible by " + tileSizeX);
+            rowCount = image.height / tileSizeY;
+            if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + image.height + ") is not divisible by " + tileSizeY);
 
             setTilePosition(0, 0);
         }
@@ -81,7 +81,7 @@
          * 1,1 => 256,256, 512, 512
          */
         function setTilePosition(x, y) {
-            // tilePos = [x, y];
+            tilePos = [x, y];
             var tx = tileSizeX / iSpriteSheet.width;
             var ty = tileSizeY / iSpriteSheet.height;
             mTextureCoordinates = new Float32Array([
@@ -106,12 +106,27 @@
             mAcceleration = Util.translation(ax, ay, az);
         }
 
+        var frameCount = 0;
         function update(elapsedTime, stage) {
+            frameCount++;
+
             if(mAcceleration)
                 mVelocity = Util.multiply(mVelocity, mAcceleration);
 
             if(mVelocity)
                 mModelView = Util.multiply(mModelView, mVelocity);
+
+            if(frameCount % 3 === 0) {
+                tilePos[0]++;
+                if(tilePos[0] >= colCount) {
+                    tilePos[0] = 0;
+                    tilePos[1]++;
+                    if(tilePos[1] >= rowCount) {
+                        tilePos = [0,0];
+                    }
+                }
+                setTilePosition(tilePos[0], tilePos[1]);
+            }
         }
 
         function initProgram(gl) {

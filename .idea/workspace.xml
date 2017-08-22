@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a08764d-d074-4a6e-b968-7d2d2b87606d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/graphics/misc/test-shape-square.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/texture.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/texture.fragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js" afterPath="$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" />
     </list>
     <ignored path="relay-kernel.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,21 +22,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="player1.sprite.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="player1.sprite.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="531">
-              <caret line="29" column="37" lean-forward="false" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
+            <state relative-caret-position="515">
+              <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="spritesheet.fragment.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="spritesheet.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="371">
-              <caret line="84" column="23" lean-forward="true" selection-start-line="84" selection-start-column="23" selection-end-line="84" selection-end-column="23" />
+            <state relative-caret-position="611">
+              <caret line="123" column="36" lean-forward="false" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -149,8 +143,8 @@
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/texture.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" />
       </list>
     </option>
   </component>
@@ -509,12 +503,12 @@
       <workItem from="1503202693350" duration="22229000" />
       <workItem from="1503287513133" duration="1351000" />
       <workItem from="1503324014582" duration="6000" />
-      <workItem from="1503336857839" duration="8617000" />
+      <workItem from="1503336857839" duration="9233000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75196000" />
+    <option name="totallyTimeSpent" value="75812000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -785,18 +779,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="84" column="23" lean-forward="true" selection-start-line="84" selection-start-column="23" selection-end-line="84" selection-end-column="23" />
+        <state relative-caret-position="515">
+          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="29" column="37" lean-forward="false" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
+        <state relative-caret-position="611">
+          <caret line="123" column="36" lean-forward="false" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
           <folding />
         </state>
       </provider>

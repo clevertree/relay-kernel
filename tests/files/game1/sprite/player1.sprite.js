@@ -9,25 +9,25 @@
     var Util = Config.util;
     var ROOT = Config.path.root;
     var DIR_CHARACTER = ROOT + 'sprite/';
-    var DIR_GRAPHICS = ROOT + 'graphics/';
+    var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png'
     Config.character.Player1 = Player1;
 
     function Player1(gl) {
         var Fragment = Config.fragment;
 
         this.renders = [
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
-            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/2 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/4 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/8 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/16 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/20 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/24 * 1000)),
         ];
 
         for(var i=0; i<this.renders.length; i++) {
             var render = this.renders[i];
-            render.setAcceleration(0,0,0.00007 * i);
-            render.setVelocity(-0.007,-0.002,-0.01);
+            render.setAcceleration(0,0,0.00002 * i);
+            render.setVelocity(-0.003,-0.001,-0.01);
         }
 
 

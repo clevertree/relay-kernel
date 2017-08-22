@@ -114,16 +114,6 @@
 
     // Static
 
-    TextureFragment.loadSpriteSheet = function (gl, sheetPath, tileSize) {
-        var texture = Util.loadTexture(gl, sheetPath, onLoad);
-        var SpriteSheet = new TextureFragment(texture, null, null, null, null, tileSize);
-        function onLoad(e, texture, image) {
-            SpriteSheet.setTilePosition()
-        }
-
-        return SpriteSheet;
-    };
-
     var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
 

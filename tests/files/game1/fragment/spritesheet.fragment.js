@@ -9,36 +9,76 @@
 
     var PROGRAM;
 
-    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, mModelView, glLineMode, mVelocity, mAcceleration) {
+    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, frameRate, flags, mModelView, glLineMode, mVelocity, mAcceleration) {
+        if(typeof flags === 'undefined') flags = SpriteSheet.FLAG_DEFAULTS;
+        if(typeof frameRate === 'undefined') frameRate = (1/20 * 1000);
+
         // Init Render Mode
         glLineMode = glLineMode || 4; // gl.TRIANGLES;
 
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
 
-        // Set up object
+        // Set up public object
         this.render =           render;
         this.update =           update;
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
 
-        // Load Sprite Sheet Texture
+        // Set up private properties
         var tilePos = [0, 0];
         var mTextureCoordinates = defaultTextureCoordinates;
-        var tSpriteSheet = Util.loadTexture(gl, pathSpriteSheet, onLoadTexture);
         var iSpriteSheet = null;
         var rowCount = 1, colCount = 1;
-        function onLoadTexture(e, texture, image) {
+        var tileScaleX = 1;
+        var tileScaleY = 1;
+
+
+        // Create a texture.
+        var tSpriteSheet = gl.createTexture();
+        tSpriteSheet.loaded = false;
+        gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+            new Uint8Array([0, 256, 0, 128]));
+
+        // Asynchronously load the spritesheet
+        var image = new Image();
+        image.src = pathSpriteSheet;
+        image.addEventListener('load', function(e) {
+            // Now that the image has loaded make copy it to the texture.
+            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+
+            // Upload the image into the texture.
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+            // Set the parameters so we can render any size image.
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            if(flags & SpriteSheet.FLAG_GENERATE_MIPMAP) {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.generateMipmap(gl.TEXTURE_2D);
+            } else {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            }
+
             iSpriteSheet = image;
-            console.log("Sprite Sheet Texture Loaded: ", image, texture);
+            // console.log("Sprite Sheet Texture Loaded: ", image, tSpriteSheet);
 
             colCount = image.width / tileSizeX;
             if(colCount % 1 !== 0) console.error("Sprite sheet width (" + image.width + ") is not divisible by " + tileSizeX);
             rowCount = image.height / tileSizeY;
             if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + image.height + ") is not divisible by " + tileSizeY);
 
+            tileScaleX = tileSizeX / image.width;
+            tileScaleY = tileSizeY / image.height;
+
             setTilePosition(0, 0);
-        }
+        });
+
 
 
         // Functions
@@ -60,6 +100,7 @@
 
             // Bind Texture Coordinate
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
             gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
             // Set the projection and viewport.
@@ -82,18 +123,14 @@
          */
         function setTilePosition(x, y) {
             tilePos = [x, y];
-            var tx = tileSizeX / iSpriteSheet.width;
-            var ty = tileSizeY / iSpriteSheet.height;
             mTextureCoordinates = new Float32Array([
-                (x+0)*tx,       (y+1)*ty,
-                (x+0)*tx,       (y+0)*ty,
-                (x+1)*tx,   (y+1)*ty,
-                (x+1)*tx,   (y+1)*ty,
-                (x+0)*tx,       (y+0)*ty,
-                (x+1)*tx,   (y+0)*ty,
+                (x+0)*tileScaleX,       (y+1)*tileScaleY,
+                (x+0)*tileScaleX,       (y+0)*tileScaleY,
+                (x+1)*tileScaleX,   (y+1)*tileScaleY,
+                (x+1)*tileScaleX,   (y+1)*tileScaleY,
+                (x+0)*tileScaleX,       (y+0)*tileScaleY,
+                (x+1)*tileScaleX,   (y+0)*tileScaleY,
             ]);
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
         }
 
         function setVelocity(vx, vy, vz) {
@@ -106,7 +143,7 @@
             mAcceleration = Util.translation(ax, ay, az);
         }
 
-        var frameCount = 0;
+        var frameCount = 0; var sinceLastFrame = 0;
         function update(elapsedTime, stage) {
             frameCount++;
 
@@ -116,13 +153,20 @@
             if(mVelocity)
                 mModelView = Util.multiply(mModelView, mVelocity);
 
-            if(frameCount % 3 === 0) {
-                tilePos[0]++;
-                if(tilePos[0] >= colCount) {
-                    tilePos[0] = 0;
-                    tilePos[1]++;
-                    if(tilePos[1] >= rowCount) {
-                        tilePos = [0,0];
+            sinceLastFrame += elapsedTime;
+            if(sinceLastFrame > frameRate) {
+                var frameCount = Math.floor(sinceLastFrame / frameRate);
+                sinceLastFrame -= frameRate * frameCount;
+                if(frameCount > 16) frameCount = 16;
+                for (var i=0; i<frameCount; i++) {
+                    // Update Next Tile Position
+                    tilePos[0]++;
+                    if (tilePos[0] >= colCount) {
+                        tilePos[0] = 0;
+                        tilePos[1]++;
+                        if (tilePos[1] >= rowCount) {
+                            tilePos = [0, 0];
+                        }
                     }
                 }
                 setTilePosition(tilePos[0], tilePos[1]);
@@ -165,19 +209,13 @@
 
             PROGRAM = program;
         }
+
     }
 
     // Static
 
-    SpriteSheet.loadSpriteSheet = function (gl, sheetPath, tileSize) {
-        var texture = Util.loadTexture(gl, sheetPath, onLoad);
-        var SpriteSheet = new SpriteSheet(texture, null, null, null, null, tileSize);
-        function onLoad(e, texture, image) {
-            SpriteSheet.setTilePosition()
-        }
-
-        return SpriteSheet;
-    };
+    SpriteSheet.FLAG_GENERATE_MIPMAP = 0x01;
+    SpriteSheet.FLAG_DEFAULTS = SpriteSheet.FLAG_GENERATE_MIPMAP;
 
     var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];

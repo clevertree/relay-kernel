@@ -176,13 +176,13 @@
         }
     };
 
-    Util.loadTexture = function(gl, filePath, loadFill) {
+    Util.loadTexture = function(gl, filePath, callback, loadFill) {
         loadFill = loadFill || [0, 0, 255, 128];
 
         // Create a texture.
         var texture = gl.createTexture();
         texture.loaded = false;
-        texture.onLoad = function(e, texture, image) {};
+        texture.onLoad = callback || function(e, texture, image) {};
         gl.bindTexture(gl.TEXTURE_2D, texture);
 
         // Fill the texture with a 1x1 blue pixel.
@@ -207,6 +207,7 @@
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
             gl.generateMipmap(gl.TEXTURE_2D);
 
+            texture.loaded = true;
             // Callback
             texture.onLoad(e, texture, image);
         });

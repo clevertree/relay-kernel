@@ -14,42 +14,20 @@
 
     function Player1(gl) {
         var Fragment = Config.fragment;
-        var ColorFragment = Fragment.ColorFragment;
-        var TextureFragment = Fragment.TextureFragment;
-
-        this.textures = {
-            'default': Util.loadTexture(gl, DIR_GRAPHICS + 'misc/test-shape-square.png')
-        };
 
         this.renders = [
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
-            new ColorFragment(),
-            new TextureFragment(this.textures.default),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
+            new Fragment.SpriteSheet(gl, DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png', 256, 256),
         ];
 
         for(var i=0; i<this.renders.length; i++) {
             var render = this.renders[i];
             render.setAcceleration(0,0,0.0001 * i);
-            render.setVelocity(-0.01,-0.003,-0.1);
+            render.setVelocity(-0.007,-0.002,-0.01);
         }
 
 

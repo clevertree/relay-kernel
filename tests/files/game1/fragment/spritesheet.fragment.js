@@ -5,14 +5,11 @@
 (function() {
     var Config = window.games.game1;
     var Util = Config.util;
-    Config.fragment.TextureFragment = TextureFragment;
+    Config.fragment.SpriteSheet = SpriteSheet;
 
     var PROGRAM;
 
-    function TextureFragment(texture, mModelView, glLineMode, mVelocity, mAcceleration, tileSize, tilePos) {
-        if(!texture)
-            throw new Error("Missing Texture");
-
+    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, mModelView, glLineMode, mVelocity, mAcceleration) {
         // Init Render Mode
         glLineMode = glLineMode || 4; // gl.TRIANGLES;
 
@@ -25,7 +22,27 @@
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
 
+        // Load Sprite Sheet Texture
+        // var tilePos = [0, 0];
+        var mTextureCoordinates = defaultTextureCoordinates;
+        var tSpriteSheet = Util.loadTexture(gl, pathSpriteSheet, onLoadTexture);
+        var iSpriteSheet = null;
+        var rowCount = 1, colCount = 1;
+        function onLoadTexture(e, texture, image) {
+            iSpriteSheet = image;
+            console.log("Sprite Sheet Texture Loaded: ", image, texture);
+
+            rowCount = image.width / tileSizeX;
+            if(rowCount % 1 !== 0) console.error("Sprite sheet width (" + image.width + ") is not divisible by " + tileSizeX);
+            colCount = image.width / tileSizeY;
+            if(colCount % 1 !== 0) console.error("Sprite sheet height (" + image.width + ") is not divisible by " + tileSizeY);
+
+            setTilePosition(0, 0);
+        }
+
+
         // Functions
+
 
         function render(elapsedTime, gl, stage) {
             if(!PROGRAM)
@@ -56,6 +73,29 @@
             gl.drawArrays(glLineMode, 0, 6);
         }
 
+        /**
+         *
+         * @param x
+         * @param y
+         * 0,0 => 0,0 256,256
+         * 1,1 => 256,256, 512, 512
+         */
+        function setTilePosition(x, y) {
+            // tilePos = [x, y];
+            var tx = tileSizeX / iSpriteSheet.width;
+            var ty = tileSizeY / iSpriteSheet.height;
+            mTextureCoordinates = new Float32Array([
+                (x+0)*tx,       (y+1)*ty,
+                (x+0)*tx,       (y+0)*ty,
+                (x+1)*tx,   (y+1)*ty,
+                (x+1)*tx,   (y+1)*ty,
+                (x+0)*tx,       (y+0)*ty,
+                (x+1)*tx,   (y+0)*ty,
+            ]);
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
+        }
+
         function setVelocity(vx, vy, vz) {
             mVelocity = Util.translation(vx, vy, vz);
         }
@@ -77,7 +117,7 @@
         function initProgram(gl) {
 
             // Init Program
-            var program = Util.compileProgram(gl, TextureFragment.VS, TextureFragment.FS);
+            var program = Util.compileProgram(gl, SpriteSheet.VS, SpriteSheet.FS);
 
             // Enable Vertex Position Attribute.
             aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");
@@ -95,18 +135,18 @@
             // Create a Vertex Position Buffer.
             bufVertexPosition = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(defaultVertexPositions), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
 
             // Create a Texture Coordinates Buffer
             bufTextureCoordinate = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(defaultTextureCoordinates), gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
 
             // use texture unit 0
             gl.activeTexture(gl.TEXTURE0 + 0);
 
             // bind to the TEXTURE_2D bind point of texture unit 0
-            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
 
             PROGRAM = program;
         }
@@ -114,9 +154,9 @@
 
     // Static
 
-    TextureFragment.loadSpriteSheet = function (gl, sheetPath, tileSize) {
+    SpriteSheet.loadSpriteSheet = function (gl, sheetPath, tileSize) {
         var texture = Util.loadTexture(gl, sheetPath, onLoad);
-        var SpriteSheet = new TextureFragment(texture, null, null, null, null, tileSize);
+        var SpriteSheet = new SpriteSheet(texture, null, null, null, null, tileSize);
         function onLoad(e, texture, image) {
             SpriteSheet.setTilePosition()
         }
@@ -129,24 +169,24 @@
 
 
     // Put a unit quad in the buffer
-    var defaultVertexPositions = [
+    var defaultVertexPositions = new Float32Array([
         0, 0,
         0, 1,
         1, 0,
         1, 0,
         0, 1,
         1, 1,
-    ];
+    ]);
 
     // Put texcoords in the buffer
-    var defaultTextureCoordinates = [
+    var defaultTextureCoordinates = new Float32Array([
         0, 0,
         0, 1,
         1, 0,
         1, 0,
         0, 1,
         1, 1,
-    ];
+    ]);
 
     // Texture Program
 
@@ -154,7 +194,7 @@
     var aTextureCoordinate, bufTextureCoordinate;
     var uPMatrix, uMVMatrix, uSampler;
 
-    TextureFragment.VS = [
+    SpriteSheet.VS = [
         "attribute vec4 aVertexPosition;",
         "attribute vec2 aTextureCoordinate;",
 
@@ -169,7 +209,7 @@
         "}"
     ].join("\n");
 
-    TextureFragment.FS = [
+    SpriteSheet.FS = [
         "precision mediump float;",
 
         "uniform sampler2D uSampler;",

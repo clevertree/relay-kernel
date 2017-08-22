@@ -13,6 +13,7 @@
     var SCRIPT_ASSETS = [
         ROOT + 'fragment/color.fragment.js',
         ROOT + 'fragment/texture.fragment.js',
+        ROOT + 'fragment/spritesheet.fragment.js',
 
         ROOT + 'sprite/player1.sprite.js',
         ROOT + 'sprite/player2.sprite.js',

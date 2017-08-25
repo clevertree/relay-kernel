@@ -8,54 +8,50 @@
     var Config = window.games.game1;
     var Util = Config.util;
     var ROOT = Config.path.root;
+    var SPRITE_RESOLUTION = 128;
     var DIR_CHARACTER = ROOT + 'sprite/';
-    var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.sprite-sheet.png'
+    var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
     Config.character.Player1 = Player1;
 
     function Player1(gl) {
         var Fragment = Config.fragment;
 
-        this.renders = [
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/2 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/4 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/8 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/16 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/20 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, 256, 256, (1/24 * 1000)),
+        var renders = [
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/8 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/10 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/12 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/20 * 1000)),
+            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/24 * 1000)),
         ];
 
-        for(var i=0; i<this.renders.length; i++) {
-            var render = this.renders[i];
+        for(var i=0; i<renders.length; i++) {
+            var render = renders[i];
             render.setAcceleration(0,0,0.00002 * i);
             render.setVelocity(-0.003,-0.001,-0.01);
         }
 
 
-        this.hitBoxes = [];
+        /**
+         * Update Sprite Logic
+         * @param duration
+         */
+        this.update = function(duration) {
+
+        };
+
+        /**
+         * Render Sprite
+         * @param e Event
+         * @param gl WebGL Instance
+         * @param stage
+         */
+        this.render = function(e, gl, stage) {
+            for(var i=0; i<renders.length; i++) {
+                var render = renders[i];
+                render.render(e, gl, stage);
+            }
+        };
     }
 
-    Player1.prototype.addHitBox = function(sprite) {
-        this.hitBoxes.push(sprite);
-    };
-
-    /**
-     * Update Sprite Logic
-     * @param duration
-     */
-    Player1.prototype.update = function(duration) {
-
-    };
-
-    /**
-     * Render Sprite
-     * @param e Event
-     * @param gl WebGL Instance
-     * @param stage
-     */
-    Player1.prototype.render = function(e, gl, stage) {
-        for(var i=0; i<this.renders.length; i++) {
-            var render = this.renders[i];
-            render.render(e, gl, stage);
-        }
-    };
 })();

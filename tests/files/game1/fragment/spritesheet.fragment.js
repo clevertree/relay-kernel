@@ -33,10 +33,14 @@
         var tileScaleX = 1;
         var tileScaleY = 1;
 
+        // Initiate Shaders
+        if(!PROGRAM)
+            initProgram(gl);
 
         // Create a texture.
         var tSpriteSheet = gl.createTexture();
         tSpriteSheet.loaded = false;
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
 
         // Fill the texture with a 1x1 blue pixel.
@@ -44,14 +48,15 @@
             new Uint8Array([0, 256, 0, 128]));
 
         // Asynchronously load the spritesheet
-        var image = new Image();
-        image.src = pathSpriteSheet;
-        image.addEventListener('load', function(e) {
+        iSpriteSheet = new Image();
+        iSpriteSheet.src = pathSpriteSheet;
+        iSpriteSheet.addEventListener('load', function(e) {
             // Now that the image has loaded make copy it to the texture.
+            gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
 
             // Upload the image into the texture.
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iSpriteSheet);
 
             // Set the parameters so we can render any size image.
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -65,16 +70,13 @@
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             }
 
-            iSpriteSheet = image;
-            // console.log("Sprite Sheet Texture Loaded: ", image, tSpriteSheet);
+            colCount = iSpriteSheet.width / tileSizeX;
+            if(colCount % 1 !== 0) console.error("Sprite sheet width (" + iSpriteSheet.width + ") is not divisible by " + tileSizeX);
+            rowCount = iSpriteSheet.height / tileSizeY;
+            if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + iSpriteSheet.height + ") is not divisible by " + tileSizeY);
 
-            colCount = image.width / tileSizeX;
-            if(colCount % 1 !== 0) console.error("Sprite sheet width (" + image.width + ") is not divisible by " + tileSizeX);
-            rowCount = image.height / tileSizeY;
-            if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + image.height + ") is not divisible by " + tileSizeY);
-
-            tileScaleX = tileSizeX / image.width;
-            tileScaleY = tileSizeY / image.height;
+            tileScaleX = tileSizeX / iSpriteSheet.width;
+            tileScaleY = tileSizeY / iSpriteSheet.height;
 
             setTilePosition(0, 0);
         });
@@ -85,8 +87,6 @@
 
 
         function render(elapsedTime, gl, stage) {
-            if(!PROGRAM)
-                initProgram(gl);
 
             // Update
             update(elapsedTime, stage);
@@ -108,6 +108,8 @@
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
 
             // Tell the shader to get the texture from texture unit 0
+            gl.activeTexture(gl.TEXTURE0 + 0);
+            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
             gl.uniform1i(uSampler, 0);
 
             // draw the quad (2 triangles, 6 vertices)
@@ -177,6 +179,7 @@
 
             // Init Program
             var program = Util.compileProgram(gl, SpriteSheet.VS, SpriteSheet.FS);
+            gl.useProgram(program);
 
             // Enable Vertex Position Attribute.
             aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");

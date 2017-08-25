@@ -14,10 +14,13 @@
         ROOT + 'fragment/color.fragment.js',
         ROOT + 'fragment/texture.fragment.js',
         ROOT + 'fragment/spritesheet.fragment.js',
+        ROOT + 'fragment/tilemap.fragment.js',
 
         ROOT + 'sprite/player1.sprite.js',
         ROOT + 'sprite/player2.sprite.js',
-        ROOT + 'level/level1.sprite.js',
+
+        // Levels
+        DIR_STAGE + 'level/level1.level.js',
     ];
 
     // Load and Render
@@ -41,7 +44,6 @@
 
         // Level Sprites
         var Level1 = new Config.level.Level1(gl);
-        Player1.addHitBox(Level1);
 
 
         // Default FOV

@@ -12,6 +12,7 @@
     function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, mModelView, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
+
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
 
@@ -28,8 +29,9 @@
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
+        var mMapSize = [1,1];
 
-        // Initiate Shaders
+            // Initiate Shaders
         if(!PROGRAM)
             initProgram(gl);
 
@@ -50,6 +52,7 @@
             // Upload the image into the texture.
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iTileSheet);
 
+         
             // Set the parameters so we can render any size image.
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -69,7 +72,7 @@
             rowCount = iTileSheet.height / tileSize;
             if(rowCount % 1 !== 0) console.error("Tile sheet height (" + iTileSheet.height + ") is not divisible by " + tileSize);
 
-            inverseSpriteTextureSize = [tileSize / iTileSheet.width, tileSize / iTileSheet.height];
+            inverseSpriteTextureSize = [1 / iTileSheet.width, 1 / iTileSheet.height];
         });
 
 
@@ -97,7 +100,7 @@
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-            inverseTileTextureSize = [1 / iTileSheet.width, 1 / iTileSheet.height];
+            inverseTileTextureSize = [1 / iLevelMap.width, 1 / iLevelMap.height];
         });
 
         var quadVerts = [
@@ -127,26 +130,30 @@
             // Render
             gl.useProgram(PROGRAM);
 
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
+            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 16, 0);
+            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 16, 8);
+
             // Bind Vertex Coordinate
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            // gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
 
             // Bind Texture Coordinate
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
-            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+            // gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
+            // gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
 
             // Set the projection and viewport.
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
+            gl.uniform2fv(uMapSize, mMapSize);
+            mMapSize[0]++; mMapSize[1]++;
 
 
 
 
 
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
 
             // gl.enableVertexAttribArray(shader.attribute.position);
             // gl.enableVertexAttribArray(shader.attribute.texture);
@@ -162,6 +169,8 @@
 
 
 
+            gl.uniform2fv(uInverseSpriteTextureSize, inverseSpriteTextureSize);
+            gl.uniform2fv(uInverseTileTextureSize, inverseTileTextureSize);
 
 
 
@@ -172,13 +181,14 @@
 
             // Tell the shader to get the level map from texture unit 0
             gl.activeTexture(gl.TEXTURE1);
+            gl.uniform1i(uLevelMap, 1);
+            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+
             // gl.uniform1i(shader.uniform.tiles, 1);
             // gl.uniform2f(shader.uniform.viewOffset, Math.floor(x * layer.scrollScaleX), Math.floor(y * layer.scrollScaleY));
             // gl.uniform2fv(shader.uniform.inverseTileTextureSize, layer.inverseTextureSize);
             // gl.uniform1i(shader.uniform.repeatTiles, layer.repeat ? 1 : 0);
 
-            gl.uniform1i(uLevelMap, 0);
-            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -222,13 +232,14 @@
             // Lookup Uniforms
             uPMatrix = gl.getUniformLocation(program, "uPMatrix");
             uMVMatrix = gl.getUniformLocation(program, "uMVMatrix");
+            uMapSize = gl.getUniformLocation(program, "uMapSize");
+            uTileSheet = gl.getUniformLocation(program, "uTileSheet");
+            uLevelMap = gl.getUniformLocation(program, "uLevelMap");
             uTileSize = gl.getUniformLocation(program, "uTileSize");
             uInverseTileSize = gl.getUniformLocation(program, "uInverseTileSize");
             uInverseTileTextureSize = gl.getUniformLocation(program, "uInverseTileTextureSize");
             uInverseSpriteTextureSize = gl.getUniformLocation(program, "uInverseSpriteTextureSize");
 
-            gl.uniform2fv(uInverseTileTextureSize, inverseTileTextureSize);
-            gl.uniform2fv(uInverseSpriteTextureSize, inverseSpriteTextureSize);
             gl.uniform1f(uTileSize, tileSize);
             gl.uniform1f(uInverseTileSize, 1/tileSize);
 
@@ -246,7 +257,7 @@
             gl.activeTexture(gl.TEXTURE0 + 0);
 
             // bind to the TEXTURE_2D bind point of texture unit 0
-            gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
+            // gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
 
             PROGRAM = program;
         }
@@ -256,7 +267,7 @@
     // Static
 
     TileMap.FLAG_GENERATE_MIPMAP = 0x01;
-    TileMap.FLAG_DEFAULTS = TileMap.FLAG_GENERATE_MIPMAP;
+    TileMap.FLAG_DEFAULTS = 0; // TileMap.FLAG_GENERATE_MIPMAP;
 
     var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
@@ -286,7 +297,7 @@
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize;
+    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize;
 
     // Shader
     TileMap.VS = [
@@ -298,14 +309,16 @@
 
         "uniform mat4 uPMatrix;",
         "uniform mat4 uMVMatrix;",
+        "uniform vec2 uMapSize;",
         "uniform vec2 uInverseTileTextureSize;",
         "uniform float uInverseTileSize;",
 
         "void main(void) {",
         // "   vPixelCoordinate = (aTextureCoordinate * viewportSize) + viewOffset;",
-        "   vPixelCoordinate = aTextureCoordinate;",
+        "   vPixelCoordinate = aTextureCoordinate * uMapSize;",
         "   vTextureCoordinate = vPixelCoordinate * uInverseTileTextureSize * uInverseTileSize;",
         "   gl_Position = uPMatrix * uMVMatrix * aVertexPosition;",
+        // "   gl_Position = aVertexPosition;",
         "}"
     ].join("\n");
 
@@ -330,9 +343,114 @@
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * uTileSize;", // xy = rg
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
         "   gl_FragColor = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);",
-        //"   gl_FragColor = tile;",
+        // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
+// "   gl_FragColor = tile;",
         "}"
     ].join("\n");
 
 })();
 
+
+
+// "precision highp float;
+// attribute vec2 aVertexPosition;
+// attribute vec2 aTextureCoord;
+// attribute vec4 aColor;
+// attribute float aTextureId;
+//
+// uniform mat3 projectionMatrix;
+//
+// varying vec2 vTextureCoord;
+// varying vec4 vColor;
+// varying float vTextureId;
+//
+// void main(void){
+//     gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+//
+//     vTextureCoord = aTextureCoord;
+//     vTextureId = aTextureId;
+//     vColor = aColor;
+// }
+// "
+//
+//
+//
+//
+// "precision mediump float;
+// varying vec2 vTextureCoord;
+// varying vec4 vColor;
+// varying float vTextureId;
+// uniform sampler2D uSamplers[16];
+// void main(void){
+//     vec4 color;
+//     float textureId = floor(vTextureId+0.5);
+//
+//
+//     if(textureId == 0.0)
+//     {
+//         color = texture2D(uSamplers[0], vTextureCoord);
+//     }
+//     else if(textureId == 1.0)
+//     {
+//         color = texture2D(uSamplers[1], vTextureCoord);
+//     }
+//     else if(textureId == 2.0)
+//     {
+//         color = texture2D(uSamplers[2], vTextureCoord);
+//     }
+//     else if(textureId == 3.0)
+//     {
+//         color = texture2D(uSamplers[3], vTextureCoord);
+//     }
+//     else if(textureId == 4.0)
+//     {
+//         color = texture2D(uSamplers[4], vTextureCoord);
+//     }
+//     else if(textureId == 5.0)
+//     {
+//         color = texture2D(uSamplers[5], vTextureCoord);
+//     }
+//     else if(textureId == 6.0)
+//     {
+//         color = texture2D(uSamplers[6], vTextureCoord);
+//     }
+//     else if(textureId == 7.0)
+//     {
+//         color = texture2D(uSamplers[7], vTextureCoord);
+//     }
+//     else if(textureId == 8.0)
+//     {
+//         color = texture2D(uSamplers[8], vTextureCoord);
+//     }
+//     else if(textureId == 9.0)
+//     {
+//         color = texture2D(uSamplers[9], vTextureCoord);
+//     }
+//     else if(textureId == 10.0)
+//     {
+//         color = texture2D(uSamplers[10], vTextureCoord);
+//     }
+//     else if(textureId == 11.0)
+//     {
+//         color = texture2D(uSamplers[11], vTextureCoord);
+//     }
+//     else if(textureId == 12.0)
+//     {
+//         color = texture2D(uSamplers[12], vTextureCoord);
+//     }
+//     else if(textureId == 13.0)
+//     {
+//         color = texture2D(uSamplers[13], vTextureCoord);
+//     }
+//     else if(textureId == 14.0)
+//     {
+//         color = texture2D(uSamplers[14], vTextureCoord);
+//     }
+//     else
+//     {
+//         color = texture2D(uSamplers[15], vTextureCoord);
+//     }
+//
+//
+//     gl_FragColor = color * vColor;
+// }"

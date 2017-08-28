@@ -218,7 +218,7 @@
     // Static
 
     SpriteSheet.FLAG_GENERATE_MIPMAP = 0x01;
-    SpriteSheet.FLAG_DEFAULTS = SpriteSheet.FLAG_GENERATE_MIPMAP;
+    SpriteSheet.FLAG_DEFAULTS = 0; //SpriteSheet.FLAG_GENERATE_MIPMAP;
 
     var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];

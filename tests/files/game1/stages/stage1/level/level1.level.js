@@ -20,7 +20,8 @@
         var Fragment = Config.fragment;
 
         var renders = [
-            new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
+            new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64),
+            // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
 
         for(var i=0; i<renders.length; i++) {

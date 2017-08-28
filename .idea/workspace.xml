@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a08764d-d074-4a6e-b968-7d2d2b87606d" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/zelda.map.png" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/bklayer.map.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/level1.map.old.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/default.map.png" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/default.map.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/tiles/default.tiles.png" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/tiles/default.tiles.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js" />
     </list>
@@ -29,8 +32,8 @@
       <file leaf-file-name="tilemap.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="269" column="34" lean-forward="false" selection-start-line="269" selection-start-column="34" selection-end-line="269" selection-end-column="34" />
+            <state relative-caret-position="523">
+              <caret line="339" column="45" lean-forward="false" selection-start-line="339" selection-start-column="45" selection-end-line="339" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -49,7 +52,7 @@
       <file leaf-file-name="stage1.stage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="760">
+            <state relative-caret-position="1120">
               <caret line="77" column="20" lean-forward="false" selection-start-line="77" selection-start-column="20" selection-end-line="77" selection-end-column="20" />
               <folding />
             </state>
@@ -59,8 +62,8 @@
       <file leaf-file-name="level1.level.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="22" column="70" lean-forward="false" selection-start-line="22" selection-start-column="70" selection-end-line="22" selection-end-column="70" />
+            <state relative-caret-position="429">
+              <caret line="35" column="26" lean-forward="true" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -369,19 +372,19 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\stages\stage1\tiles" />
+      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\stages\stage1\map" />
+      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\fragment" />
+      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\sprites\fragment" />
+      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\games" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\stages\stage1" />
       <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\sprite\sheet\lem" />
       <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\graphics\misc" />
       <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1" />
       <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\sprites\level" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\fragment" />
-      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\game1\sprites\fragment" />
-      <recent name="C:\Users\ari\dev\relay-kernel\tests\files\games" />
-      <recent name="C:\Dev\relay-kernel\worker" />
-      <recent name="C:\Dev\relay-kernel\commands" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -568,7 +571,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="107814000" />
+    <option name="totallyTimeSpent" value="110035000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -811,26 +814,10 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="760">
-          <caret line="77" column="20" lean-forward="false" selection-start-line="77" selection-start-column="20" selection-end-line="77" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
           <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="22" column="70" lean-forward="false" selection-start-line="22" selection-start-column="70" selection-end-line="22" selection-end-column="70" />
           <folding />
         </state>
       </provider>
@@ -843,10 +830,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1120">
+          <caret line="77" column="20" lean-forward="false" selection-start-line="77" selection-start-column="20" selection-end-line="77" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="35" column="26" lean-forward="true" selection-start-line="35" selection-start-column="26" selection-end-line="35" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="269" column="34" lean-forward="false" selection-start-line="269" selection-start-column="34" selection-end-line="269" selection-end-column="34" />
+        <state relative-caret-position="523">
+          <caret line="339" column="45" lean-forward="false" selection-start-line="339" selection-start-column="45" selection-end-line="339" selection-end-column="45" />
           <folding />
         </state>
       </provider>

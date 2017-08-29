@@ -27,7 +27,7 @@
         for(var i=0; i<renders.length; i++) {
             var render = renders[i];
             // render.setAcceleration(0,0,-0.00002 * i);
-            render.setVelocity(-0.001,-0.0001,0.003);
+            render.setVelocity(-0.001,-0.0004,0.003);
         }
 
 

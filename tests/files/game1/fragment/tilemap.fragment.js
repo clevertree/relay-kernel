@@ -163,8 +163,7 @@
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             gl.uniform2fv(uMapSize, mMapSize);
-            mMapSize[0]+=10; mMapSize[1]+=10;
-            mMapSize[0]+=10; mMapSize[1]+=10;
+            mMapSize[0]+=2; mMapSize[1]+=2;
 
 
 

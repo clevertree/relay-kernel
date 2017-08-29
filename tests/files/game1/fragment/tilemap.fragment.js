@@ -319,6 +319,7 @@
     TileMap.VS = [
         "attribute vec4 aVertexPosition;",
         "attribute vec2 aTextureCoordinate;",
+        // "attribute vec4 aColor;",
 
         "varying vec2 vPixelCoordinate;",
         "varying vec2 vTextureCoordinate;",
@@ -334,6 +335,7 @@
         "   vPixelCoordinate = aTextureCoordinate * uMapSize;",
         "   vTextureCoordinate = vPixelCoordinate * uInverseTileTextureSize * uInverseTileSize;",
         "   gl_Position = uPMatrix * uMVMatrix * aVertexPosition;",
+        // "   vColor = aColor;",
         // "   gl_Position = aVertexPosition;",
         "}"
     ].join("\n");
@@ -343,6 +345,7 @@
 
         "varying vec2 vPixelCoordinate;",
         "varying vec2 vTextureCoordinate;",
+        // "varying vec4 vColor;",
 
         "uniform sampler2D uLevelMap;",
         "uniform sampler2D uTileSheet;",
@@ -358,7 +361,9 @@
         "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * uTileSize;", // xy = rg
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
-        "   gl_FragColor = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);",
+        "   vec4 sprite = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);", //  * vColor
+        "   sprite.w *= tile.w;", //  * vColor
+        "   gl_FragColor = sprite;", //  * vColor
         // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
 // "   gl_FragColor = tile;",
         "}"

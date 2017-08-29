@@ -63,7 +63,7 @@
 
             // Clear background
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-            gl.clearColor(0.3, 0.1, 0.3, 0.1);
+            gl.clearColor(0.03, 0.1, 0.03, 0.1);
             gl.clearDepth(1.0);
 
             // Enable blending
@@ -71,12 +71,12 @@
             gl.enable(gl.BLEND);
 
             // Enable Depth testing
-            gl.enable(gl.DEPTH_TEST);
-            gl.depthFunc(gl.LESS);
+            // gl.enable(gl.DEPTH_TEST); // Depth test creates those ugly opaque textures
+            // gl.depthFunc(gl.LESS);
 
             // Render
-            Level1.render(elapsedTime, gl, this);
             Player1.render(elapsedTime, gl, this);
+            Level1.render(elapsedTime, gl, this);
         }
 
     }

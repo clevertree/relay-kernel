@@ -22,6 +22,7 @@
     };
     window.games.game1 = Config;
 
+    document.addEventListener('click', handleClickEvent);
     document.addEventListener('response:play', handlePlayResponse);
     // window.addEventListener('resize', handleWindowResize);
 
@@ -81,6 +82,19 @@
             if (!event.defaultPrevented)
                 throw new Error("Render event was not handled");
         });
+    }
+
+    function handleClickEvent(e) {
+        if(e.target.nodeName.toLowerCase() !== 'canvas')
+            return;
+        var canvas = e.target;
+        if(!canvas.classList.contains("play:canvas"))
+            return;
+            // elemLeft = canvas.offsetLeft,
+            // elemTop = canvas.offsetTop;
+        var x = event.pageX - canvas.offsetLeft,
+            y = event.pageY - canvas.offsetTop;
+        console.log("Click:", x, y);
     }
 
     // Util

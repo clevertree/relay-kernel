@@ -9,12 +9,14 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, mModelView, mVelocity, mAcceleration) {
+    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
+        vColor =                vColor || defaultColor;
+        var vActiveColor =      vColor.slice(0);
 
         // Set up public object
         this.render =           render;
@@ -137,10 +139,10 @@
         // Functions
 
 
-        function render(elapsedTime, gl, stage, flags) {
+        function render(t, gl, stage, flags) {
 
             // Update
-            update(elapsedTime, stage);
+            update(t, stage, flags);
 
             // Render
             gl.useProgram(PROGRAM);
@@ -163,6 +165,8 @@
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             gl.uniform2fv(uMapSize, mMapSize);
+            gl.uniform4fv(uColor, vActiveColor);
+
             mMapSize[0]+=2; mMapSize[1]+=2;
 
 
@@ -217,7 +221,7 @@
         }
 
         var frameCount = 0; var sinceLastFrame = 0;
-        function update(elapsedTime, stage) {
+        function update(t, stage, flags) {
             frameCount++;
 
             if(mAcceleration)
@@ -225,6 +229,17 @@
 
             if(mVelocity)
                 mModelView = Util.multiply(mModelView, mVelocity);
+
+            if(flags & Config.flags.RENDER_SELECTED) {
+                if(vActiveColor === vColor)
+                    vActiveColor = vColor.slice(0);
+                vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
+                vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
+                vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
+                vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+            } else {
+                vActiveColor = vColor
+            }
         }
 
         function initProgram(gl) {
@@ -248,6 +263,7 @@
             uTileSheet = gl.getUniformLocation(program, "uTileSheet");
             uLevelMap = gl.getUniformLocation(program, "uLevelMap");
             uTileSize = gl.getUniformLocation(program, "uTileSize");
+            uColor = gl.getUniformLocation(program, "uColor");
             uInverseTileSize = gl.getUniformLocation(program, "uInverseTileSize");
             uInverseTileTextureSize = gl.getUniformLocation(program, "uInverseTileTextureSize");
             uInverseSpriteTextureSize = gl.getUniformLocation(program, "uInverseSpriteTextureSize");
@@ -286,6 +302,7 @@
 
     var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+    var defaultColor = new Float32Array([1,1,1,1]);
 
 
     // Put a unit quad in the buffer
@@ -312,7 +329,7 @@
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize;
+    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize, uColor;
 
     // Shader
     TileMap.VS = [
@@ -348,6 +365,7 @@
 
         "uniform sampler2D uLevelMap;",
         "uniform sampler2D uTileSheet;",
+        "uniform vec4 uColor;",
 
         "uniform vec2 uInverseTileTextureSize;",
         "uniform vec2 uInverseSpriteTextureSize;",
@@ -362,7 +380,7 @@
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
         "   vec4 sprite = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);", //  * vColor
         "   sprite.w *= tile.w;", //  * vColor
-        "   gl_FragColor = sprite;", //  * vColor
+        "   gl_FragColor = sprite * uColor;", //  * vColor
         // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
 // "   gl_FragColor = tile;",
         "}"

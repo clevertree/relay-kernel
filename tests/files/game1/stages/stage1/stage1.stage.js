@@ -65,10 +65,8 @@
 
         // Set up render loop
 
-        var lastTime = 0, lastKeyCount = 0;
+        var lastKeyCount = 0;
         function onFrame(t) {
-            var elapsedTime = t - lastTime;
-            lastTime = t;
 
             window.requestAnimationFrame(onFrame);
 
@@ -89,7 +87,7 @@
 
             if(lastKeyCount < Config.input.keyEvents) {
                 lastKeyCount = Config.input.keyEvents;
-                handleKeyChange(elapsedTime);
+                handleKeyChange();
                 // console.log("Key Change", Config.input.lastKey);
             }
 
@@ -97,12 +95,12 @@
             for(var i=0; i<renders.length; i++) {
                 var flags = stageFlags;
                 if(selectedRender === i)    flags |= Config.flags.RENDER_SELECTED;
-                renders[i].render(elapsedTime, gl, this, flags);
+                renders[i].render(t, gl, this, flags);
             }
         }
 
         var keyTildeCount = 0, keyTabCount = 0;
-        function handleKeyChange(elapsedTime) {
+        function handleKeyChange() {
             if(keyTildeCount < Config.input.keyCount[CHAR_TILDE]) {
                 keyTildeCount = Config.input.keyCount[CHAR_TILDE];
                 if(stageFlags & Config.flags.MODE_EDITOR) {

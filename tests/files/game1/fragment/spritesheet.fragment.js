@@ -9,7 +9,7 @@
 
     var PROGRAM;
 
-    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, frameRate, flags, mModelView, glLineMode, mVelocity, mAcceleration) {
+    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, frameRate, flags, vColor, mModelView, glLineMode, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined') flags = SpriteSheet.FLAG_DEFAULTS;
         if(typeof frameRate === 'undefined') frameRate = (1/20 * 1000);
 
@@ -18,6 +18,8 @@
 
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
+        vColor =                vColor || defaultColor;
+        var vActiveColor =      vColor.slice(0);
 
         // Set up public object
         this.render =           render;
@@ -85,11 +87,11 @@
 
         // Functions
 
-
-        function render(elapsedTime, gl, stage, flags) {
+        var lastKeyCount = 0;
+        function render(t, gl, stage, flags) {
 
             // Update
-            update(elapsedTime, stage);
+            update(t, stage, flags);
 
             // Render
             gl.useProgram(PROGRAM);
@@ -106,6 +108,7 @@
             // Set the projection and viewport.
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
+            gl.uniform4fv(uColor, vActiveColor);
 
             // Tell the shader to get the texture from texture unit 0
             gl.activeTexture(gl.TEXTURE0 + 0);
@@ -146,7 +149,10 @@
         }
 
         var frameCount = 0; var sinceLastFrame = 0;
-        function update(elapsedTime, stage) {
+        var lastTime = 0;
+        function update(t, stage, flags) {
+            var elapsedTime = t - lastTime;
+            lastTime = t;
             frameCount++;
 
             if(mAcceleration)
@@ -173,6 +179,17 @@
                 }
                 setTilePosition(tilePos[0], tilePos[1]);
             }
+
+            if(flags & Config.flags.RENDER_SELECTED) {
+                if(vActiveColor === vColor)
+                    vActiveColor = vColor.slice(0);
+                vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
+                vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
+                vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
+                vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+            } else {
+                vActiveColor = vColor
+            }
         }
 
         function initProgram(gl) {
@@ -193,6 +210,7 @@
             uPMatrix = gl.getUniformLocation(program, "uPMatrix");
             uMVMatrix = gl.getUniformLocation(program, "uMVMatrix");
             uSampler = gl.getUniformLocation(program, "uSampler");
+            uColor = gl.getUniformLocation(program, "uColor");
 
             // Create a Vertex Position Buffer.
             bufVertexPosition = gl.createBuffer();
@@ -244,11 +262,12 @@
         1, 1,
     ]);
 
+    var defaultColor = new Float32Array([1,1,1,1]);
     // Texture Program
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uSampler;
+    var uPMatrix, uMVMatrix, uSampler, uColor;
 
     SpriteSheet.VS = [
         "attribute vec4 aVertexPosition;",
@@ -269,11 +288,12 @@
         "precision mediump float;",
 
         "uniform sampler2D uSampler;",
+        "uniform vec4 uColor;",
 
         "varying vec2 vTextureCoordinate;",
 
         "void main() {",
-        "    gl_FragColor = texture2D(uSampler, vTextureCoordinate);",
+        "    gl_FragColor = texture2D(uSampler, vTextureCoordinate) * uColor;",
         "}"
     ].join("\n");
 

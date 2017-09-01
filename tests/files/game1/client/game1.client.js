@@ -12,18 +12,31 @@
 
     var ROOT = 'tests/files/game1/';
     var Config = {}, Util = {};
+    var pressedKeys = {}, keyCount = {};
     Config.fragment = {};
     Config.character = {};
     Config.level = {};
+    Config.input = { pressedKeys:pressedKeys, keyCount: keyCount, keyEvents: 0, lastKey: null };
     Config.util = Util;
     Config.path = {
         root: ROOT,
         stage_default: ROOT + 'stages/stage1/stage1.stage.js'
     };
+    Config.flags = {
+        MODE_DEFAULT: 0x00,
+        MODE_EDITOR: 0x01,
+        MODE_CONSOLE: 0x02,
+
+        RENDER_SELECTED: 0x10
+    };
     window.games.game1 = Config;
 
-    document.addEventListener('click', handleClickEvent);
+    // Event Handlers
+
     document.addEventListener('response:play', handlePlayResponse);
+    document.addEventListener('keydown', handleKeyDown); // TODO: too strong?
+    document.addEventListener('keyup', handleKeyUp);
+
     // window.addEventListener('resize', handleWindowResize);
 
     // Canvas Loading
@@ -51,6 +64,21 @@
         }
     }
 
+    function handleKeyDown(e) {
+        if(e.keyCode === 9)
+            e.preventDefault();
+        if(pressedKeys[e.keyCode] !== true) {
+            pressedKeys[e.keyCode] = true;
+            keyCount[e.keyCode] = (keyCount[e.keyCode] || 0) + 1;
+            Config.input.keyEvents++;
+            Config.input.lastKey = e.keyCode;
+        }
+    }
+    function handleKeyUp(e) {
+        pressedKeys[e.keyCode] = false;
+        Config.input.keyEvents++;
+        // e.preventDefault();
+    }
 
     function play(stagePath) {
         stagePath = stagePath || Config.path.stage_default;
@@ -77,6 +105,9 @@
 
             for(var i=0; i<canvasList.length; i++) {
                 var canvas = canvasList[i];
+
+                canvas.addEventListener('click', handleClickEvent);
+
                 canvas.dispatchEvent(event);
             }
             if (!event.defaultPrevented)

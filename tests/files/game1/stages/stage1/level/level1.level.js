@@ -45,10 +45,10 @@
          * @param gl WebGL Instance
          * @param stage
          */
-        this.render = function(e, gl, stage) {
+        this.render = function(e, gl, stage, flags) {
             for(var i=0; i<renders.length; i++) {
                 var render = renders[i];
-                render.render(e, gl, stage);
+                render.render(e, gl, stage, flags);
             }
         };
 

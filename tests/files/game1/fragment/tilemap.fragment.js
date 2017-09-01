@@ -137,7 +137,7 @@
         // Functions
 
 
-        function render(elapsedTime, gl, stage) {
+        function render(elapsedTime, gl, stage, flags) {
 
             // Update
             update(elapsedTime, stage);

@@ -27,7 +27,7 @@
 
         // Functions
 
-        function render(elapsedTime, gl, stage) {
+        function render(elapsedTime, gl, stage, flags) {
             if(!PROGRAM)
                 initProgram(gl);
 

@@ -17,6 +17,7 @@
         mModelView =            mModelView || defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
         var vActiveColor =      vColor.slice(0);
+        var vActiveColorRange = [100,100,1000,10000];
 
         // Set up public object
         this.render =           render;
@@ -166,6 +167,7 @@
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             gl.uniform2fv(uMapSize, mMapSize);
             gl.uniform4fv(uColor, vActiveColor);
+            gl.uniform4fv(uColorRange, vActiveColorRange);
 
             mMapSize[0]+=2; mMapSize[1]+=2;
 
@@ -264,6 +266,7 @@
             uLevelMap = gl.getUniformLocation(program, "uLevelMap");
             uTileSize = gl.getUniformLocation(program, "uTileSize");
             uColor = gl.getUniformLocation(program, "uColor");
+            uColorRange = gl.getUniformLocation(program, "uColorRange");
             uInverseTileSize = gl.getUniformLocation(program, "uInverseTileSize");
             uInverseTileTextureSize = gl.getUniformLocation(program, "uInverseTileTextureSize");
             uInverseSpriteTextureSize = gl.getUniformLocation(program, "uInverseSpriteTextureSize");
@@ -329,7 +332,7 @@
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize, uColor;
+    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTileSheet, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize, uColor, uColorRange;
 
     // Shader
     TileMap.VS = [
@@ -366,6 +369,7 @@
         "uniform sampler2D uLevelMap;",
         "uniform sampler2D uTileSheet;",
         "uniform vec4 uColor;",
+        "uniform vec4 uColorRange;",
 
         "uniform vec2 uInverseTileTextureSize;",
         "uniform vec2 uInverseSpriteTextureSize;",
@@ -380,7 +384,10 @@
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
         "   vec4 sprite = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);", //  * vColor
         "   sprite.w *= tile.w;", //  * vColor
-        "   gl_FragColor = sprite * uColor;", //  * vColor
+        // "   if(tile.x > uColorRange.x && tile.y > uColorRange.y && tile.x < uColorRange.z && tile.y < uColorRange.w)",
+        "   if(vPixelCoordinate.x >= uColorRange.x && vPixelCoordinate.y >= uColorRange.y && vPixelCoordinate.x <= uColorRange.z && vPixelCoordinate.y <= uColorRange.w)",
+        "       sprite *= uColor;", //  * vColor
+        "   gl_FragColor = sprite;", //  * vColor
         // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
 // "   gl_FragColor = tile;",
         "}"

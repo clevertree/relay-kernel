@@ -33,22 +33,23 @@
 
         /**
          * Update Sprite Logic
-         * @param duration
+         * @param t
          */
-        this.update = function(duration) {
+        this.update = function(t) {
 
         };
 
         /**
          * Render Sprite
-         * @param e Event
+         * @param t time elapsed
          * @param gl WebGL Instance
          * @param stage
+         * @param flags
          */
-        this.render = function(e, gl, stage, flags) {
+        this.render = function(t, gl, stage, flags) {
             for(var i=0; i<renders.length; i++) {
                 var render = renders[i];
-                render.render(e, gl, stage, flags);
+                render.render(t, gl, stage, flags);
             }
         };
 

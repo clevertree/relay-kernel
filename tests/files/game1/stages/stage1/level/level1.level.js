@@ -14,20 +14,16 @@
     Config.level.Level1 = Level1;
 
     function Level1(gl) {
-        var Config = window.games.game1;
-        var Util = Config.util;
-
-        var Fragment = Config.fragment;
 
         var renders = [
-            new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64),
+            new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 32),
             // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
 
         for(var i=0; i<renders.length; i++) {
             var render = renders[i];
             // render.setAcceleration(0,0,-0.00002 * i);
-            render.setVelocity(-0.001,0.0004,0.003);
+            // render.setVelocity(-0.001,0.0003,0.003);
         }
 
 

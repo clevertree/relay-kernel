@@ -76,7 +76,7 @@
     }
     function handleKeyUp(e) {
         pressedKeys[e.keyCode] = false;
-        Config.input.keyEvents++;
+        // Config.input.keyEvents++;
         // e.preventDefault();
     }
 

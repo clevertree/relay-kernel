@@ -9,15 +9,16 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
+    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, mMapSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
+        mMapSize =              mMapSize || [512,512];
         var vActiveColor =      vColor.slice(0);
-        var vActiveColorRange = [100,100,1000,10000];
+        var vActiveColorRange = [0,0,tileSize,tileSize];
 
         // Set up public object
         this.render =           render;
@@ -32,9 +33,8 @@
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
-        var mMapSize = [1,1];
 
-            // Initiate Shaders
+        // Initiate Shaders
         if(!PROGRAM)
             initProgram(gl);
 
@@ -163,26 +163,13 @@
 
 
             // Set the projection and viewport.
-            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
+            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             gl.uniform2fv(uMapSize, mMapSize);
             gl.uniform4fv(uColor, vActiveColor);
             gl.uniform4fv(uColorRange, vActiveColorRange);
 
-            mMapSize[0]+=2; mMapSize[1]+=2;
-
-
-
-            // gl.enableVertexAttribArray(shader.attribute.position);
-            // gl.enableVertexAttribArray(shader.attribute.texture);
-            // gl.vertexAttribPointer(shader.attribute.position, 2, gl.FLOAT, false, 16, 0);
-            // gl.vertexAttribPointer(shader.attribute.texture, 2, gl.FLOAT, false, 16, 8);
-
-            // gl.uniform2fv(shader.uniform.viewportSize, this.scaledViewportSize);
-            // gl.uniform2fv(shader.uniform.inverseSpriteTextureSize, this.inverseSpriteTextureSize);
-            // gl.uniform1f(shader.uniform.tileSize, this.tileSize);
-            // gl.uniform1f(shader.uniform.uInverseTileSize, 1/this.tileSize);
-
+            // mMapSize[0]+=1; mMapSize[1]+=1;
 
 
 
@@ -222,7 +209,7 @@
             mAcceleration = Util.translation(ax, ay, az);
         }
 
-        var frameCount = 0; var sinceLastFrame = 0;
+        var frameCount = 0; var lastKeyCount = 0;
         function update(t, stage, flags) {
             frameCount++;
 
@@ -239,9 +226,66 @@
                 vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
                 vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
                 vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+                updateEditor(t, stage, flags);
             } else {
                 vActiveColor = vColor
             }
+
+        }
+
+        var CHAR_LEFT = 37, CHAR_UP = 38, CHAR_RIGHT = 39, CHAR_DOWN = 40, CHAR_SHIFT = 16, CHAR_N = 78;
+        function updateEditor(t, stage, flags) {
+
+            if(lastKeyCount < Config.input.keyEvents) {
+                var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
+                lastKeyCount = Config.input.keyEvents;
+                switch(Config.input.lastKey) {
+                    case CHAR_RIGHT:
+                        moveEditorSelection(tileSize * noShift, 0, tileSize, 0);
+                        break;
+                    case CHAR_LEFT:
+                        moveEditorSelection(-tileSize * noShift, 0, -tileSize, 0);
+                        break;
+                    case CHAR_DOWN:
+                        moveEditorSelection(0, tileSize * noShift, 0, tileSize);
+                        break;
+                    case CHAR_UP:
+                        moveEditorSelection(0, -tileSize * noShift, 0, -tileSize);
+                        break;
+
+                    case CHAR_N:
+                        var lastPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
+                        console.log(lastPixel);
+                        break;
+                    default:
+                        console.log("Key Change", noShift, Config.input.lastKey);
+                }
+            }
+        }
+
+        function moveEditorSelection(vx, vy, vw, vh) {
+            vActiveColorRange[0] += vx;
+            vActiveColorRange[1] += vy;
+            vActiveColorRange[2] += vw;
+            vActiveColorRange[3] += vh;
+            if(vActiveColorRange[0] < 0) vActiveColorRange[0] = 0;
+            if(vActiveColorRange[1] < 0) vActiveColorRange[1] = 0;
+            if(vActiveColorRange[2] <= tileSize) vActiveColorRange[2] = tileSize;
+            if(vActiveColorRange[2] <= vActiveColorRange[0] + tileSize) vActiveColorRange[0] = vActiveColorRange[2] - tileSize;
+            if(vActiveColorRange[3] <= tileSize) vActiveColorRange[3] = tileSize;
+            if(vActiveColorRange[3] <= vActiveColorRange[1] + tileSize) vActiveColorRange[1] = vActiveColorRange[3] - tileSize;
+        }
+
+        var mapContext;
+        function getEditorMapPixel(x, y, w, h) {
+            if(!mapContext) {
+                var canvas = document.createElement('canvas');
+                mapContext = canvas.getContext('2d');
+                console.log("Creating Image Editor Context", mapContext);
+            }
+            mapContext.drawImage(iLevelMap, 0, 0);
+            var data = mapContext.getImageData(x, y, w||1, h||1).data;
+            return data;
         }
 
         function initProgram(gl) {
@@ -303,8 +347,7 @@
     TileMap.FLAG_REPEAT_MAP = 0x20;
     TileMap.FLAG_DEFAULTS = 0x10; // TileMap.FLAG_GENERATE_MIPMAP;
 
-    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
-    var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+    var defaultModelViewMatrix = [10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
 
 
@@ -394,108 +437,3 @@
     ].join("\n");
 
 })();
-
-
-
-// "precision highp float;
-// attribute vec2 aVertexPosition;
-// attribute vec2 aTextureCoord;
-// attribute vec4 aColor;
-// attribute float aTextureId;
-//
-// uniform mat3 projectionMatrix;
-//
-// varying vec2 vTextureCoord;
-// varying vec4 vColor;
-// varying float vTextureId;
-//
-// void main(void){
-//     gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-//
-//     vTextureCoord = aTextureCoord;
-//     vTextureId = aTextureId;
-//     vColor = aColor;
-// }
-// "
-//
-//
-//
-//
-// "precision mediump float;
-// varying vec2 vTextureCoord;
-// varying vec4 vColor;
-// varying float vTextureId;
-// uniform sampler2D uSamplers[16];
-// void main(void){
-//     vec4 color;
-//     float textureId = floor(vTextureId+0.5);
-//
-//
-//     if(textureId == 0.0)
-//     {
-//         color = texture2D(uSamplers[0], vTextureCoord);
-//     }
-//     else if(textureId == 1.0)
-//     {
-//         color = texture2D(uSamplers[1], vTextureCoord);
-//     }
-//     else if(textureId == 2.0)
-//     {
-//         color = texture2D(uSamplers[2], vTextureCoord);
-//     }
-//     else if(textureId == 3.0)
-//     {
-//         color = texture2D(uSamplers[3], vTextureCoord);
-//     }
-//     else if(textureId == 4.0)
-//     {
-//         color = texture2D(uSamplers[4], vTextureCoord);
-//     }
-//     else if(textureId == 5.0)
-//     {
-//         color = texture2D(uSamplers[5], vTextureCoord);
-//     }
-//     else if(textureId == 6.0)
-//     {
-//         color = texture2D(uSamplers[6], vTextureCoord);
-//     }
-//     else if(textureId == 7.0)
-//     {
-//         color = texture2D(uSamplers[7], vTextureCoord);
-//     }
-//     else if(textureId == 8.0)
-//     {
-//         color = texture2D(uSamplers[8], vTextureCoord);
-//     }
-//     else if(textureId == 9.0)
-//     {
-//         color = texture2D(uSamplers[9], vTextureCoord);
-//     }
-//     else if(textureId == 10.0)
-//     {
-//         color = texture2D(uSamplers[10], vTextureCoord);
-//     }
-//     else if(textureId == 11.0)
-//     {
-//         color = texture2D(uSamplers[11], vTextureCoord);
-//     }
-//     else if(textureId == 12.0)
-//     {
-//         color = texture2D(uSamplers[12], vTextureCoord);
-//     }
-//     else if(textureId == 13.0)
-//     {
-//         color = texture2D(uSamplers[13], vTextureCoord);
-//     }
-//     else if(textureId == 14.0)
-//     {
-//         color = texture2D(uSamplers[14], vTextureCoord);
-//     }
-//     else
-//     {
-//         color = texture2D(uSamplers[15], vTextureCoord);
-//     }
-//
-//
-//     gl_FragColor = color * vColor;
-// }"

@@ -28,14 +28,13 @@
 
     function Stage1(e) {
         var Config = window.games.game1, THIS = this;
-        // var Util = Config.util;
+        var Util = Config.util;
 
         var canvas = e.target;
 
         var gl = canvas.getContext('webgl');
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+        window.addEventListener('resize', handleResize);
+        handleResize();
 
         // Flags
         var stageFlags = Config.flags.MODE_DEFAULT;
@@ -52,10 +51,14 @@
         var renders = [
             Player1, Level1
         ];
-        var selectedRender = 0;
+        var selectedRender = renders.length - 1;
 
         // Default FOV
-        this.mProjection = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+        this.mProjection = [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            1, 0, 0, -1,
+            0, 0, 0, 10];
 
         // Set up Stage Object
 
@@ -65,10 +68,15 @@
 
         // Set up render loop
 
-        var lastKeyCount = 0;
+        var lastKeyCount = 0, frameCount = 0;
         function onFrame(t) {
-
+            frameCount++;
             window.requestAnimationFrame(onFrame);
+
+            // THIS.mProjection[9]+=0.0001;
+            // this.mProjection = Util.projection(frameCount, frameCount, frameCount); // [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+
+
 
             // Clear background
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -95,7 +103,7 @@
             for(var i=0; i<renders.length; i++) {
                 var flags = stageFlags;
                 if(selectedRender === i)    flags |= Config.flags.RENDER_SELECTED;
-                renders[i].render(t, gl, this, flags);
+                renders[i].render(t, gl, THIS, flags);
             }
         }
 
@@ -128,6 +136,13 @@
                 console.log("Selected:", renders[selectedRender]);
             }
 
+        }
+
+        function handleResize() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            // console.log("Canvas Resized: ", canvas);
         }
 
     }

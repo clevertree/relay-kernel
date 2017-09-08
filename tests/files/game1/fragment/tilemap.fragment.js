@@ -33,6 +33,7 @@
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
+        var levelMapData, levelMapSize = [1,1];
 
         // Initiate Shaders
         if(!PROGRAM)
@@ -118,7 +119,13 @@
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
+            levelMapSize = [iLevelMap.width, iLevelMap.height];
             inverseTileTextureSize = [1 / iLevelMap.width, 1 / iLevelMap.height];
+
+            var canvas = document.createElement('canvas');
+            var mapContext = canvas.getContext('2d');
+            mapContext.drawImage(iLevelMap, 0, 0);
+            levelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
         });
 
         var quadVerts = [
@@ -232,31 +239,43 @@
             }
 
         }
-
-        var CHAR_LEFT = 37, CHAR_UP = 38, CHAR_RIGHT = 39, CHAR_DOWN = 40, CHAR_SHIFT = 16, CHAR_N = 78;
+        var CHAR_SHIFT = 16;
         function updateEditor(t, stage, flags) {
 
             if(lastKeyCount < Config.input.keyEvents) {
                 var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
-                    case CHAR_RIGHT:
+                    case 39: // RIGHT:
                         moveEditorSelection(tileSize * noShift, 0, tileSize, 0);
                         break;
-                    case CHAR_LEFT:
+                    case 37: // LEFT
                         moveEditorSelection(-tileSize * noShift, 0, -tileSize, 0);
                         break;
-                    case CHAR_DOWN:
+                    case 40: // DOWN:
                         moveEditorSelection(0, tileSize * noShift, 0, tileSize);
                         break;
-                    case CHAR_UP:
+                    case 38: // UP:
                         moveEditorSelection(0, -tileSize * noShift, 0, -tileSize);
                         break;
 
-                    case CHAR_N:
-                        var lastPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
-                        console.log(lastPixel);
+                    case 78: // N:
+                        changeEditorNextPixel();
                         break;
+
+                    case 76: // L
+                        changeEditorLastPixel();
+                        break;
+
+                    case 67: // C
+                        copyEditorPixel();
+                        break;
+
+                    case 86: // V
+                        pasteEditorPixel();
+                        break;
+
+
                     default:
                         console.log("Key Change", noShift, Config.input.lastKey);
                 }
@@ -276,17 +295,101 @@
             if(vActiveColorRange[3] <= vActiveColorRange[1] + tileSize) vActiveColorRange[1] = vActiveColorRange[3] - tileSize;
         }
 
-        var mapContext;
-        function getEditorMapPixel(x, y, w, h) {
-            if(!mapContext) {
-                var canvas = document.createElement('canvas');
-                mapContext = canvas.getContext('2d');
-                console.log("Creating Image Editor Context", mapContext);
+        function changeEditorNextPixel() {
+            var toPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
+            // Next Pixel in the row
+            toPixel[0]++;
+            if(toPixel[0]>255) {
+                toPixel[0] = 0;
+                toPixel[1]++;
+                if(toPixel[1] > 255)
+                    toPixel[1] = 0;
             }
-            mapContext.drawImage(iLevelMap, 0, 0);
-            var data = mapContext.getImageData(x, y, w||1, h||1).data;
-            return data;
+            changeEditorPixel(toPixel);
         }
+
+        function changeEditorLastPixel() {
+            var toPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
+            // Next Pixel in the row
+            toPixel[0]--;
+            if(toPixel[0]<0) {
+                toPixel[0] = 255;
+                toPixel[1]--;
+                if(toPixel[1] < 0)
+                    toPixel[1] = 255;
+            }
+            changeEditorPixel(toPixel);
+        }
+
+        function changeEditorPixel(toPixel) {
+            for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
+                for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
+                    var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
+                    levelMapData.data[pos+0] = toPixel[0];
+                    levelMapData.data[pos+1] = toPixel[1];
+                    levelMapData.data[pos+2] = toPixel[2];
+                    levelMapData.data[pos+3] = toPixel[3];
+                }
+            }
+
+            // Upload the image into the texture.
+            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
+        }
+
+        var pixelCache;
+        function copyEditorPixel() {
+            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
+            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
+            pixelCache = new ImageData(w, h);
+            var i = 0;
+            for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
+                for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
+                    var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
+                    pixelCache.data[i++] = levelMapData.data[pos+0];
+                    pixelCache.data[i++] = levelMapData.data[pos+1];
+                    pixelCache.data[i++] = levelMapData.data[pos+2];
+                    pixelCache.data[i++] = levelMapData.data[pos+3];
+                }
+            }
+            console.log("Copied: ", pixelCache);
+        }
+
+        function pasteEditorPixel() {
+            if(!pixelCache)
+                throw new Error("No pixel cache");
+
+            var dx = vActiveColorRange[0] / tileSize;
+            var dy = vActiveColorRange[1] / tileSize;
+            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
+            if(pixelCache.width < w) w = pixelCache.width;
+            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
+            if(pixelCache.height < h) h = pixelCache.height;
+
+            for(var x=0; x<w; x++) {
+                for(var y=0; y<h; y++) {
+                    var pos = x*4 + y*4*pixelCache.width;
+                    var dpos = (x+dx)*4 + (y+dy)*4*levelMapSize[0];
+
+                    levelMapData.data[dpos+0] = pixelCache.data[pos+0];
+                    levelMapData.data[dpos+1] = pixelCache.data[pos+1];
+                    levelMapData.data[dpos+2] = pixelCache.data[pos+2];
+                    levelMapData.data[dpos+3] = pixelCache.data[pos+3];
+                }
+            }
+
+            // Upload the image into the texture.
+            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
+            console.log("Pasted: ", pixelCache);
+        }
+
+        function getEditorMapPixel(x, y) {
+            var pos = x*4 + y*4*levelMapSize[0];
+            return levelMapData.data.slice(pos, pos+4);
+        }
+
+
 
         function initProgram(gl) {
 

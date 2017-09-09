@@ -51,10 +51,10 @@
         var renders = [
             Player1, Level1
         ];
-        var selectedRender = renders.length - 1;
+        var selectedRender = -1; // renders.length - 1;
 
         // Default FOV
-        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, -1, -1, 0, 0, 2];
+        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1];
 
         // Set up render loop
 
@@ -134,12 +134,12 @@
             if(selectedRender === -1) {
                 var V = 0.03;
                 var pressedKeys = Config.input.pressedKeys;
-                if(pressedKeys[39])     move( V,  0,  0);  // Right:
-                if(pressedKeys[37])     move(-V,  0,  0);  // Left:
-                if(pressedKeys[40])     move( 0, -V,  0);  // Down:
-                if(pressedKeys[38])     move( 0,  V,  0);  // Up:
-                if(pressedKeys[34])     move( 0,  0, -V);  // Page Down:
-                if(pressedKeys[33])     move( 0,  0,  V);  // Page Up:
+                if(pressedKeys[39])     move(-V,  0,  0);  // Right:
+                if(pressedKeys[37])     move( V,  0,  0);  // Left:
+                if(pressedKeys[40])     move( 0,  V,  0);  // Down:
+                if(pressedKeys[38])     move( 0, -V,  0);  // Up:
+                if(pressedKeys[34])     move( 0,  0,  V);  // Page Down:
+                if(pressedKeys[33])     move( 0,  0, -V);  // Page Up:
             }
         }
 

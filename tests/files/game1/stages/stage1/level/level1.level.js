@@ -16,7 +16,7 @@
     function Level1(gl) {
 
         var renders = [
-            new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 32),
+            new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64),
             // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
 

@@ -21,13 +21,6 @@
         vColor =                vColor || defaultColor;
         var vActiveColor =      vColor.slice(0);
 
-        // Set up public object
-        this.render =           render;
-        this.update =           update;
-        this.setVelocity =      setVelocity;
-        this.setAcceleration =  setAcceleration;
-        this.move =             move;
-
         // Set up private properties
         var tilePos = [0, 0];
         var mTextureCoordinates = defaultTextureCoordinates;
@@ -107,7 +100,7 @@
             gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
             // Set the projection and viewport.
-            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection || defaultProjectionMatrix);
+            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             gl.uniform4fv(uColor, vActiveColor);
 
@@ -194,7 +187,11 @@
         }
 
         function move(tx, ty, tz) {
-            mModelView = Util.translate(mModelView, tx, ty, tz)
+            mModelView = Util.translate(mModelView, tx, ty, tz);
+        }
+
+        function scale(sx, sy, sz) {
+            mModelView = Util.scale(mModelView, sx, sy, sz);
         }
 
         function initProgram(gl) {
@@ -236,6 +233,13 @@
             PROGRAM = program;
         }
 
+        // Set up public object
+        this.render =           render;
+        this.update =           update;
+        this.setVelocity =      setVelocity;
+        this.setAcceleration =  setAcceleration;
+        this.move =             move;
+        this.scale =            scale;
     }
 
     // Static
@@ -243,28 +247,21 @@
     SpriteSheet.FLAG_GENERATE_MIPMAP = 0x01;
     SpriteSheet.FLAG_DEFAULTS = 0; //SpriteSheet.FLAG_GENERATE_MIPMAP;
 
-    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
+    var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 
     // Put a unit quad in the buffer
     var defaultVertexPositions = new Float32Array([
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 0,
-        0, 1,
-        1, 1,
+        -1, -1, -1, 1,
+        1, -1, 1, -1,
+        -1, 1, 1, 1,
     ]);
 
     // Put texcoords in the buffer
     var defaultTextureCoordinates = new Float32Array([
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 0,
-        0, 1,
-        1, 1,
+        0, 0, 0, 1,
+        1, 0, 1, 0,
+        0, 1, 1, 1,
     ]);
 
     var defaultColor = new Float32Array([1,1,1,1]);

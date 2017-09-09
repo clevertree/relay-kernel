@@ -18,6 +18,8 @@
         var Fragment = Config.fragment;
 
         var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
+        fSpriteSheet.scale(0.1, 0.1, 0.1);
+        fSpriteSheet.move(-6, 8, 0);
 
         /**
          * Render Sprite

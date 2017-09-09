@@ -16,7 +16,7 @@
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
-        mMapSize =              mMapSize || [512,512];
+        mMapSize =              mMapSize || [tileSize * 32, tileSize * 24];
         var vActiveColor =      vColor.slice(0);
         var vActiveColorRange = [0,0,tileSize,tileSize];
 
@@ -452,7 +452,7 @@
     TileMap.FLAG_REPEAT_MAP = 0x20;
     TileMap.FLAG_DEFAULTS = 0x10; // TileMap.FLAG_GENERATE_MIPMAP;
 
-    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
 
 

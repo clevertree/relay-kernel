@@ -26,6 +26,7 @@
         this.update =           update;
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
+        this.move =             move;
 
         // Set up private properties
         var tilePos = [0, 0];
@@ -192,6 +193,10 @@
             }
         }
 
+        function move(tx, ty, tz) {
+            mModelView = Util.translate(mModelView, tx, ty, tz)
+        }
+
         function initProgram(gl) {
 
             // Init Program
@@ -238,7 +243,7 @@
     SpriteSheet.FLAG_GENERATE_MIPMAP = 0x01;
     SpriteSheet.FLAG_DEFAULTS = 0; //SpriteSheet.FLAG_GENERATE_MIPMAP;
 
-    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
+    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultProjectionMatrix = [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
 
 

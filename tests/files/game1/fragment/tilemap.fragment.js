@@ -216,7 +216,7 @@
             mAcceleration = Util.translation(ax, ay, az);
         }
 
-        var frameCount = 0; var lastKeyCount = 0;
+        var frameCount = 0;
         function update(t, stage, flags) {
             frameCount++;
 
@@ -239,7 +239,9 @@
             }
 
         }
+
         var CHAR_SHIFT = 16;
+        var lastKeyCount = 0;
         function updateEditor(t, stage, flags) {
 
             if(lastKeyCount < Config.input.keyEvents) {
@@ -277,7 +279,7 @@
 
 
                     default:
-                        console.log("Key Change", noShift, Config.input.lastKey);
+                        // console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         }
@@ -450,7 +452,7 @@
     TileMap.FLAG_REPEAT_MAP = 0x20;
     TileMap.FLAG_DEFAULTS = 0x10; // TileMap.FLAG_GENERATE_MIPMAP;
 
-    var defaultModelViewMatrix = [10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 1, 0, 1.5, 0, -7, 1];
+    var defaultModelViewMatrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
 
 

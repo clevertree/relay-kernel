@@ -14,31 +14,10 @@
     Config.character.Player1 = Player1;
 
     function Player1(gl) {
+        var THIS = this;
         var Fragment = Config.fragment;
 
-        var renders = [
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/8 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/10 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/12 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/20 * 1000)),
-            new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/24 * 1000)),
-        ];
-
-        for(var i=0; i<renders.length; i++) {
-            var render = renders[i];
-            render.setAcceleration(0,0,0.00002 * i);
-            render.setVelocity(-0.003,-0.001,-0.01);
-        }
-
-
-        /**
-         * Update Sprite Logic
-         * @param t
-         */
-        this.update = function(t) {
-
-        };
+        var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
 
         /**
          * Render Sprite
@@ -47,12 +26,40 @@
          * @param stage
          * @param flags
          */
-        this.render = function(t, gl, stage, flags) {
-            for(var i=0; i<renders.length; i++) {
-                var render = renders[i];
-                render.render(t, gl, stage, flags);
+        function render(t, gl, stage, flags) {
+            fSpriteSheet.render(t, gl, stage, flags);
+        }
+
+        /**
+         * Update Sprite Logic
+         * @param t
+         * @param stage
+         * @param flags
+         */
+        function update(t, stage, flags) {
+            if(flags & Config.flags.RENDER_SELECTED) {
+                updateEditor(t, stage, flags);
             }
-        };
+        }
+
+        var CHAR_SHIFT = 16;
+        function updateEditor(t, stage, flags) {
+            var pressedKeys = Config.input.pressedKeys;
+            if(pressedKeys[39])     move(0.1,  0.0,  0.0);  // Right:
+            if(pressedKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
+            if(pressedKeys[40])     move(0.0, -0.1,  0.0);  // Down:
+            if(pressedKeys[38])     move(0.0,  0.1,  0.0);  // Up:
+            if(pressedKeys[34])     move(0.0,  0.0, -0.1);  // Page Down:
+            if(pressedKeys[33])     move(0.0,  0.0,  0.1);  // Page Up:
+        }
+
+        function move(tx, ty, tz) {
+            fSpriteSheet.move(tx, ty, tz);
+        }
+
+        this.update = update;
+        this.render = render;
+        this.move = move;
     }
 
 })();

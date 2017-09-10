@@ -194,6 +194,10 @@
             mModelView = Util.scale(mModelView, sx, sy, sz);
         }
 
+        function reset() {
+            mModelView = defaultModelViewMatrix;
+        }
+
         function initProgram(gl) {
 
             // Init Program
@@ -240,6 +244,7 @@
         this.setAcceleration =  setAcceleration;
         this.move =             move;
         this.scale =            scale;
+        this.reset =            reset;
     }
 
     // Static

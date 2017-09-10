@@ -57,13 +57,12 @@
         this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1];
 
         // Set up render loop
-
         var lastKeyCount = 0, frameCount = 0;
         function onFrame(t) {
             frameCount++;
             window.requestAnimationFrame(onFrame);
 
-            // THIS.mProjection[9]+=0.001;
+            // THIS.mProjection[3]-=0.3;
             // this.mProjection = Util.projection(frameCount, frameCount, frameCount); // [2.4142136573791504, 0, 0, 0, 0, 2.4142136573791504, 0, 0, 0, 0, -1.0020020008087158, -1, 0, 0, -0.20020020008087158, 0];
 
 
@@ -134,17 +133,32 @@
             if(selectedRender === -1) {
                 var V = 0.03;
                 var pressedKeys = Config.input.pressedKeys;
-                if(pressedKeys[39])     move(-V,  0,  0);  // Right:
-                if(pressedKeys[37])     move( V,  0,  0);  // Left:
-                if(pressedKeys[40])     move( 0,  V,  0);  // Down:
-                if(pressedKeys[38])     move( 0, -V,  0);  // Up:
-                if(pressedKeys[34])     move( 0,  0,  V);  // Page Down:
-                if(pressedKeys[33])     move( 0,  0, -V);  // Page Up:
+                if(pressedKeys[CHAR_SHIFT]) {
+                    if(pressedKeys[39])     rotate(-V,  0,  0);  // Right:
+                    if(pressedKeys[37])     rotate( V,  0,  0);  // Left:
+                    if(pressedKeys[40])     rotate( 0,  V,  0);  // Down:
+                    if(pressedKeys[38])     rotate( 0, -V,  0);  // Up:
+                    if(pressedKeys[34])     rotate( 0,  0,  V);  // Page Down:
+                    if(pressedKeys[33])     rotate( 0,  0, -V);  // Page Up:
+                } else {
+                    if(pressedKeys[39])     move(-V,  0,  0);  // Right:
+                    if(pressedKeys[37])     move( V,  0,  0);  // Left:
+                    if(pressedKeys[40])     move( 0,  V,  0);  // Down:
+                    if(pressedKeys[38])     move( 0, -V,  0);  // Up:
+                    if(pressedKeys[34])     move( 0,  0,  V);  // Page Down:
+                    if(pressedKeys[33])     move( 0,  0, -V);  // Page Up:
+                }
+
             }
         }
 
         function move(tx, ty, tz) {
             THIS.mProjection = Util.translate(THIS.mProjection, tx, ty, tz)
+        }
+        function rotate(ax, ay, az) {
+            if(ax) THIS.mProjection = Util.xRotate(THIS.mProjection, ax);
+            if(ay) THIS.mProjection = Util.yRotate(THIS.mProjection, ay);
+            if(az) THIS.mProjection = Util.zRotate(THIS.mProjection, az);
         }
 
 
@@ -158,6 +172,7 @@
         // Set up Stage Object
 
         this.move = move;
+        this.rotate = rotate;
         this.startRender = function () {
             window.requestAnimationFrame(onFrame);
         };

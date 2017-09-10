@@ -13,13 +13,19 @@
     var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
     Config.character.Player1 = Player1;
 
-    function Player1(gl) {
+    function Player1(gl, pos, scale) {
         var THIS = this;
         var Fragment = Config.fragment;
 
+        // Local Variables
+        pos = pos || [0, 0, 0];
+        scale = scale || [0, 0, 0];
+
+        // Sprite Sheet
         var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
-        fSpriteSheet.scale(0.1, 0.1, 0.1);
-        fSpriteSheet.move(-6, 8, 0);
+        setScale(0.1, 0.1, 0.1);
+        move(-6, 8, 0);
+
 
         /**
          * Render Sprite
@@ -56,12 +62,23 @@
         }
 
         function move(tx, ty, tz) {
+            pos[0] += tx;
+            pos[1] += ty;
+            pos[2] += tz;
             fSpriteSheet.move(tx, ty, tz);
+        }
+
+        function setScale(sx, sy, sz) {
+            scale = [sx, sy, sz];
+            fSpriteSheet.reset(sx, sy, sz);
+            fSpriteSheet.scale(sx, sy, sz);
+            fSpriteSheet.move(pos[0], pos[1], pos[2]);
         }
 
         this.update = update;
         this.render = render;
         this.move = move;
+        this.setScale = setScale;
     }
 
 })();

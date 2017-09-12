@@ -58,7 +58,7 @@ function assetSavePNG($params) {
     $i=0;
     for ($y=0; $y<$height; $y++) {
         for($x=0; $x<$width; $x++) {
-            $pixel = imagecolorallocatealpha($gd, $data[$i + 0], $data[$i + 1], $data[$i + 2], 128 - ceil($data[$i + 3] / 2));
+            $pixel = imagecolorallocatealpha($gd, $data[$i + 0], $data[$i + 1], $data[$i + 2], 127 - ceil($data[$i + 3] / 2));
             imagesetpixel($gd, $x+$left, $y+$top, $pixel);
             $i+=4;
             if(sizeof($data) <= $i)

@@ -51,7 +51,7 @@
         var renders = [
             Player1, Level1
         ];
-        var selectedRender = -1; // renders.length - 1;
+        var selectedRender = renders.length - 1;
 
         // Default FOV
         this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1];

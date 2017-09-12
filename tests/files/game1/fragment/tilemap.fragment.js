@@ -273,13 +273,19 @@
                         copyEditorPixel();
                         break;
 
+                    case 46: // DEL
+                    case 68: // D
+                        changeEditorPixel([0, 0, 0, 30]);
+                        break;
+
+                    case 45: // INS
                     case 86: // V
                         pasteEditorPixel();
                         break;
 
 
                     default:
-                        // console.log("Key Change", noShift, Config.input.lastKey);
+                        console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         }
@@ -352,8 +358,8 @@
             var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
             pixelCache = new ImageData(w, h);
             var i = 0;
-            for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
-                for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
+            for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
+                for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
                     var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
                     pixelCache.data[i++] = levelMapData.data[pos+0];
                     pixelCache.data[i++] = levelMapData.data[pos+1];
@@ -539,7 +545,8 @@
         "void main(void) {",
         // "   if(repeatTiles == 0 && (vTextureCoordinate.x < 0.0 || vTextureCoordinate.x > 1.0 || vTextureCoordinate.y < 0.0 || vTextureCoordinate.y > 1.0)) { discard; }",
         "   vec4 tile = texture2D(uLevelMap, vTextureCoordinate);",
-        "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
+        // "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
+        "   if(tile.w == 0.0) { discard; }",
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * uTileSize;", // xy = rg
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
         "   vec4 sprite = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);", //  * vColor

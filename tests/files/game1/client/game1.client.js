@@ -260,6 +260,32 @@
         return texture;
     };
 
+    // Editor Utils
+
+    Util.assetSavePNG = function(path, left, top, width, height, data) {
+        var POST = {
+            "action": "asset-save-png",
+            "path": path,
+            "data": data,
+            "left": left,
+            "top": top,
+            "width": width,
+            "height": height
+        };
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if(this.status !== 200)
+                    throw new Error(this.responseText);
+                var json = JSON.parse(this.responseText);
+                console.log(json);
+            }
+        };
+        xhttp.open("POST", ROOT + '/client/game1.interface.php', true);
+        xhttp.setRequestHeader('Content-type', 'application/json');
+        xhttp.send(JSON.stringify(POST));
+    };
+
     // Matrix Utils
 
     Util.projection = function(width, height, depth) {

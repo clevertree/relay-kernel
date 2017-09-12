@@ -324,9 +324,14 @@
         }
 
         function changeEditorPixel(toPixel) {
-            for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
-                for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
-                    var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
+            var left = vActiveColorRange[0] / tileSize;
+            var top = vActiveColorRange[1] / tileSize;
+            var width = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
+            var height = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
+
+            for(var x=left; x<left+width; x++) {
+                for(var y=top; y<top+height; y++) {
+                    var pos = (x)*4 + (y)*4*levelMapSize[0];
                     levelMapData.data[pos+0] = toPixel[0];
                     levelMapData.data[pos+1] = toPixel[1];
                     levelMapData.data[pos+2] = toPixel[2];
@@ -337,6 +342,8 @@
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
+
+            saveEditorMap(pathLevelMap, left, top, width, height, toPixel);
         }
 
         var pixelCache;
@@ -361,17 +368,17 @@
             if(!pixelCache)
                 throw new Error("No pixel cache");
 
-            var dx = vActiveColorRange[0] / tileSize;
-            var dy = vActiveColorRange[1] / tileSize;
+            var left = vActiveColorRange[0] / tileSize;
+            var top = vActiveColorRange[1] / tileSize;
             var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
             if(pixelCache.width < w) w = pixelCache.width;
             var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
             if(pixelCache.height < h) h = pixelCache.height;
 
-            for(var x=0; x<w; x++) {
-                for(var y=0; y<h; y++) {
-                    var pos = x*4 + y*4*pixelCache.width;
-                    var dpos = (x+dx)*4 + (y+dy)*4*levelMapSize[0];
+            for(var vx=0; vx<w; vx++) {
+                for(var vy=0; vy<h; vy++) {
+                    var pos = vx*4 + vy*4*pixelCache.width;
+                    var dpos = (vx+left)*4 + (vy+top)*4*levelMapSize[0];
 
                     levelMapData.data[dpos+0] = pixelCache.data[pos+0];
                     levelMapData.data[dpos+1] = pixelCache.data[pos+1];
@@ -384,6 +391,8 @@
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
             console.log("Pasted: ", pixelCache);
+
+            saveEditorMap(pathLevelMap, left, top, w, h, pixelCache.data);
         }
 
         function getEditorMapPixel(x, y) {
@@ -391,6 +400,9 @@
             return levelMapData.data.slice(pos, pos+4);
         }
 
+        function saveEditorMap(path, left, top, width, height, data) {
+            Util.assetSavePNG(path, left, top, width, height, data)
+        }
 
 
         function initProgram(gl) {

@@ -46,8 +46,8 @@ function assetSavePNG($params) {
     $realpath = realpath($root . '/' . $path); //  . rand(1111, 9999) . '.save.png'
 
     $gd = imageCreateFromPng($realpath);
-    imageAlphaBlending($gd, true);
-    imageSaveAlpha($gd, true);
+//    imageAlphaBlending($gd, true);
+//    imageSaveAlpha($gd, true);
 
 //    $gd = imagecreatetruecolor($width, $height);
 //    imagesavealpha($gd, true);
@@ -58,8 +58,10 @@ function assetSavePNG($params) {
     $i=0;
     for ($y=0; $y<$height; $y++) {
         for($x=0; $x<$width; $x++) {
-            $pixel = imagecolorallocatealpha($gd, $data[$i + 0], $data[$i + 1], $data[$i + 2], 128 - ceil($data[$i + 3] / 2));
-            imagesetpixel($gd, $x+$left, $y+$top, $pixel);
+//            $alpha = ((int)(substr($data[$i + 3]  - 255, 1))) >> 1;
+            $pixel = imagecolorallocate($gd, $data[$i + 0], $data[$i + 1], $data[$i + 2]);
+            if(!imagesetpixel($gd, $x+$left, $y+$top, $pixel))
+                throw new Exception("Could not set pixel: " . $php_errormsg);
             $i+=4;
             if(sizeof($data) <= $i)
                 $i = 0;
@@ -68,7 +70,7 @@ function assetSavePNG($params) {
 
     @unlink($realpath . '.old.png');
     @rename($realpath, $realpath . '.old.png');
-    if(!imagepng($gd, $realpath, 0, PNG_NO_FILTER))
+    if(!imagepng($gd, $realpath, 9, PNG_NO_FILTER))
         throw new Error("Could not write map file. " . $php_errormsg);
 
     return array('success' => true, 'path' => $path, 'filesize' => filesize($realpath));

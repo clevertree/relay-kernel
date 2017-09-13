@@ -105,7 +105,7 @@
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
             // Upload the image into the texture.
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iLevelMap);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, iLevelMap);
 
             // Set the parameters so we can render any size image.
 
@@ -126,6 +126,17 @@
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(iLevelMap, 0, 0);
             levelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
+
+            // // Create a framebuffer backed by the texture
+            // var framebuffer = gl.createFramebuffer();
+            // gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+            // gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tLevelMap, 0);
+            //
+            // // Read the contents of the framebuffer (data stores the pixel data)
+            // var data = new Uint8Array(this.width * this.height * 4);
+            // gl.readPixels(0, 0, this.width, this.height, gl.RGB, gl.UNSIGNED_BYTE, data);
+            //
+            // gl.deleteFramebuffer(framebuffer);
         });
 
         var quadVerts = [
@@ -275,7 +286,7 @@
 
                     case 46: // DEL
                     case 68: // D
-                        changeEditorPixel([0, 0, 0, 30]);
+                        changeEditorPixel([0, 0, 0, 0]);
                         break;
 
                     case 45: // INS
@@ -285,7 +296,7 @@
 
 
                     default:
-                        console.log("Key Change", noShift, Config.input.lastKey);
+                        // console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         }
@@ -313,6 +324,7 @@
                 if(toPixel[1] > 255)
                     toPixel[1] = 0;
             }
+            toPixel[2]=255;
             changeEditorPixel(toPixel);
         }
 
@@ -326,6 +338,7 @@
                 if(toPixel[1] < 0)
                     toPixel[1] = 255;
             }
+            toPixel[2]=255;
             changeEditorPixel(toPixel);
         }
 
@@ -546,14 +559,18 @@
         // "   if(repeatTiles == 0 && (vTextureCoordinate.x < 0.0 || vTextureCoordinate.x > 1.0 || vTextureCoordinate.y < 0.0 || vTextureCoordinate.y > 1.0)) { discard; }",
         "   vec4 tile = texture2D(uLevelMap, vTextureCoordinate);",
         // "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
-        "   if(tile.w == 0.0) { discard; }",
+        "   if(tile.z == 0.00) { discard; }",
+
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * uTileSize;", // xy = rg
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",
         "   vec4 sprite = texture2D(uTileSheet, (spriteOffset + spriteCoord) * uInverseSpriteTextureSize);", //  * vColor
-        "   sprite.w *= tile.w;", //  * vColor
+        // "   sprite.w *= tile.w;", //  * vColor
         // "   if(tile.x > uColorRange.x && tile.y > uColorRange.y && tile.x < uColorRange.z && tile.y < uColorRange.w)",
         "   if(vPixelCoordinate.x >= uColorRange.x && vPixelCoordinate.y >= uColorRange.y && vPixelCoordinate.x <= uColorRange.z && vPixelCoordinate.y <= uColorRange.w)",
         "       sprite *= uColor;", //  * vColor
+
+        "   if(tile.z < 0.50) { sprite.w *= tile.z * 4.0; }",
+
         "   gl_FragColor = sprite;", //  * vColor
         // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
 // "   gl_FragColor = tile;",

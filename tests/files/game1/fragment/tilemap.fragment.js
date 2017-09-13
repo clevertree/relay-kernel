@@ -9,14 +9,14 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, mMapSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
+    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
         mModelView =            mModelView || defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
-        mMapSize =              mMapSize || [tileSize * 32, tileSize * 24];
+        var mMapSize =          [tileSize, tileSize];
         var vActiveColor =      vColor.slice(0);
         var vActiveColorRange = [0,0,tileSize,tileSize];
 
@@ -127,6 +127,7 @@
             mapContext.drawImage(iLevelMap, 0, 0);
             levelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
 
+            mMapSize = [tileSize * iLevelMap.width, tileSize * iLevelMap.height];
             // // Create a framebuffer backed by the texture
             // var framebuffer = gl.createFramebuffer();
             // gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -251,56 +252,6 @@
 
         }
 
-        var CHAR_SHIFT = 16;
-        var lastKeyCount = 0;
-        function updateEditor(t, stage, flags) {
-
-            if(lastKeyCount < Config.input.keyEvents) {
-                var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
-                lastKeyCount = Config.input.keyEvents;
-                switch(Config.input.lastKey) {
-                    case 39: // RIGHT:
-                        moveEditorSelection(tileSize * noShift, 0, tileSize, 0);
-                        break;
-                    case 37: // LEFT
-                        moveEditorSelection(-tileSize * noShift, 0, -tileSize, 0);
-                        break;
-                    case 40: // DOWN:
-                        moveEditorSelection(0, tileSize * noShift, 0, tileSize);
-                        break;
-                    case 38: // UP:
-                        moveEditorSelection(0, -tileSize * noShift, 0, -tileSize);
-                        break;
-
-                    case 78: // N:
-                        changeEditorNextPixel();
-                        break;
-
-                    case 76: // L
-                        changeEditorLastPixel();
-                        break;
-
-                    case 67: // C
-                        copyEditorPixel();
-                        break;
-
-                    case 46: // DEL
-                    case 68: // D
-                        changeEditorPixel([0, 0, 0, 0]);
-                        break;
-
-                    case 45: // INS
-                    case 86: // V
-                        pasteEditorPixel();
-                        break;
-
-
-                    default:
-                        // console.log("Key Change", noShift, Config.input.lastKey);
-                }
-            }
-        }
-
         function moveEditorSelection(vx, vy, vw, vh) {
             vActiveColorRange[0] += vx;
             vActiveColorRange[1] += vy;
@@ -312,6 +263,10 @@
             if(vActiveColorRange[2] <= vActiveColorRange[0] + tileSize) vActiveColorRange[0] = vActiveColorRange[2] - tileSize;
             if(vActiveColorRange[3] <= tileSize) vActiveColorRange[3] = tileSize;
             if(vActiveColorRange[3] <= vActiveColorRange[1] + tileSize) vActiveColorRange[1] = vActiveColorRange[3] - tileSize;
+        }
+
+        function setEditorSelection(left, top, right, bottom) {
+            vActiveColorRange = [tileSize*left, tileSize*top, tileSize*right, tileSize*bottom];
         }
 
         function changeEditorNextPixel() {
@@ -362,7 +317,7 @@
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
 
-            saveEditorMap(pathLevelMap, left, top, width, height, toPixel);
+            // saveEditorMap(pathLevelMap, left, top, width, height, toPixel);
         }
 
         var pixelCache;
@@ -411,7 +366,7 @@
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
             console.log("Pasted: ", pixelCache);
 
-            saveEditorMap(pathLevelMap, left, top, w, h, pixelCache.data);
+            // saveEditorMap(pathLevelMap, left, top, w, h, pixelCache.data);
         }
 
         function getEditorMapPixel(x, y) {
@@ -423,6 +378,75 @@
             Util.assetSavePNG(path, left, top, width, height, data)
         }
 
+
+
+        var CHAR_SHIFT = 16;
+        var lastKeyCount = 0;
+        var lastHoldTime = 0, lastHoldDelay = 200;
+        function updateEditor(t, stage, flags) {
+            var PK = Config.input.pressedKeys;
+            var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
+
+            // Hold-down keys
+            if(PK[37] || PK[38] || PK[39] || PK[40]) {
+                if(t > lastHoldTime) {
+                    if (PK[39]) moveEditorSelection(tileSize * noShift, 0, tileSize, 0);     // Right
+                    if (PK[37]) moveEditorSelection(-tileSize * noShift, 0, -tileSize, 0);   // Left
+                    if (PK[40]) moveEditorSelection(0, tileSize * noShift, 0, tileSize);     // Down
+                    if (PK[38]) moveEditorSelection(0, -tileSize * noShift, 0, -tileSize);   // Up
+                    lastHoldTime = t + lastHoldDelay;
+                    if(lastHoldDelay > 20)
+                        lastHoldDelay-=20;
+                }
+            } else {
+                lastHoldTime = t;
+                lastHoldDelay=200;
+            }
+
+
+            // Press-once keys
+            if(lastKeyCount < Config.input.keyEvents) {
+                lastKeyCount = Config.input.keyEvents;
+                switch(Config.input.lastKey) {
+                    case 65: // A
+                        setEditorSelection(iLevelMap.width, iLevelMap.height);
+                        break;
+
+                    case 78: // N:
+                        changeEditorNextPixel();
+                        break;
+
+                    case 76: // L
+                        changeEditorLastPixel();
+                        break;
+
+
+                    case 67: // C
+                        copyEditorPixel();
+                        break;
+
+                    case 46: // DEL
+                    case 68: // D
+                        changeEditorPixel([0, 0, 0, 0]);
+                        break;
+
+                    case 45: // INS
+                    case 86: // V
+                        pasteEditorPixel();
+                        break;
+
+                    case 83: // S
+                        saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, levelMapData.data);
+                        break;
+
+
+                    default:
+                    console.log("Key Change", noShift, Config.input.lastKey);
+                }
+            }
+        }
+
+        // Init
 
         function initProgram(gl) {
 

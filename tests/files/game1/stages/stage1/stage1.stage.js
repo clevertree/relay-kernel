@@ -54,7 +54,7 @@
         var selectedRender = renders.length - 1;
 
         // Default FOV
-        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1];
+        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -10, 10, 0, 12];
 
         // Set up render loop
         var lastKeyCount = 0, frameCount = 0;
@@ -131,7 +131,7 @@
             }
 
             if(selectedRender === -1) {
-                var V = 0.03;
+                var V = 0.1;
                 var pressedKeys = Config.input.pressedKeys;
                 if(pressedKeys[CHAR_SHIFT]) {
                     if(pressedKeys[39])     rotate(-V,  0,  0);  // Right:

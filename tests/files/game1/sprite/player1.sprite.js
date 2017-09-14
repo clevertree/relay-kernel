@@ -24,7 +24,7 @@
         // Sprite Sheet
         var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
         // setScale(0.1, 0.1, 0.1);
-        // move(-6, 8, 0);
+        move(6, 0, 0);
 
 
         /**

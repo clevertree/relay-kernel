@@ -128,6 +128,7 @@
             levelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
 
             mMapSize = [tileSize * iLevelMap.width, tileSize * iLevelMap.height];
+            reset();
             // // Create a framebuffer backed by the texture
             // var framebuffer = gl.createFramebuffer();
             // gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -303,13 +304,17 @@
             var width = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
             var height = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
 
+            var ppos = 0;
             for(var x=left; x<left+width; x++) {
                 for(var y=top; y<top+height; y++) {
                     var pos = (x)*4 + (y)*4*levelMapSize[0];
-                    levelMapData.data[pos+0] = toPixel[0];
-                    levelMapData.data[pos+1] = toPixel[1];
-                    levelMapData.data[pos+2] = toPixel[2];
-                    levelMapData.data[pos+3] = toPixel[3];
+                    levelMapData.data[pos+0] = toPixel[ppos+0];
+                    levelMapData.data[pos+1] = toPixel[ppos+1];
+                    levelMapData.data[pos+2] = toPixel[ppos+2];
+                    levelMapData.data[pos+3] = toPixel[ppos+3];
+                    ppos+=4;
+                    if(ppos >= toPixel.length)
+                        ppos = 0;
                 }
             }
 
@@ -345,15 +350,16 @@
             var left = vActiveColorRange[0] / tileSize;
             var top = vActiveColorRange[1] / tileSize;
             var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            if(pixelCache.width < w) w = pixelCache.width;
+//             if(pixelCache.width < w) w = pixelCache.width;
             var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-            if(pixelCache.height < h) h = pixelCache.height;
+//             if(pixelCache.height < h) h = pixelCache.height;
 
             for(var vx=0; vx<w; vx++) {
                 for(var vy=0; vy<h; vy++) {
                     var pos = vx*4 + vy*4*pixelCache.width;
                     var dpos = (vx+left)*4 + (vy+top)*4*levelMapSize[0];
-
+                    if(pos >= pixelCache.data.length)
+                        pos %= pixelCache.data.length;
                     levelMapData.data[dpos+0] = pixelCache.data[pos+0];
                     levelMapData.data[dpos+1] = pixelCache.data[pos+1];
                     levelMapData.data[dpos+2] = pixelCache.data[pos+2];
@@ -372,6 +378,24 @@
         function getEditorMapPixel(x, y) {
             var pos = x*4 + y*4*levelMapSize[0];
             return levelMapData.data.slice(pos, pos+4);
+        }
+
+        function printEditorTilePattern() {
+            var left = vActiveColorRange[0] / tileSize;
+            var top = vActiveColorRange[1] / tileSize;
+            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
+            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
+            var data = new Uint8Array(w*h*4);
+            var i = 0;
+            for(var x=0; x<w; x++) {
+                for(var y=0; y<h; y++) {
+                    data[i+0] = x;
+                    data[i+1] = y;
+                    data[i+2] = 255;
+                    i+=4;
+                }
+            }
+            changeEditorPixel(data);
         }
 
         function saveEditorMap(path, left, top, width, height, data) {
@@ -409,7 +433,7 @@
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
                     case 65: // A
-                        setEditorSelection(iLevelMap.width, iLevelMap.height);
+                        setEditorSelection(0, 0, iLevelMap.width, iLevelMap.height);
                         break;
 
                     case 78: // N:
@@ -439,13 +463,34 @@
                         saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, levelMapData.data);
                         break;
 
+                    case 84: // T
+                        printEditorTilePattern();
+                        break;
+
 
                     default:
-                    console.log("Key Change", noShift, Config.input.lastKey);
+//                     console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         }
 
+        // Model/View
+
+        function move(tx, ty, tz) {
+            mModelView = Util.translate(mModelView, tx, ty, tz);
+        }
+
+        function scale(sx, sy, sz) {
+            mModelView = Util.scale(mModelView, sx, sy, sz);
+        }
+
+        function reset() {
+            mModelView = defaultModelViewMatrix;
+            if(iLevelMap.width) {
+                move(iLevelMap.width, -iLevelMap.height, 0);
+                scale(iLevelMap.width, iLevelMap.height, 1);
+            }
+        }
         // Init
 
         function initProgram(gl) {

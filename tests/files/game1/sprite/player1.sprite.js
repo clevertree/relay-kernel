@@ -12,6 +12,7 @@
     var DIR_CHARACTER = ROOT + 'sprite/';
     var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
     Config.character.Player1 = Player1;
+    var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
     function Player1(gl, pos, scale) {
         var THIS = this;
@@ -23,8 +24,8 @@
 
         // Sprite Sheet
         var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
-        // setScale(0.1, 0.1, 0.1);
-        move(6, 0, 0);
+        // setScale(0.9, 0.9, 0.9);
+        move(6, 60, 0);
 
 
         /**

@@ -30,7 +30,7 @@
         RENDER_SELECTED: 0x10
     };
     Config.constants = {
-        PIXELS_PER_UNIT: 64
+        PIXELS_PER_UNIT: 256
     };
     window.games.game1 = Config;
 

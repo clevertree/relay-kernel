@@ -49,6 +49,16 @@
             }
         };
 
+        this.getFirstPixel = function(x, y, z) {
+            for(var i=0; i<renders.length; i++) {
+                var render = renders[i];
+                var pixel = render.getPixel(x, y, z);
+                if(pixel)
+                    return pixel;
+            }
+            return null;
+        }
+
     }
 
 })();

@@ -9,12 +9,13 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mModelView, mVelocity, mAcceleration) {
+    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mPosition, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
-        mModelView =            mModelView || defaultModelViewMatrix;
+        var mModelView =        defaultModelViewMatrix;
+        mPosition =             mPosition || [0, 0, 0];
         vColor =                vColor || defaultColor;
         var mMapSize =          [tileSize, tileSize];
         var vActiveColor =      vColor.slice(0);
@@ -33,7 +34,7 @@
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
-        var levelMapData, levelMapSize = [1,1];
+        var tileMapData, levelMapData, levelMapSize = [1,1];
 
         // Initiate Shaders
         if(!PROGRAM)
@@ -86,6 +87,11 @@
             if(rowCount % 1 !== 0) console.error("Tile sheet height (" + iTileSheet.height + ") is not divisible by " + tileSize);
 
             inverseSpriteTextureSize = [1 / iTileSheet.width, 1 / iTileSheet.height];
+
+            var canvas = document.createElement('canvas');
+            var mapContext = canvas.getContext('2d');
+            mapContext.drawImage(iTileSheet, 0, 0);
+            tileMapData = mapContext.getImageData(0, 0, iTileSheet.width, iTileSheet.height);
         });
 
 
@@ -253,6 +259,27 @@
 
         }
 
+        function getPixel(x, y, z) {
+            // x-=mPosition[0];
+            // y-=mPosition[1];
+            // z-=mPosition[2];
+            var lx = Math.floor(x/tileSize);
+            var ly = Math.floor(y/tileSize);
+            var lz = Math.floor(z/tileSize);
+            if(lz !== 0 || lx < 0 || ly < 0 || lx > levelMapData.width || ly > levelMapData.height)
+                return null;
+            var pos = (lx+ly*levelMapData.width)*4;
+            var tpixel = levelMapData.data.slice(pos, pos+4);
+            if(tpixel[2] === 0)
+                return tpixel;
+
+            var tx = (tpixel[0]*tileSize) + (x%tileSize);
+            var ty = (tpixel[1]*tileSize) + (y%tileSize);
+            var tpos = (tx+ty*tileMapData.width)*4;
+            var spixel = tileMapData.data.slice(tpos, tpos+4);
+            return spixel;
+        }
+
         function moveEditorSelection(vx, vy, vw, vh) {
             vActiveColorRange[0] += vx;
             vActiveColorRange[1] += vy;
@@ -264,6 +291,7 @@
             if(vActiveColorRange[2] <= vActiveColorRange[0] + tileSize) vActiveColorRange[0] = vActiveColorRange[2] - tileSize;
             if(vActiveColorRange[3] <= tileSize) vActiveColorRange[3] = tileSize;
             if(vActiveColorRange[3] <= vActiveColorRange[1] + tileSize) vActiveColorRange[1] = vActiveColorRange[3] - tileSize;
+            console.log("Pixel: ", vActiveColorRange[0], vActiveColorRange[1], getPixel(vActiveColorRange[0], vActiveColorRange[1], 0));
         }
 
         function setEditorSelection(left, top, right, bottom) {
@@ -350,9 +378,7 @@
             var left = vActiveColorRange[0] / tileSize;
             var top = vActiveColorRange[1] / tileSize;
             var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-//             if(pixelCache.width < w) w = pixelCache.width;
             var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-//             if(pixelCache.height < h) h = pixelCache.height;
 
             for(var vx=0; vx<w; vx++) {
                 for(var vy=0; vy<h; vy++) {
@@ -477,7 +503,16 @@
         // Model/View
 
         function move(tx, ty, tz) {
+            mPosition[0] += tx;
+            mPosition[1] += ty;
+            mPosition[2] += tz;
             mModelView = Util.translate(mModelView, tx, ty, tz);
+        }
+
+        function moveTo(x, y, z) {
+            reset();
+            mPosition = [x, y, z];
+            mModelView = Util.translate(mModelView, x, y, z);
         }
 
         function scale(sx, sy, sz) {
@@ -491,6 +526,7 @@
                 scale(iLevelMap.width, iLevelMap.height, 1);
             }
         }
+
         // Init
 
         function initProgram(gl) {

@@ -6,6 +6,7 @@
     var Config = window.games.game1;
     var Util = Config.util;
     Config.fragment.TileMap = TileMap;
+    var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
     var PROGRAM;
 
@@ -34,7 +35,7 @@
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
-        var tileMapData, levelMapData, levelMapSize = [1,1];
+        var tileMapData, idLevelMapData, levelMapSize = [1,1];
 
         // Initiate Shaders
         if(!PROGRAM)
@@ -92,6 +93,8 @@
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(iTileSheet, 0, 0);
             tileMapData = mapContext.getImageData(0, 0, iTileSheet.width, iTileSheet.height);
+
+            reset();
         });
 
 
@@ -131,9 +134,8 @@
             var canvas = document.createElement('canvas');
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(iLevelMap, 0, 0);
-            levelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
+            idLevelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
 
-            mMapSize = [tileSize * iLevelMap.width, tileSize * iLevelMap.height];
             reset();
             // // Create a framebuffer backed by the texture
             // var framebuffer = gl.createFramebuffer();
@@ -266,10 +268,10 @@
             var lx = Math.floor(x/tileSize);
             var ly = Math.floor(y/tileSize);
             var lz = Math.floor(z/tileSize);
-            if(lz !== 0 || lx < 0 || ly < 0 || lx > levelMapData.width || ly > levelMapData.height)
+            if(lz !== 0 || lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
                 return null;
-            var pos = (lx+ly*levelMapData.width)*4;
-            var tpixel = levelMapData.data.slice(pos, pos+4);
+            var pos = (lx+ly*idLevelMapData.width)*4;
+            var tpixel = idLevelMapData.data.slice(pos, pos+4);
             if(tpixel[2] === 0)
                 return tpixel;
 
@@ -336,10 +338,10 @@
             for(var x=left; x<left+width; x++) {
                 for(var y=top; y<top+height; y++) {
                     var pos = (x)*4 + (y)*4*levelMapSize[0];
-                    levelMapData.data[pos+0] = toPixel[ppos+0];
-                    levelMapData.data[pos+1] = toPixel[ppos+1];
-                    levelMapData.data[pos+2] = toPixel[ppos+2];
-                    levelMapData.data[pos+3] = toPixel[ppos+3];
+                    idLevelMapData.data[pos+0] = toPixel[ppos+0];
+                    idLevelMapData.data[pos+1] = toPixel[ppos+1];
+                    idLevelMapData.data[pos+2] = toPixel[ppos+2];
+                    idLevelMapData.data[pos+3] = toPixel[ppos+3];
                     ppos+=4;
                     if(ppos >= toPixel.length)
                         ppos = 0;
@@ -348,7 +350,7 @@
 
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
 
             // saveEditorMap(pathLevelMap, left, top, width, height, toPixel);
         }
@@ -362,10 +364,10 @@
             for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
                 for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
                     var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
-                    pixelCache.data[i++] = levelMapData.data[pos+0];
-                    pixelCache.data[i++] = levelMapData.data[pos+1];
-                    pixelCache.data[i++] = levelMapData.data[pos+2];
-                    pixelCache.data[i++] = levelMapData.data[pos+3];
+                    pixelCache.data[i++] = idLevelMapData.data[pos+0];
+                    pixelCache.data[i++] = idLevelMapData.data[pos+1];
+                    pixelCache.data[i++] = idLevelMapData.data[pos+2];
+                    pixelCache.data[i++] = idLevelMapData.data[pos+3];
                 }
             }
             console.log("Copied: ", pixelCache);
@@ -386,16 +388,16 @@
                     var dpos = (vx+left)*4 + (vy+top)*4*levelMapSize[0];
                     if(pos >= pixelCache.data.length)
                         pos %= pixelCache.data.length;
-                    levelMapData.data[dpos+0] = pixelCache.data[pos+0];
-                    levelMapData.data[dpos+1] = pixelCache.data[pos+1];
-                    levelMapData.data[dpos+2] = pixelCache.data[pos+2];
-                    levelMapData.data[dpos+3] = pixelCache.data[pos+3];
+                    idLevelMapData.data[dpos+0] = pixelCache.data[pos+0];
+                    idLevelMapData.data[dpos+1] = pixelCache.data[pos+1];
+                    idLevelMapData.data[dpos+2] = pixelCache.data[pos+2];
+                    idLevelMapData.data[dpos+3] = pixelCache.data[pos+3];
                 }
             }
 
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, levelMapData);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
             console.log("Pasted: ", pixelCache);
 
             // saveEditorMap(pathLevelMap, left, top, w, h, pixelCache.data);
@@ -403,7 +405,7 @@
 
         function getEditorMapPixel(x, y) {
             var pos = x*4 + y*4*levelMapSize[0];
-            return levelMapData.data.slice(pos, pos+4);
+            return idLevelMapData.data.slice(pos, pos+4);
         }
 
         function printEditorTilePattern() {
@@ -486,7 +488,7 @@
                         break;
 
                     case 83: // S
-                        saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, levelMapData.data);
+                        saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, idLevelMapData.data);
                         break;
 
                     case 84: // T
@@ -521,7 +523,11 @@
 
         function reset() {
             mModelView = defaultModelViewMatrix;
-            if(iLevelMap.width) {
+            if(iLevelMap.width && iTileSheet.width) {
+                var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
+                var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
+//                 move(sx, sy, 0);
+//                 scale(sx, sy, 1);
                 move(iLevelMap.width, -iLevelMap.height, 0);
                 scale(iLevelMap.width, iLevelMap.height, 1);
             }

@@ -29,6 +29,9 @@
 
         RENDER_SELECTED: 0x10
     };
+    Config.constants = {
+        PIXELS_PER_UNIT: 64
+    };
     window.games.game1 = Config;
 
     // Event Handlers

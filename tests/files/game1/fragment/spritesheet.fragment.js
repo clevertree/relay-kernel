@@ -9,7 +9,7 @@
 
     var PROGRAM;
 
-    function SpriteSheet(gl, pathSpriteSheet, tileSizeX, tileSizeY, frameRate, flags, vColor, mModelView, glLineMode, mVelocity, mAcceleration) {
+    function SpriteSheet(gl, tSpriteSheet, tileSize, frameRate, flags, scale, vColor, mModelView, glLineMode, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined') flags = SpriteSheet.FLAG_DEFAULTS;
         if(typeof frameRate === 'undefined') frameRate = (1/20 * 1000);
 
@@ -17,6 +17,7 @@
         glLineMode = glLineMode || 4; // gl.TRIANGLES;
 
         // Variables
+        scale =                 scale || 1;
         mModelView =            mModelView || defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
         var vActiveColor =      vColor.slice(0);
@@ -24,7 +25,6 @@
         // Set up private properties
         var tilePos = [0, 0];
         var mTextureCoordinates = defaultTextureCoordinates;
-        var iSpriteSheet = null;
         var rowCount = 1, colCount = 1;
         var tileScaleX = 1;
         var tileScaleY = 1;
@@ -33,20 +33,9 @@
         if(!PROGRAM)
             initProgram(gl);
 
-        // Create a texture.
-        var tSpriteSheet = gl.createTexture();
-        tSpriteSheet.loaded = false;
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+        function loadTexture() {
+            var iSpriteSheet = tSpriteSheet.image;
 
-        // Fill the texture with a 1x1 blue pixel.
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-            new Uint8Array([0, 256, 0, 128]));
-
-        // Asynchronously load the spritesheet
-        iSpriteSheet = new Image();
-        iSpriteSheet.src = pathSpriteSheet;
-        iSpriteSheet.addEventListener('load', function(e) {
             // Now that the image has loaded make copy it to the texture.
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
@@ -57,7 +46,7 @@
             // Set the parameters so we can render any size image.
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            if(flags & SpriteSheet.FLAG_GENERATE_MIPMAP) {
+            if (flags & SpriteSheet.FLAG_GENERATE_MIPMAP) {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 gl.generateMipmap(gl.TEXTURE_2D);
@@ -66,17 +55,20 @@
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             }
 
-            colCount = iSpriteSheet.width / tileSizeX;
-            if(colCount % 1 !== 0) console.error("Sprite sheet width (" + iSpriteSheet.width + ") is not divisible by " + tileSizeX);
-            rowCount = iSpriteSheet.height / tileSizeY;
-            if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + iSpriteSheet.height + ") is not divisible by " + tileSizeY);
+            colCount = iSpriteSheet.width / tileSize;
+            if (colCount % 1 !== 0) console.error("Sprite sheet width (" + iSpriteSheet.width + ") is not divisible by " + tileSize);
+            rowCount = iSpriteSheet.height / tileSize;
+            if (rowCount % 1 !== 0) console.error("Sprite sheet height (" + iSpriteSheet.height + ") is not divisible by " + tileSize);
 
-            tileScaleX = tileSizeX / iSpriteSheet.width;
-            tileScaleY = tileSizeY / iSpriteSheet.height;
+            tileScaleX = tileSize / iSpriteSheet.width;
+            tileScaleY = tileSize / iSpriteSheet.height;
 
             setTilePosition(0, 0);
-        });
-
+        }
+        if(tSpriteSheet.loaded)
+            loadTexture();
+        else
+            tSpriteSheet.onLoad = function() { loadTexture(); };
 
 
         // Functions
@@ -190,8 +182,9 @@
             mModelView = Util.translate(mModelView, tx, ty, tz);
         }
 
-        function scale(sx, sy, sz) {
-            mModelView = Util.scale(mModelView, sx, sy, sz);
+        function setScale(newScale) {
+            scale = newScale;
+            setVertexBuffers(gl, scale);
         }
 
         function reset() {
@@ -219,9 +212,7 @@
             uColor = gl.getUniformLocation(program, "uColor");
 
             // Create a Vertex Position Buffer.
-            bufVertexPosition = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
+            setVertexBuffers(gl, scale);
 
             // Create a Texture Coordinates Buffer
             bufTextureCoordinate = gl.createBuffer();
@@ -243,7 +234,7 @@
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
         this.move =             move;
-        this.scale =            scale;
+        this.setScale =         setScale;
         this.reset =            reset;
     }
 
@@ -254,13 +245,111 @@
 
     var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
+    // Static Functions
 
-    // Put a unit quad in the buffer
-    var defaultVertexPositions = new Float32Array([
-        -1, -1, -1, 1,
-        1, -1, 1, -1,
-        -1, 1, 1, 1,
-    ]);
+    SpriteSheet.loadTexture = function(gl, filePath, callback, loadFill) {
+        loadFill = loadFill || [0, 0, 255, 128];
+
+        // Create a texture.
+        var texture = gl.createTexture();
+        texture.loaded = false;
+        texture.onLoad = callback || function(e, texture, image) {};
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+            new Uint8Array(loadFill));
+
+        // Asynchronously load an image
+        var image = new Image();
+        image.src = filePath;
+        image.addEventListener('load', function(e) {
+            // Now that the image has loaded make copy it to the texture.
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+
+            // Upload the image into the texture.
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            // gl.generateMipmap(gl.TEXTURE_2D);
+
+            texture.loaded = true;
+            // Callback
+            texture.onLoad(e, texture, image);
+        });
+        texture.image = image;
+        return texture;
+    };
+
+
+    SpriteSheet.loadFromFile = function(gl, pathSpriteSheet, tileSize, frameRate) {
+
+        // Create a texture.
+        var tSpriteSheet = gl.createTexture();
+        tSpriteSheet.loaded = false;
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+            new Uint8Array([0, 256, 0, 128]));
+
+        // Asynchronously load the spritesheet
+        var iSpriteSheet = new Image();
+        iSpriteSheet.src = pathSpriteSheet;
+        iSpriteSheet.addEventListener('load', function(e) {
+            // Now that the image has loaded make copy it to the texture.
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, tSpriteSheet);
+
+            // Upload the image into the texture.
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iSpriteSheet);
+
+            // Set the parameters so we can render any size image.
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            if(flags & SpriteSheet.FLAG_GENERATE_MIPMAP) {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.generateMipmap(gl.TEXTURE_2D);
+            } else {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            }
+
+
+            var canvas = document.createElement('canvas');
+            var mapContext = canvas.getContext('2d');
+            mapContext.drawImage(iLevelMap, 0, 0);
+            idLevelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
+
+            colCount = iSpriteSheet.width / tileSize;
+            if(colCount % 1 !== 0) console.error("Sprite sheet width (" + iSpriteSheet.width + ") is not divisible by " + tileSize);
+            rowCount = iSpriteSheet.height / tileSize;
+            if(rowCount % 1 !== 0) console.error("Sprite sheet height (" + iSpriteSheet.height + ") is not divisible by " + tileSize);
+
+            tileScaleX = tileSize / iSpriteSheet.width;
+            tileScaleY = tileSize / iSpriteSheet.height;
+
+            setTilePosition(0, 0);
+        });
+
+        return new SpriteSheet(gl, tSpriteSheet, tileSize, frameRate)
+    };
+
+    // TODO move:
+
+    function setVertexBuffers(gl, scale) {
+        // Put a unit quad in the buffer
+        var vertexPositions = new Float32Array([
+            -scale, -scale, -scale, scale,
+            scale, -scale, scale, -scale,
+            -scale, scale, scale, scale,
+        ]);
+
+        if(!bufVertexPosition)
+            bufVertexPosition = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+        gl.bufferData(gl.ARRAY_BUFFER, vertexPositions, gl.STATIC_DRAW);
+    }
 
     // Put texcoords in the buffer
     var defaultTextureCoordinates = new Float32Array([

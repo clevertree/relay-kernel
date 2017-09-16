@@ -10,14 +10,15 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mPosition, mVelocity, mAcceleration) {
+    function TileMap(gl, tTileSheet, tLevelMap, tileSize, flags, mVelocity, mAcceleration) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
         var mModelView =        defaultModelViewMatrix;
-        mPosition =             mPosition || [0, 0, 0];
-        vColor =                vColor || defaultColor;
+        var mPosition =         [0, 0, 0];
+        var scale =             1;
+        var vColor =            defaultColor;
         var mMapSize =          [tileSize, tileSize];
         var vActiveColor =      vColor.slice(0);
         var vActiveColorRange = [0,0,tileSize,tileSize];
@@ -27,11 +28,11 @@
         this.update =           update;
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
+        this.setScale =         setScale;
+        this.testCollision =    testCollision;
 
         // Set up private properties
-        var mTextureCoordinates = defaultTextureCoordinates;
-        var tTileSheet, iTileSheet = null;
-        var tLevelMap, iLevelMap = null;
+        // var mTextureCoordinates = defaultTextureCoordinates;
         var rowCount = 1, colCount = 1;
         var inverseSpriteTextureSize = [1,1];
         var inverseTileTextureSize = [1,1];
@@ -41,24 +42,17 @@
         if(!PROGRAM)
             initProgram(gl);
 
-        // Create a texture.
-        tTileSheet = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
+        function loadTextures() {
+            if(!tTileSheet.loaded || !tLevelMap.loaded)
+                return;
+            var iTileSheet = tTileSheet.image;
+            var iLevelMap = tLevelMap.image;
 
-        // Fill the texture with a 1x1 blue pixel.
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-            new Uint8Array([0, 256, 0, 128]));
-
-        // Asynchronously load the spritesheet
-        iTileSheet = new Image();
-        iTileSheet.src = pathTileSheet;
-        iTileSheet.addEventListener('load', function(e) {
             // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
             // Upload the image into the texture.
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iTileSheet);
 
-         
             // Set the parameters so we can render any size image.
 
             if(flags & TileMap.FLAG_REPEAT_TILES) {
@@ -68,7 +62,6 @@
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             }
-
 
             if(flags & TileMap.FLAG_GENERATE_MIPMAP) {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -94,22 +87,8 @@
             mapContext.drawImage(iTileSheet, 0, 0);
             tileMapData = mapContext.getImageData(0, 0, iTileSheet.width, iTileSheet.height);
 
-            reset();
-        });
 
 
-        // Load the Level Map
-        tLevelMap = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-
-        // Fill the texture with a 1x1 pixel.
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-            new Uint8Array([0, 256, 0, 128]));
-
-        // Asynchronously load the spritesheet
-        iLevelMap = new Image();
-        iLevelMap.src = pathLevelMap;
-        iLevelMap.addEventListener('load', function(e) {
             // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
@@ -136,6 +115,8 @@
             mapContext.drawImage(iLevelMap, 0, 0);
             idLevelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
 
+
+
             reset();
             // // Create a framebuffer backed by the texture
             // var framebuffer = gl.createFramebuffer();
@@ -147,23 +128,29 @@
             // gl.readPixels(0, 0, this.width, this.height, gl.RGB, gl.UNSIGNED_BYTE, data);
             //
             // gl.deleteFramebuffer(framebuffer);
-        });
+        }
 
-        var quadVerts = [
-            //x  y  u  v
-            -1, -1, 0, 1,
-            1, -1, 1, 1,
-            1,  1, 1, 0,
+        if  (tTileSheet.loaded)     loadTextures();
+        else tTileSheet.onLoad =    function() { loadTextures(); };
+        if  (tLevelMap.loaded)     loadTextures();
+        else tLevelMap.onLoad =    function() { loadTextures(); };
 
-            -1, -1, 0, 1,
-            1,  1, 1, 0,
-            -1,  1, 0, 0
-        ];
-
-        var bufQuadVertices = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW);
-
+        //
+        // var quadVerts = [
+        //     //x  y  u  v
+        //     -1, -1, 0, 1,
+        //     1, -1, 1, 1,
+        //     1,  1, 1, 0,
+        //
+        //     -1, -1, 0, 1,
+        //     1,  1, 1, 0,
+        //     -1,  1, 0, 0
+        // ];
+        //
+        // var bufQuadVertices = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW);
+        //
 
         // Functions
 
@@ -176,18 +163,18 @@
             // Render
             gl.useProgram(PROGRAM);
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
-            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 16, 0);
-            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 16, 8);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
+            // gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 16, 0);
+            // gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 16, 8);
 
             // Bind Vertex Coordinate
-            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            // gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
 
             // Bind Texture Coordinate
-            // gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
             // gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
-            // gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
 
             // Set the projection and viewport.
@@ -261,14 +248,10 @@
 
         }
 
-        function getPixel(x, y, z) {
-            // x-=mPosition[0];
-            // y-=mPosition[1];
-            // z-=mPosition[2];
+        function getPixel(x, y) {
             var lx = Math.floor(x/tileSize);
             var ly = Math.floor(y/tileSize);
-            var lz = Math.floor(z/tileSize);
-            if(lz !== 0 || lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
+            if(lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
                 return null;
             var pos = (lx+ly*idLevelMapData.width)*4;
             var tpixel = idLevelMapData.data.slice(pos, pos+4);
@@ -278,8 +261,7 @@
             var tx = (tpixel[0]*tileSize) + (x%tileSize);
             var ty = (tpixel[1]*tileSize) + (y%tileSize);
             var tpos = (tx+ty*tileMapData.width)*4;
-            var spixel = tileMapData.data.slice(tpos, tpos+4);
-            return spixel;
+            return tileMapData.data.slice(tpos, tpos+4);
         }
 
         function moveEditorSelection(vx, vy, vw, vh) {
@@ -461,7 +443,7 @@
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
                     case 65: // A
-                        setEditorSelection(0, 0, iLevelMap.width, iLevelMap.height);
+                        setEditorSelection(0, 0, tLevelMap.image.width, tLevelMap.image.height);
                         break;
 
                     case 78: // N:
@@ -488,7 +470,7 @@
                         break;
 
                     case 83: // S
-                        saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, idLevelMapData.data);
+                        saveEditorMap(pathLevelMap, 0, 0, tLevelMap.image.width, tLevelMap.image.height, idLevelMapData.data);
                         break;
 
                     case 84: // T
@@ -505,33 +487,43 @@
         // Model/View
 
         function move(tx, ty, tz) {
-            mPosition[0] += tx;
-            mPosition[1] += ty;
-            mPosition[2] += tz;
+            // mPosition[0] += tx;
+            // mPosition[1] += ty;
+            // mPosition[2] += tz;
             mModelView = Util.translate(mModelView, tx, ty, tz);
         }
 
         function moveTo(x, y, z) {
             reset();
-            mPosition = [x, y, z];
+            // mPosition = [x, y, z];
             mModelView = Util.translate(mModelView, x, y, z);
         }
 
-        function scale(sx, sy, sz) {
-            mModelView = Util.scale(mModelView, sx, sy, sz);
+        function setScale(sx, sy, sz) {
+            scale = [sx, sy, sz];
+            setVertexBuffers(gl, sx, sy);
+            // mModelView = Util.scale(mModelView, sx, sy, sz);
         }
 
         function reset() {
             mModelView = defaultModelViewMatrix;
-            if(iLevelMap.width && iTileSheet.width) {
-                var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
-                var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
-                mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
-                move(sx, sy, 0);
-                scale(sx, sy, 1);
+            if(tLevelMap.image.width && tTileSheet.image.width) {
+                var sx = tLevelMap.image.width * tTileSheet.image.width / PIXELS_PER_UNIT;
+                var sy = tLevelMap.image.height * tTileSheet.image.height / PIXELS_PER_UNIT;
+                mMapSize = [tLevelMap.image.width * tileSize, tLevelMap.image.height * tileSize];
+                // move(sx, sy, 0);
+                setScale(sx, sy, 1);
                 // move(iLevelMap.width, -iLevelMap.height, 0);
                 // scale(iLevelMap.width, iLevelMap.height, 1);
             }
+        }
+
+        // Collision
+
+        function testCollision(mObjectPos) {
+            if(mPosition[2] !== mObjectPos[2])
+                return false;
+            var x = (mPosition[0] - mObjectPos[0])
         }
 
         // Init
@@ -567,14 +559,27 @@
             gl.uniform1f(uInverseTileSize, 1/tileSize);
 
             // Create a Vertex Position Buffer.
-            bufVertexPosition = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
+            setVertexBuffers(gl, 1, 1);
+            // bufVertexPosition = gl.createBuffer();
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            // gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
+
+
+            // Put texcoords in the buffer
+            var defaultTextureCoordinates = new Float32Array([
+                0, 0,
+                0, 1,
+                1, 0,
+                1, 0,
+                0, 1,
+                1, 1,
+            ]);
+
 
             // Create a Texture Coordinates Buffer
             bufTextureCoordinate = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, defaultTextureCoordinates, gl.STATIC_DRAW);
 
             // use texture unit 0
             gl.activeTexture(gl.TEXTURE0 + 0);
@@ -598,26 +603,23 @@
     var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
 
+    function setVertexBuffers(gl, sx, sy) {
+        // Put a unit quad in the buffer
+        var vertexPositions = new Float32Array([
+            -sx, sy,
+            -sx, -sy,
+            sx, sy,
+            sx, sy,
+            -sx, -sy,
+            sx, -sy,
+        ]);
 
-    // Put a unit quad in the buffer
-    var defaultVertexPositions = new Float32Array([
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 0,
-        0, 1,
-        1, 1,
-    ]);
 
-    // Put texcoords in the buffer
-    var defaultTextureCoordinates = new Float32Array([
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 0,
-        0, 1,
-        1, 1,
-    ]);
+        if(!bufVertexPosition)
+            bufVertexPosition = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+        gl.bufferData(gl.ARRAY_BUFFER, vertexPositions, gl.STATIC_DRAW);
+    }
 
     // Texture Program
 

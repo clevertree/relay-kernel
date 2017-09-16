@@ -10,7 +10,7 @@
     var ROOT = Config.path.root;
     var SPRITE_RESOLUTION = 128;
     var DIR_CHARACTER = ROOT + 'sprite/';
-    var DIR_SHEET_LEM = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
+    var DIR_SHEET = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
     Config.character.Player1 = Player1;
     var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
@@ -20,12 +20,15 @@
 
         // Local Variables
         pos = pos || [0, 0, 0];
-        scale = scale || [0, 0, 0];
+        scale = scale || 1;
+
+        // Textures
+        var tSpriteSheet = Fragment.SpriteSheet.loadTexture(gl, DIR_SHEET);
 
         // Sprite Sheet
-        var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET_LEM, SPRITE_RESOLUTION, SPRITE_RESOLUTION, (1/16 * 1000));
-        // setScale(0.9, 0.9, 0.9);
-        move(6, 60, 0);
+        var fSpriteSheet = new Fragment.SpriteSheet(gl, tSpriteSheet, SPRITE_RESOLUTION, (1/16 * 1000));
+        setScale(scale);
+        // move(6, 60, 0);
 
 
         /**
@@ -69,11 +72,8 @@
             fSpriteSheet.move(tx, ty, tz);
         }
 
-        function setScale(sx, sy, sz) {
-            scale = [sx, sy, sz];
-            fSpriteSheet.reset(sx, sy, sz);
-            fSpriteSheet.scale(sx, sy, sz);
-            fSpriteSheet.move(pos[0], pos[1], pos[2]);
+        function setScale(newScale) {
+            fSpriteSheet.setScale(newScale);
         }
 
         this.update = update;

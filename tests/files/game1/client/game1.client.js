@@ -253,13 +253,13 @@
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
             // Upload the image into the texture.
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-            gl.generateMipmap(gl.TEXTURE_2D);
+            // gl.generateMipmap(gl.TEXTURE_2D);
 
             texture.loaded = true;
             // Callback
             texture.onLoad(e, texture, image);
         });
-
+        texture.image = image;
         return texture;
     };
 

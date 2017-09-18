@@ -12,14 +12,11 @@
     var DIR_LEVEL_MAP = DIR_STAGE + 'map/default.map.png';
     var DIR_TILE_SHEET = DIR_STAGE + 'tiles/default.tiles.png';
     Config.level.Level1 = Level1;
-    var loadTexture = Util.loadTexture;
 
     function Level1(gl) {
-        var tLevelMap = Config.fragment.TileMap.loadLevelTexture(gl, DIR_LEVEL_MAP);
-        var tTileSheet = Config.fragment.TileMap.loadTileTexture(gl, DIR_TILE_SHEET);
 
         var renders = [
-            new Config.fragment.TileMap(gl, tTileSheet, tLevelMap, 64),
+            new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64),
             // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
 
@@ -60,7 +57,7 @@
                     return pixel;
             }
             return null;
-        };
+        }
 
     }
 

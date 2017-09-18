@@ -265,7 +265,7 @@
 
     // Editor Utils
 
-    Util.assetSavePNG = function(path, left, top, width, height, data) {
+    Util.assetSavePNG = function(path, data, left, top, width, height) {
         var POST = {
             "action": "asset-save-png",
             "path": path,

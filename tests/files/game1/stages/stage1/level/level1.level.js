@@ -14,9 +14,11 @@
     Config.level.Level1 = Level1;
 
     function Level1(gl) {
+        var pfMain = new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64);
+        // pfMain.move(0, -15);
 
         var renders = [
-            new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64),
+            pfMain,
             // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
 
@@ -49,10 +51,10 @@
             }
         };
 
-        this.getFirstPixel = function(x, y, z) {
+        this.testHit = function(x, y, z) {
             for(var i=0; i<renders.length; i++) {
                 var render = renders[i];
-                var pixel = render.getPixel(x, y, z);
+                var pixel = render.testHit(x, y, z);
                 if(pixel)
                     return pixel;
             }

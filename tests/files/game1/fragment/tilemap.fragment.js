@@ -16,19 +16,12 @@
 
         // Variables
         var THIS =              this;
-        var mModelView =        defaultModelViewMatrix;
         mPosition =             mPosition || [0, 0, 0];
+        var mModelView =        defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
         var mMapSize =          [tileSize, tileSize];
         var vActiveColor =      vColor.slice(0);
         var vActiveColorRange = [0,0,tileSize,tileSize];
-
-        // Set up public object
-        this.render =           render;
-        this.update =           update;
-        this.setVelocity =      setVelocity;
-        this.setAcceleration =  setAcceleration;
-        this.setAcceleration =  setAcceleration;
 
         // Set up private properties
         var mVertexPosition = getVertexPositions(1, 1);
@@ -74,17 +67,17 @@
         // Functions
 
 
-        function render(t, gl, stage, flags) {
+        this.render = function(t, gl, stage, flags) {
 
             // Update
-            update(t, stage, flags);
+            this.update(t, stage, flags);
 
             // Render
             gl.useProgram(PROGRAM);
 
             // Bind Vertex Coordinate
             gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, mVertexPosition, gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, mVertexPosition, gl.DYNAMIC_DRAW);
             gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
 
 
@@ -119,20 +112,10 @@
 
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-        }
-
-        function setVelocity(vx, vy, vz) {
-            mVelocity = Util.translation(vx, vy, vz);
-        }
-
-        function setAcceleration(ax, ay, az) {
-            if(!mVelocity)
-                setVelocity(0,0,0);
-            mAcceleration = Util.translation(ax, ay, az);
-        }
+        };
 
         var frameCount = 0;
-        function update(t, stage, flags) {
+        this.update = function(t, stage, flags) {
             frameCount++;
 
             if(mAcceleration)
@@ -153,8 +136,9 @@
                 vActiveColor = vColor
             }
 
-        }
+        };
 
+        // Map Data
 
         this.getTilePixel = function(x, y) {
             if(x < 0 || y < 0 || x > idLevelMapData.width || y > idLevelMapData.height)
@@ -182,8 +166,14 @@
             return spixel;
         };
 
-        // Editor
+        this.testHit = function(x, y, z) {
+            x = Math.round(x * iLevelMap.width * tileSize / PIXELS_PER_UNIT);
+            y = Math.round(y * iLevelMap.height * tileSize / PIXELS_PER_UNIT);
+            console.log("Test Hit: ", x, y, this.getPixel(x, y));
+            return false;
+        };
 
+        // Editor
 
         this.saveEditorMap = function(left, top, width, height) {
             if(typeof left === 'undefined') left = 0;
@@ -233,35 +223,41 @@
 
         // Model/View
 
-        function move(tx, ty, tz) {
-            mPosition[0] += tx;
-            mPosition[1] += ty;
-            mPosition[2] += tz;
-            mModelView = Util.translate(mModelView, tx, ty, tz);
-        }
+        this.setVelocity = function(vx, vy, vz) {
+            mVelocity = Util.translation(vx, vy, vz);
+        };
 
-        function moveTo(x, y, z) {
-            reset();
-            mPosition = [x, y, z];
-            mModelView = Util.translate(mModelView, x, y, z);
-        }
+        this.setAcceleration = function(ax, ay, az) {
+            if(!mVelocity)
+                setVelocity(0,0,0);
+            mAcceleration = Util.translation(ax, ay, az);
+        };
 
-        function scale(sx, sy, sz) {
-            mModelView = Util.scale(mModelView, sx, sy, sz);
-        }
+        this.move = function(tx, ty, tz) {
+            mPosition[0] += tx || 0;
+            mPosition[1] += ty || 0;
+            mPosition[2] += tz || 0;
+            this.reset();
+            console.log("Set Level Position: ", mPosition);
+        };
 
-        function reset() {
+        this.moveTo = function(x, y, z) {
+            mPosition = [x || 0, y || 0, z || 0];
+            this.reset();
+            console.log("Set Level Position: ", mPosition);
+        };
+
+
+        this.reset = function() {
             mModelView = defaultModelViewMatrix;
             if(iLevelMap.width && iTileSheet.width) {
-                var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
-                var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
+                var sx = iLevelMap.width * iTileSheet.width / (PIXELS_PER_UNIT);
+                var sy = iLevelMap.height * iTileSheet.height / (PIXELS_PER_UNIT);
                 mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
-                // move(sx, sy, 0);
-                scale(sx, sy, 1);
-                // move(iLevelMap.width, -iLevelMap.height, 0);
-                // scale(iLevelMap.width, iLevelMap.height, 1);
+                mModelView = Util.translate(mModelView, mPosition[0], mPosition[1], mPosition[2]);
+                mModelView = Util.scale(mModelView, sx, sy, 1);
             }
-        }
+        };
 
         // Textures
 
@@ -307,7 +303,7 @@
             mapContext.drawImage(iTileSheet, 0, 0);
             tileMapData = mapContext.getImageData(0, 0, iTileSheet.width, iTileSheet.height);
 
-            reset();
+            THIS.reset();
         }
 
         function onLoadLevelMapTexture(e) {
@@ -336,8 +332,7 @@
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(iLevelMap, 0, 0);
             idLevelMapData = mapContext.getImageData(0, 0, iLevelMap.width, iLevelMap.height);
-
-            reset();
+            THIS.reset();
             // // Create a framebuffer backed by the texture
             // var framebuffer = gl.createFramebuffer();
             // gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
@@ -353,17 +348,18 @@
         // Init
 
         function getVertexPositions(sx, sy) {
-            // Put a unit quad in the buffer
-            var vertexPositions = new Float32Array([
-                -sx, sy,
-                -sx, -sy,
-                sx, sy,
-                sx, sy,
-                -sx, -sy,
-                sx, -sy,
-            ]);
+            sx /= 2;
+            sy /= 2;
 
-            return vertexPositions;
+            // Put a unit quad in the buffer
+            return new Float32Array([
+                -0, sy,
+                -0, 0,
+                sx, sy,
+                sx, sy,
+                -0, 0,
+                sx, 0,
+            ]);
         }
 
         function initProgram(gl) {

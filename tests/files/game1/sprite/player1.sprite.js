@@ -22,13 +22,10 @@
         pos = pos || [0, 0, 0];
         scale = scale || 1;
 
-        // Textures
-        var tSpriteSheet = Fragment.SpriteSheet.loadTexture(gl, DIR_SHEET);
-
         // Sprite Sheet
-        var fSpriteSheet = new Fragment.SpriteSheet(gl, tSpriteSheet, SPRITE_RESOLUTION, (1/16 * 1000));
+        var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET, SPRITE_RESOLUTION, (1/16 * 1000));
         setScale(scale);
-        move(0, 8   , 0);
+        move(0, 12, 0);
 
 
         /**
@@ -55,14 +52,19 @@
         }
 
         var CHAR_SHIFT = 16;
+        var lastKeyCount = 0;
         function updateEditor(t, stage, flags) {
             var pressedKeys = Config.input.pressedKeys;
             if(pressedKeys[39])     move(0.1,  0.0,  0.0);  // Right:
-            if(press    edKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
+            if(pressedKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
             if(pressedKeys[40])     move(0.0, -0.1,  0.0);  // Down:
             if(pressedKeys[38])     move(0.0,  0.1,  0.0);  // Up:
             if(pressedKeys[34])     move(0.0,  0.0, -0.1);  // Page Down:
             if(pressedKeys[33])     move(0.0,  0.0,  0.1);  // Page Up:
+            if(lastKeyCount < Config.input.keyEvents) {
+                lastKeyCount = Config.input.keyEvents;
+                stage.testHit(pos[0], pos[1], pos[2]);
+            }
         }
 
         function move(tx, ty, tz) {
@@ -82,4 +84,4 @@
         this.setScale = setScale;
     }
 
-})();   
+})();

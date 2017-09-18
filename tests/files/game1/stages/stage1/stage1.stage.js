@@ -55,7 +55,7 @@
         var selectedRender = renders.length - 1;
 
         // Default FOV
-        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 30];
+        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -10, -10, 0, 10];
 
         // Set up render loop
         var lastKeyCount = 0, frameCount = 0;
@@ -169,6 +169,10 @@
             gl.viewport(0, 0, canvas.width, canvas.height);
             // console.log("Canvas Resized: ", canvas);
         }
+
+        this.testHit = function (x, y, z) {
+            return Level1.testHit(x, y, z);
+        };
 
         // Set up Stage Object
 

@@ -15,6 +15,7 @@
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
+        var THIS =              this;
         var mModelView =        defaultModelViewMatrix;
         mPosition =             mPosition || [0, 0, 0];
         vColor =                vColor || defaultColor;
@@ -27,8 +28,10 @@
         this.update =           update;
         this.setVelocity =      setVelocity;
         this.setAcceleration =  setAcceleration;
+        this.setAcceleration =  setAcceleration;
 
         // Set up private properties
+        var mVertexPosition = getVertexPositions(1, 1);
         var mTextureCoordinates = defaultTextureCoordinates;
         var tTileSheet, iTileSheet = null;
         var tLevelMap, iLevelMap = null;
@@ -37,11 +40,11 @@
         var inverseTileTextureSize = [1,1];
         var tileMapData, idLevelMapData, levelMapSize = [1,1];
 
-        // Initiate Shaders
+        // Initiate Shader program
         if(!PROGRAM)
             initProgram(gl);
 
-        // Create a texture.
+        // Create a tile sheet texture.
         tTileSheet = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
 
@@ -52,13 +55,223 @@
         // Asynchronously load the spritesheet
         iTileSheet = new Image();
         iTileSheet.src = pathTileSheet;
-        iTileSheet.addEventListener('load', function(e) {
+        iTileSheet.addEventListener('load', onLoadSpriteSheetTexture);
+
+
+        // Load the Level Map
+        tLevelMap = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+
+        // Fill the texture with a 1x1 pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+            new Uint8Array([0, 256, 0, 128]));
+
+        // Asynchronously load the spritesheet
+        iLevelMap = new Image();
+        iLevelMap.src = pathLevelMap;
+        iLevelMap.addEventListener('load', onLoadLevelMapTexture);
+
+        // Functions
+
+
+        function render(t, gl, stage, flags) {
+
+            // Update
+            update(t, stage, flags);
+
+            // Render
+            gl.useProgram(PROGRAM);
+
+            // Bind Vertex Coordinate
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            gl.bufferData(gl.ARRAY_BUFFER, mVertexPosition, gl.STATIC_DRAW);
+            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
+
+
+            // Bind Texture Coordinate
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
+            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
+
+
+            // Set the projection and viewport.
+            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
+            gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
+            gl.uniform2fv(uMapSize, mMapSize);
+            gl.uniform4fv(uColor, vActiveColor);
+            gl.uniform4fv(uColorRange, vActiveColorRange);
+
+
+            gl.uniform2fv(uInverseSpriteTextureSize, inverseSpriteTextureSize);
+            gl.uniform2fv(uInverseTileTextureSize, inverseTileTextureSize);
+
+
+
+            // Tell the shader to get the tile sheet from texture unit 0
+            gl.activeTexture(gl.TEXTURE0);
+            gl.uniform1i(uTileSheet, 0);
+            gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
+
+            // Tell the shader to get the level map from texture unit 0
+            gl.activeTexture(gl.TEXTURE1);
+            gl.uniform1i(uLevelMap, 1);
+            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+
+            // draw the quad (2 triangles, 6 vertices)
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+
+        function setVelocity(vx, vy, vz) {
+            mVelocity = Util.translation(vx, vy, vz);
+        }
+
+        function setAcceleration(ax, ay, az) {
+            if(!mVelocity)
+                setVelocity(0,0,0);
+            mAcceleration = Util.translation(ax, ay, az);
+        }
+
+        var frameCount = 0;
+        function update(t, stage, flags) {
+            frameCount++;
+
+            if(mAcceleration)
+                mVelocity = Util.multiply(mVelocity, mAcceleration);
+
+            if(mVelocity)
+                mModelView = Util.multiply(mModelView, mVelocity);
+
+            if(flags & Config.flags.RENDER_SELECTED) {
+                if(vActiveColor === vColor)
+                    vActiveColor = vColor.slice(0);
+                vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
+                vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
+                vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
+                vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+                THIS.updateEditor(t, stage, flags);
+            } else {
+                vActiveColor = vColor
+            }
+
+        }
+
+
+        this.getTilePixel = function(x, y) {
+            if(x < 0 || y < 0 || x > idLevelMapData.width || y > idLevelMapData.height)
+                return null;
+            var pos = (x+y*idLevelMapData.width)*4;
+            return idLevelMapData.data.slice(pos, pos+4);
+        };
+
+        this.getPixel = function(x, y) {
+            // x-=mPosition[0];
+            // y-=mPosition[1];
+            // z-=mPosition[2];
+            var lx = Math.floor(x/tileSize);
+            var ly = Math.floor(y/tileSize);
+            if(lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
+                return null;
+            var tpixel = this.getTilePixel(lx, ly);
+            if(!tpixel || tpixel[2] === 0)
+                return tpixel;
+
+            var tx = (tpixel[0]*tileSize) + (x%tileSize);
+            var ty = (tpixel[1]*tileSize) + (y%tileSize);
+            var tpos = (tx+ty*tileMapData.width)*4;
+            var spixel = tileMapData.data.slice(tpos, tpos+4);
+            return spixel;
+        };
+
+        // Editor
+
+
+        this.saveEditorMap = function(left, top, width, height) {
+            if(typeof left === 'undefined') left = 0;
+            if(typeof top === 'undefined') top = 0;
+            if(typeof width === 'undefined') width = iLevelMap.width;
+            if(typeof height === 'undefined') height = iLevelMap.height;
+
+            Util.assetSavePNG(pathLevelMap, idLevelMapData.data, left, top, width, height);
+        };
+
+        this.setEditorSelection = function(left, top, right, bottom) {
+            if(left < 0) left = 0;
+            if(top < 0) top = 0;
+            if(right > levelMapSize[0]) right = levelMapSize[0];
+            if(bottom > levelMapSize[1]) bottom = levelMapSize[1];
+            if(left >= right) right = left+1;
+            if(top >= bottom) bottom = top+1;
+            vActiveColorRange = [tileSize*left, tileSize*top, tileSize*right, tileSize*bottom];
+            return [left, top, right, bottom];
+        };
+
+        this.changeEditorPixel = function(toPixel) {
+            var left = vActiveColorRange[0] / tileSize;
+            var top = vActiveColorRange[1] / tileSize;
+            var width = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
+            var height = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
+
+            var ppos = 0;
+            for(var y=top; y<top+height; y++) {
+                for(var x=left; x<left+width; x++) {
+                    var pos = (x)*4 + (y)*4*levelMapSize[0];
+                    idLevelMapData.data[pos+0] = toPixel[ppos+0];
+                    idLevelMapData.data[pos+1] = toPixel[ppos+1];
+                    idLevelMapData.data[pos+2] = toPixel[ppos+2];
+                    idLevelMapData.data[pos+3] = toPixel[ppos+3];
+                    ppos+=4;
+                    if(ppos >= toPixel.length)
+                        ppos = 0;
+                }
+            }
+
+            // Upload the image into the texture.
+            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
+        };
+
+
+        // Model/View
+
+        function move(tx, ty, tz) {
+            mPosition[0] += tx;
+            mPosition[1] += ty;
+            mPosition[2] += tz;
+            mModelView = Util.translate(mModelView, tx, ty, tz);
+        }
+
+        function moveTo(x, y, z) {
+            reset();
+            mPosition = [x, y, z];
+            mModelView = Util.translate(mModelView, x, y, z);
+        }
+
+        function scale(sx, sy, sz) {
+            mModelView = Util.scale(mModelView, sx, sy, sz);
+        }
+
+        function reset() {
+            mModelView = defaultModelViewMatrix;
+            if(iLevelMap.width && iTileSheet.width) {
+                var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
+                var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
+                mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
+                move(sx, sy, 0);
+                scale(sx, sy, 1);
+                // move(iLevelMap.width, -iLevelMap.height, 0);
+                // scale(iLevelMap.width, iLevelMap.height, 1);
+            }
+        }
+
+        // Textures
+
+        function onLoadSpriteSheetTexture(e) {
             // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
             // Upload the image into the texture.
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, iTileSheet);
 
-         
+
             // Set the parameters so we can render any size image.
 
             if(flags & TileMap.FLAG_REPEAT_TILES) {
@@ -95,21 +308,9 @@
             tileMapData = mapContext.getImageData(0, 0, iTileSheet.width, iTileSheet.height);
 
             reset();
-        });
+        }
 
-
-        // Load the Level Map
-        tLevelMap = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-
-        // Fill the texture with a 1x1 pixel.
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-            new Uint8Array([0, 256, 0, 128]));
-
-        // Asynchronously load the spritesheet
-        iLevelMap = new Image();
-        iLevelMap.src = pathLevelMap;
-        iLevelMap.addEventListener('load', function(e) {
+        function onLoadLevelMapTexture(e) {
             // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
@@ -147,394 +348,23 @@
             // gl.readPixels(0, 0, this.width, this.height, gl.RGB, gl.UNSIGNED_BYTE, data);
             //
             // gl.deleteFramebuffer(framebuffer);
-        });
-
-        var quadVerts = [
-            //x  y  u  v
-            -1, -1, 0, 1,
-            1, -1, 1, 1,
-            1,  1, 1, 0,
-
-            -1, -1, 0, 1,
-            1,  1, 1, 0,
-            -1,  1, 0, 0
-        ];
-
-        var bufQuadVertices = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW);
-
-
-        // Functions
-
-
-        function render(t, gl, stage, flags) {
-
-            // Update
-            update(t, stage, flags);
-
-            // Render
-            gl.useProgram(PROGRAM);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufQuadVertices);
-            gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 16, 0);
-            gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 16, 8);
-
-            // Bind Vertex Coordinate
-            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            // gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
-
-            // Bind Texture Coordinate
-            // gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            // gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
-            // gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
-
-
-            // Set the projection and viewport.
-            gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
-            gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
-            gl.uniform2fv(uMapSize, mMapSize);
-            gl.uniform4fv(uColor, vActiveColor);
-            gl.uniform4fv(uColorRange, vActiveColorRange);
-
-            // mMapSize[0]+=1; mMapSize[1]+=1;
-
-
-
-
-            gl.uniform2fv(uInverseSpriteTextureSize, inverseSpriteTextureSize);
-            gl.uniform2fv(uInverseTileTextureSize, inverseTileTextureSize);
-
-
-
-            // Tell the shader to get the tile sheet from texture unit 0
-            gl.activeTexture(gl.TEXTURE0);
-            gl.uniform1i(uTileSheet, 0);
-            gl.bindTexture(gl.TEXTURE_2D, tTileSheet);
-
-            // Tell the shader to get the level map from texture unit 0
-            gl.activeTexture(gl.TEXTURE1);
-            gl.uniform1i(uLevelMap, 1);
-            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-
-            // gl.uniform1i(shader.uniform.tiles, 1);
-            // gl.uniform2f(shader.uniform.viewOffset, Math.floor(x * layer.scrollScaleX), Math.floor(y * layer.scrollScaleY));
-            // gl.uniform2fv(shader.uniform.inverseTileTextureSize, layer.inverseTextureSize);
-            // gl.uniform1i(shader.uniform.repeatTiles, layer.repeat ? 1 : 0);
-
-
-            // draw the quad (2 triangles, 6 vertices)
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-        }
-
-        function setVelocity(vx, vy, vz) {
-            mVelocity = Util.translation(vx, vy, vz);
-        }
-
-        function setAcceleration(ax, ay, az) {
-            if(!mVelocity)
-                setVelocity(0,0,0);
-            mAcceleration = Util.translation(ax, ay, az);
-        }
-
-        var frameCount = 0;
-        function update(t, stage, flags) {
-            frameCount++;
-
-            if(mAcceleration)
-                mVelocity = Util.multiply(mVelocity, mAcceleration);
-
-            if(mVelocity)
-                mModelView = Util.multiply(mModelView, mVelocity);
-
-            if(flags & Config.flags.RENDER_SELECTED) {
-                if(vActiveColor === vColor)
-                    vActiveColor = vColor.slice(0);
-                vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
-                vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
-                vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
-                vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
-                updateEditor(t, stage, flags);
-            } else {
-                vActiveColor = vColor
-            }
-
-        }
-
-        function getPixel(x, y, z) {
-            // x-=mPosition[0];
-            // y-=mPosition[1];
-            // z-=mPosition[2];
-            var lx = Math.floor(x/tileSize);
-            var ly = Math.floor(y/tileSize);
-            var lz = Math.floor(z/tileSize);
-            if(lz !== 0 || lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
-                return null;
-            var pos = (lx+ly*idLevelMapData.width)*4;
-            var tpixel = idLevelMapData.data.slice(pos, pos+4);
-            if(tpixel[2] === 0)
-                return tpixel;
-
-            var tx = (tpixel[0]*tileSize) + (x%tileSize);
-            var ty = (tpixel[1]*tileSize) + (y%tileSize);
-            var tpos = (tx+ty*tileMapData.width)*4;
-            var spixel = tileMapData.data.slice(tpos, tpos+4);
-            return spixel;
-        }
-
-        function moveEditorSelection(vx, vy, vw, vh) {
-            vActiveColorRange[0] += vx;
-            vActiveColorRange[1] += vy;
-            vActiveColorRange[2] += vw;
-            vActiveColorRange[3] += vh;
-            if(vActiveColorRange[0] < 0) vActiveColorRange[0] = 0;
-            if(vActiveColorRange[1] < 0) vActiveColorRange[1] = 0;
-            if(vActiveColorRange[2] <= tileSize) vActiveColorRange[2] = tileSize;
-            if(vActiveColorRange[2] <= vActiveColorRange[0] + tileSize) vActiveColorRange[0] = vActiveColorRange[2] - tileSize;
-            if(vActiveColorRange[3] <= tileSize) vActiveColorRange[3] = tileSize;
-            if(vActiveColorRange[3] <= vActiveColorRange[1] + tileSize) vActiveColorRange[1] = vActiveColorRange[3] - tileSize;
-            console.log("Pixel: ", vActiveColorRange[0], vActiveColorRange[1], getPixel(vActiveColorRange[0], vActiveColorRange[1], 0));
-        }
-
-        function setEditorSelection(left, top, right, bottom) {
-            vActiveColorRange = [tileSize*left, tileSize*top, tileSize*right, tileSize*bottom];
-        }
-
-        function changeEditorNextPixel() {
-            var toPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
-            // Next Pixel in the row
-            toPixel[0]++;
-            if(toPixel[0]>255) {
-                toPixel[0] = 0;
-                toPixel[1]++;
-                if(toPixel[1] > 255)
-                    toPixel[1] = 0;
-            }
-            toPixel[2]=255;
-            changeEditorPixel(toPixel);
-        }
-
-        function changeEditorLastPixel() {
-            var toPixel = getEditorMapPixel(vActiveColorRange[0]/tileSize, vActiveColorRange[1]/tileSize);
-            // Next Pixel in the row
-            toPixel[0]--;
-            if(toPixel[0]<0) {
-                toPixel[0] = 255;
-                toPixel[1]--;
-                if(toPixel[1] < 0)
-                    toPixel[1] = 255;
-            }
-            toPixel[2]=255;
-            changeEditorPixel(toPixel);
-        }
-
-        function changeEditorPixel(toPixel) {
-            var left = vActiveColorRange[0] / tileSize;
-            var top = vActiveColorRange[1] / tileSize;
-            var width = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            var height = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-
-            var ppos = 0;
-            for(var x=left; x<left+width; x++) {
-                for(var y=top; y<top+height; y++) {
-                    var pos = (x)*4 + (y)*4*levelMapSize[0];
-                    idLevelMapData.data[pos+0] = toPixel[ppos+0];
-                    idLevelMapData.data[pos+1] = toPixel[ppos+1];
-                    idLevelMapData.data[pos+2] = toPixel[ppos+2];
-                    idLevelMapData.data[pos+3] = toPixel[ppos+3];
-                    ppos+=4;
-                    if(ppos >= toPixel.length)
-                        ppos = 0;
-                }
-            }
-
-            // Upload the image into the texture.
-            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
-
-            // saveEditorMap(pathLevelMap, left, top, width, height, toPixel);
-        }
-
-        var pixelCache;
-        function copyEditorPixel() {
-            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-            pixelCache = new ImageData(w, h);
-            var i = 0;
-            for(var y=vActiveColorRange[1]; y<vActiveColorRange[3]; y+=tileSize) {
-                for(var x=vActiveColorRange[0]; x<vActiveColorRange[2]; x+=tileSize) {
-                    var pos = (x/tileSize)*4 + (y/tileSize)*4*levelMapSize[0];
-                    pixelCache.data[i++] = idLevelMapData.data[pos+0];
-                    pixelCache.data[i++] = idLevelMapData.data[pos+1];
-                    pixelCache.data[i++] = idLevelMapData.data[pos+2];
-                    pixelCache.data[i++] = idLevelMapData.data[pos+3];
-                }
-            }
-            console.log("Copied: ", pixelCache);
-        }
-
-        function pasteEditorPixel() {
-            if(!pixelCache)
-                throw new Error("No pixel cache");
-
-            var left = vActiveColorRange[0] / tileSize;
-            var top = vActiveColorRange[1] / tileSize;
-            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-
-            for(var vx=0; vx<w; vx++) {
-                for(var vy=0; vy<h; vy++) {
-                    var pos = vx*4 + vy*4*pixelCache.width;
-                    var dpos = (vx+left)*4 + (vy+top)*4*levelMapSize[0];
-                    if(pos >= pixelCache.data.length)
-                        pos %= pixelCache.data.length;
-                    idLevelMapData.data[dpos+0] = pixelCache.data[pos+0];
-                    idLevelMapData.data[dpos+1] = pixelCache.data[pos+1];
-                    idLevelMapData.data[dpos+2] = pixelCache.data[pos+2];
-                    idLevelMapData.data[dpos+3] = pixelCache.data[pos+3];
-                }
-            }
-
-            // Upload the image into the texture.
-            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
-            console.log("Pasted: ", pixelCache);
-
-            // saveEditorMap(pathLevelMap, left, top, w, h, pixelCache.data);
-        }
-
-        function getEditorMapPixel(x, y) {
-            var pos = x*4 + y*4*levelMapSize[0];
-            return idLevelMapData.data.slice(pos, pos+4);
-        }
-
-        function printEditorTilePattern() {
-            var left = vActiveColorRange[0] / tileSize;
-            var top = vActiveColorRange[1] / tileSize;
-            var w = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            var h = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-            var data = new Uint8Array(w*h*4);
-            var i = 0;
-            for(var x=0; x<w; x++) {
-                for(var y=0; y<h; y++) {
-                    data[i+0] = x;
-                    data[i+1] = y;
-                    data[i+2] = 255;
-                    i+=4;
-                }
-            }
-            changeEditorPixel(data);
-        }
-
-        function saveEditorMap(path, left, top, width, height, data) {
-            Util.assetSavePNG(path, left, top, width, height, data)
-        }
-
-
-
-        var CHAR_SHIFT = 16;
-        var lastKeyCount = 0;
-        var lastHoldTime = 0, lastHoldDelay = 200;
-        function updateEditor(t, stage, flags) {
-            var PK = Config.input.pressedKeys;
-            var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
-
-            // Hold-down keys
-            if(PK[37] || PK[38] || PK[39] || PK[40]) {
-                if(t > lastHoldTime) {
-                    if (PK[39]) moveEditorSelection(tileSize * noShift, 0, tileSize, 0);     // Right
-                    if (PK[37]) moveEditorSelection(-tileSize * noShift, 0, -tileSize, 0);   // Left
-                    if (PK[40]) moveEditorSelection(0, tileSize * noShift, 0, tileSize);     // Down
-                    if (PK[38]) moveEditorSelection(0, -tileSize * noShift, 0, -tileSize);   // Up
-                    lastHoldTime = t + lastHoldDelay;
-                    if(lastHoldDelay > 20)
-                        lastHoldDelay-=20;
-                }
-            } else {
-                lastHoldTime = t;
-                lastHoldDelay=200;
-            }
-
-
-            // Press-once keys
-            if(lastKeyCount < Config.input.keyEvents) {
-                lastKeyCount = Config.input.keyEvents;
-                switch(Config.input.lastKey) {
-                    case 65: // A
-                        setEditorSelection(0, 0, iLevelMap.width, iLevelMap.height);
-                        break;
-
-                    case 78: // N:
-                        changeEditorNextPixel();
-                        break;
-
-                    case 76: // L
-                        changeEditorLastPixel();
-                        break;
-
-
-                    case 67: // C
-                        copyEditorPixel();
-                        break;
-
-                    case 46: // DEL
-                    case 68: // D
-                        changeEditorPixel([0, 0, 0, 0]);
-                        break;
-
-                    case 45: // INS
-                    case 86: // V
-                        pasteEditorPixel();
-                        break;
-
-                    case 83: // S
-                        saveEditorMap(pathLevelMap, 0, 0, iLevelMap.width, iLevelMap.height, idLevelMapData.data);
-                        break;
-
-                    case 84: // T
-                        printEditorTilePattern();
-                        break;
-
-
-                    default:
-//                     console.log("Key Change", noShift, Config.input.lastKey);
-                }
-            }
-        }
-
-        // Model/View
-
-        function move(tx, ty, tz) {
-            mPosition[0] += tx;
-            mPosition[1] += ty;
-            mPosition[2] += tz;
-            mModelView = Util.translate(mModelView, tx, ty, tz);
-        }
-
-        function moveTo(x, y, z) {
-            reset();
-            mPosition = [x, y, z];
-            mModelView = Util.translate(mModelView, x, y, z);
-        }
-
-        function scale(sx, sy, sz) {
-            mModelView = Util.scale(mModelView, sx, sy, sz);
-        }
-
-        function reset() {
-            mModelView = defaultModelViewMatrix;
-            if(iLevelMap.width && iTileSheet.width) {
-                var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
-                var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
-                mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
-                move(sx, sy, 0);
-                scale(sx, sy, 1);
-                // move(iLevelMap.width, -iLevelMap.height, 0);
-                // scale(iLevelMap.width, iLevelMap.height, 1);
-            }
         }
 
         // Init
+
+        function getVertexPositions(sx, sy) {
+            // Put a unit quad in the buffer
+            var vertexPositions = new Float32Array([
+                -sx, sy,
+                -sx, -sy,
+                sx, sy,
+                sx, sy,
+                -sx, -sy,
+                sx, -sy,
+            ]);
+
+            return vertexPositions;
+        }
 
         function initProgram(gl) {
 
@@ -568,13 +398,16 @@
 
             // Create a Vertex Position Buffer.
             bufVertexPosition = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
+
+            // bufVertexPosition = gl.createBuffer();
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            // gl.bufferData(gl.ARRAY_BUFFER, defaultVertexPositions, gl.STATIC_DRAW);
+
 
             // Create a Texture Coordinates Buffer
             bufTextureCoordinate = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, defaultTextureCoordinates, gl.STATIC_DRAW);
 
             // use texture unit 0
             gl.activeTexture(gl.TEXTURE0 + 0);
@@ -589,6 +422,16 @@
 
     // Static
 
+    var lastKeyCount = 0;
+    TileMap.prototype.updateEditor = function(t, stage, flags) {
+
+        // Press-once keys
+        if(lastKeyCount < Config.input.keyEvents) {
+            lastKeyCount = Config.input.keyEvents;
+            console.log("Editor not enabled");
+        }
+    };
+
 
     TileMap.FLAG_GENERATE_MIPMAP = 0x01;
     TileMap.FLAG_REPEAT_TILES = 0x10;
@@ -599,16 +442,6 @@
     var defaultColor = new Float32Array([1,1,1,1]);
 
 
-    // Put a unit quad in the buffer
-    var defaultVertexPositions = new Float32Array([
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 0,
-        0, 1,
-        1, 1,
-    ]);
-
     // Put texcoords in the buffer
     var defaultTextureCoordinates = new Float32Array([
         0, 0,
@@ -618,6 +451,8 @@
         0, 1,
         1, 1,
     ]);
+
+
 
     // Texture Program
 

@@ -256,7 +256,7 @@
                 var sx = iLevelMap.width * iTileSheet.width / PIXELS_PER_UNIT;
                 var sy = iLevelMap.height * iTileSheet.height / PIXELS_PER_UNIT;
                 mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
-                move(sx, sy, 0);
+                // move(sx, sy, 0);
                 scale(sx, sy, 1);
                 // move(iLevelMap.width, -iLevelMap.height, 0);
                 // scale(iLevelMap.width, iLevelMap.height, 1);

@@ -28,7 +28,7 @@
         // Sprite Sheet
         var fSpriteSheet = new Fragment.SpriteSheet(gl, tSpriteSheet, SPRITE_RESOLUTION, (1/16 * 1000));
         setScale(scale);
-        // move(6, 60, 0);
+        move(0, 8   , 0);
 
 
         /**
@@ -58,7 +58,7 @@
         function updateEditor(t, stage, flags) {
             var pressedKeys = Config.input.pressedKeys;
             if(pressedKeys[39])     move(0.1,  0.0,  0.0);  // Right:
-            if(pressedKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
+            if(press    edKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
             if(pressedKeys[40])     move(0.0, -0.1,  0.0);  // Down:
             if(pressedKeys[38])     move(0.0,  0.1,  0.0);  // Up:
             if(pressedKeys[34])     move(0.0,  0.0, -0.1);  // Page Down:
@@ -82,4 +82,4 @@
         this.setScale = setScale;
     }
 
-})();
+})();   

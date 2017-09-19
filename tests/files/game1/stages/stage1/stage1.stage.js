@@ -55,7 +55,7 @@
         var selectedRender = renders.length - 1;
 
         // Default FOV
-        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -10, -10, 0, 10];
+        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -4, 3, 0, 5];
 
         // Set up render loop
         var lastKeyCount = 0, frameCount = 0;

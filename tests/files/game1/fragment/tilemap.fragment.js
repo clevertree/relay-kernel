@@ -10,12 +10,13 @@
 
     var PROGRAM;
 
-    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, vColor, mPosition, mVelocity, mAcceleration) {
+    function TileMap(gl, pathLevelMap, pathTileSheet, tileSize, flags, pixelsPerUnit, mPosition, mVelocity, mAcceleration, vColor) {
         if(typeof flags === 'undefined')
             flags = TileMap.FLAG_DEFAULTS;
 
         // Variables
         var THIS =              this;
+        pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
         mPosition =             mPosition || [0, 0, 0];
         var mModelView =        defaultModelViewMatrix;
         vColor =                vColor || defaultColor;
@@ -141,19 +142,16 @@
         // Map Data
 
         this.getTilePixel = function(x, y) {
-            if(x < 0 || y < 0 || x > idLevelMapData.width || y > idLevelMapData.height)
+            if(x < 0 || y < 0 || x > levelMapSize[0] || y > levelMapSize[1])
                 return null;
-            var pos = (x+y*idLevelMapData.width)*4;
+            var pos = (x+y*levelMapSize[0])*4;
             return idLevelMapData.data.slice(pos, pos+4);
         };
 
         this.getPixel = function(x, y) {
-            // x-=mPosition[0];
-            // y-=mPosition[1];
-            // z-=mPosition[2];
             var lx = Math.floor(x/tileSize);
             var ly = Math.floor(y/tileSize);
-            if(lx < 0 || ly < 0 || lx > idLevelMapData.width || ly > idLevelMapData.height)
+            if(lx < 0 || ly < 0 || lx > levelMapSize[0] || ly > levelMapSize[1])
                 return null;
             var tpixel = this.getTilePixel(lx, ly);
             if(!tpixel || tpixel[2] === 0)
@@ -162,15 +160,27 @@
             var tx = (tpixel[0]*tileSize) + (x%tileSize);
             var ty = (tpixel[1]*tileSize) + (y%tileSize);
             var tpos = (tx+ty*tileMapData.width)*4;
-            var spixel = tileMapData.data.slice(tpos, tpos+4);
-            return spixel;
+            return tileMapData.data.slice(tpos, tpos+4);
         };
 
         this.testHit = function(x, y, z) {
-            x = Math.round(x * iLevelMap.width * tileSize / PIXELS_PER_UNIT);
-            y = Math.round(y * iLevelMap.height * tileSize / PIXELS_PER_UNIT);
-            console.log("Test Hit: ", x, y, this.getPixel(x, y));
-            return false;
+            if(z !== mPosition[2] || !idLevelMapData)
+                return null;
+            
+            var tx = Math.round((x-mPosition[0])/tileSize * pixelsPerUnit);
+            var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
+            // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
+            var tpixel = this.getTilePixel(tx, ty);
+            if(tpixel[2] < 128)
+                return null;
+
+            var px = (tpixel[0]*tileSize) + (tx%tileSize);
+            var py = (tpixel[1]*tileSize) + (ty%tileSize);
+            var tpos = (px+py*tileMapData.width)*4;
+            var pixel = tileMapData.data.slice(tpos, tpos+4);
+            if(pixel[3] < 200)
+                return null;
+            return pixel;
         };
 
         // Editor
@@ -251,11 +261,12 @@
         this.reset = function() {
             mModelView = defaultModelViewMatrix;
             if(iLevelMap.width && iTileSheet.width) {
-                var sx = iLevelMap.width * iTileSheet.width / (PIXELS_PER_UNIT);
-                var sy = iLevelMap.height * iTileSheet.height / (PIXELS_PER_UNIT);
+                var sx = iLevelMap.width * tileSize / (pixelsPerUnit);
+                var sy = iLevelMap.height * tileSize / (pixelsPerUnit);
                 mMapSize = [iLevelMap.width * tileSize, iLevelMap.height * tileSize];
                 mModelView = Util.translate(mModelView, mPosition[0], mPosition[1], mPosition[2]);
-                mModelView = Util.scale(mModelView, sx, sy, 1);
+                mModelView = Util.scale(mModelView, sx * 2, sy * 2, 1);
+                console.log("Set Level Scale: ", sx, sy);
             }
         };
 
@@ -353,12 +364,12 @@
 
             // Put a unit quad in the buffer
             return new Float32Array([
-                -0, sy,
                 -0, 0,
-                sx, sy,
-                sx, sy,
-                -0, 0,
+                -0, -sy,
                 sx, 0,
+                sx, 0,
+                -0, -sy,
+                sx, -sy,
             ]);
         }
 

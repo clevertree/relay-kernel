@@ -24,8 +24,8 @@
 
         // Sprite Sheet
         var fSpriteSheet = new Fragment.SpriteSheet(gl, DIR_SHEET, SPRITE_RESOLUTION, (1/16 * 1000));
-        setScale(scale);
-        move(0, 12, 0);
+        // setScale(scale);
+        // move(0, 12, 0);
 
 
         /**
@@ -35,9 +35,9 @@
          * @param stage
          * @param flags
          */
-        function render(t, gl, stage, flags) {
+        this.render = function(t, gl, stage, flags) {
             fSpriteSheet.render(t, gl, stage, flags);
-        }
+        };
 
         /**
          * Update Sprite Logic
@@ -45,43 +45,54 @@
          * @param stage
          * @param flags
          */
-        function update(t, stage, flags) {
+        this.update = function(t, stage, flags) {
             if(flags & Config.flags.RENDER_SELECTED) {
                 updateEditor(t, stage, flags);
+            } else {
+                updateGravity(t, stage, flags);
+            }
+        };
+
+        this.move = function(tx, ty, tz) {
+            pos[0] += tx;
+            pos[1] += ty;
+            pos[2] += tz;
+            fSpriteSheet.move(tx, ty, tz);
+        };
+
+        this.setScale = function(newScale) {
+            fSpriteSheet.setScale(newScale);
+        };
+
+        // Physics
+
+        function updateGravity(t, stage, flags) {
+            var hitFloor = stage.testHit(pos[0], pos[1], pos[2]);
+            if(!hitFloor) {
+                THIS.move(0, -0.02, 0);
+                // Fall
+            } else {
+                // Standing
             }
         }
+
+        // Editor
 
         var CHAR_SHIFT = 16;
         var lastKeyCount = 0;
         function updateEditor(t, stage, flags) {
             var pressedKeys = Config.input.pressedKeys;
-            if(pressedKeys[39])     move(0.1,  0.0,  0.0);  // Right:
-            if(pressedKeys[37])     move(-0.1, 0.0,  0.0);  // Left:
-            if(pressedKeys[40])     move(0.0, -0.1,  0.0);  // Down:
-            if(pressedKeys[38])     move(0.0,  0.1,  0.0);  // Up:
-            if(pressedKeys[34])     move(0.0,  0.0, -0.1);  // Page Down:
-            if(pressedKeys[33])     move(0.0,  0.0,  0.1);  // Page Up:
+            if(pressedKeys[39])     THIS.move(0.1,  0.0,  0.0);  // Right:
+            if(pressedKeys[37])     THIS.move(-0.1, 0.0,  0.0);  // Left:
+            if(pressedKeys[40])     THIS.move(0.0, -0.1,  0.0);  // Down:
+            if(pressedKeys[38])     THIS.move(0.0,  0.1,  0.0);  // Up:
+            if(pressedKeys[34])     THIS.move(0.0,  0.0, -0.1);  // Page Down:
+            if(pressedKeys[33])     THIS.move(0.0,  0.0,  0.1);  // Page Up:
             if(lastKeyCount < Config.input.keyEvents) {
                 lastKeyCount = Config.input.keyEvents;
                 stage.testHit(pos[0], pos[1], pos[2]);
             }
         }
-
-        function move(tx, ty, tz) {
-            pos[0] += tx;
-            pos[1] += ty;
-            pos[2] += tz;
-            fSpriteSheet.move(tx, ty, tz);
-        }
-
-        function setScale(newScale) {
-            fSpriteSheet.setScale(newScale);
-        }
-
-        this.update = update;
-        this.render = render;
-        this.move = move;
-        this.setScale = setScale;
     }
 
 })();

@@ -157,8 +157,8 @@
             }
         };
 
-        this.move = function(tx, ty, tz) {
-            mModelView = Util.translate(mModelView, tx, ty, tz);
+        this.move = function(mDistance) {
+            mModelView = Util.translate(mModelView, mDistance[0], mDistance[1], mDistance[2]);
         };
 
         this.setScale = function(newScale) {

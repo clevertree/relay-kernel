@@ -171,7 +171,7 @@
             var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
             // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
             var tpixel = this.getTilePixel(tx, ty);
-            if(tpixel[2] < 128)
+            if(!tpixel || tpixel[2] < 128)
                 return null;
 
             var px = (tpixel[0]*tileSize) + (tx%tileSize);

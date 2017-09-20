@@ -14,12 +14,14 @@
     Config.character.Player1 = Player1;
     var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
-    function Player1(gl, pos, scale) {
+    function Player1(gl, scale, mPosition, mVelocity, mAcceleration) {
         var THIS = this;
         var Fragment = Config.fragment;
 
         // Local Variables
-        pos = pos || [0, 0, 0];
+        mPosition = mPosition || [0, 0, 0];
+        mVelocity = mVelocity || [0.1 * Math.random(), 0, 0];
+        mAcceleration = mAcceleration || null;
         scale = scale || 1;
 
         // Sprite Sheet
@@ -49,14 +51,14 @@
             if(flags & Config.flags.RENDER_SELECTED) {
                 updateEditor(t, stage, flags);
             } else {
-                updateGravity(t, stage, flags);
+                updateMotion(t, stage, flags);
             }
         };
 
         this.move = function(tx, ty, tz) {
-            pos[0] += tx;
-            pos[1] += ty;
-            pos[2] += tz;
+            mPosition[0] += tx;
+            mPosition[1] += ty;
+            mPosition[2] += tz;
             fSpriteSheet.move(tx, ty, tz);
         };
 
@@ -66,14 +68,33 @@
 
         // Physics
 
-        function updateGravity(t, stage, flags) {
-            var hitFloor = stage.testHit(pos[0], pos[1], pos[2]);
+        function updateMotion(t, stage, flags) {
+            var hitFloor = stage.testHit(mPosition[0], mPosition[1], mPosition[2]);
             if(!hitFloor) {
-                THIS.move(0, -0.02, 0);
                 // Fall
+                if(!mAcceleration) {
+                    mAcceleration = stage.mGravity;
+                    if(!mVelocity) mVelocity = [0, 0, 0];
+                }
+
             } else {
                 // Standing
+                if(mVelocity) // Collision
+                    handleStageCollision(t, stage, flags);
             }
+
+            // Acceleration
+            if(mAcceleration)
+                mVelocity = [mVelocity[0] + mAcceleration[0], mVelocity[1] + mAcceleration[1], mVelocity[2] + mAcceleration[2]]
+
+            // Position
+            if(mVelocity)
+                THIS.move(mVelocity[0], mVelocity[1], mVelocity[2]);
+        }
+
+        function handleStageCollision(t, stage, flags) {
+            mAcceleration = null;
+            mVelocity = null;
         }
 
         // Editor
@@ -90,7 +111,7 @@
             if(pressedKeys[33])     THIS.move(0.0,  0.0,  0.1);  // Page Up:
             if(lastKeyCount < Config.input.keyEvents) {
                 lastKeyCount = Config.input.keyEvents;
-                stage.testHit(pos[0], pos[1], pos[2]);
+                stage.testHit(mPosition[0], mPosition[1], mPosition[2]);
             }
         }
     }

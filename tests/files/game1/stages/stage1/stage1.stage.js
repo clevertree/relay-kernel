@@ -56,6 +56,7 @@
 
         // Default FOV
         this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -4, 3, 0, 5];
+        this.mGravity = [0, -0.001, 0];
 
         // Set up render loop
         var lastKeyCount = 0, frameCount = 0;

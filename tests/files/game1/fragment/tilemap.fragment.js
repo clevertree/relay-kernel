@@ -111,8 +111,14 @@
             gl.uniform1i(uLevelMap, 1);
             gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
+            for(var i=0; i<20; i++) {
+                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+            }
+            gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
+
         };
 
         var frameCount = 0;

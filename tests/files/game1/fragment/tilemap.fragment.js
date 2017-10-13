@@ -173,7 +173,7 @@
             if(z !== mPosition[2] || !idLevelMapData)
                 return null;
             
-            var tx = Math.round((x-mPosition[0])/tileSize * pixelsPerUnit);
+            var tx = Math.round((x - mPosition[0])/tileSize * pixelsPerUnit);
             var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
             // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
             var tpixel = this.getTilePixel(tx, ty);

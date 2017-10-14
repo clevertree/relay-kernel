@@ -17,7 +17,7 @@
         if(!Array.isArray(pathTextures))
             pathTextures = [pathTextures];
 
-        
+
 
         // Variables
         var THIS =              this;
@@ -118,7 +118,7 @@
                 vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
                 vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
                 vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
-                THIS.updateEditor(t, stage, flags);
+                updateEditor(t, this, stage, flags);
             } else {
                 vActiveColor = vColor
             }
@@ -306,6 +306,16 @@
 
         }
 
+        // Editor
+
+        var updateEditor = function(t, heightMap, stage, flags) {
+            if(Config.fragment.editor.HeightMapEditor) {
+                var Editor = Config.fragment.editor.HeightMapEditor;
+                updateEditor = Editor.update;
+                updateEditor(t, heightMap, stage, flags);
+            }
+        };
+
         // Init
 
         function getVertexPositions(sx, sy) {
@@ -375,17 +385,6 @@
     }
 
     // Static
-
-    var lastKeyCount = 0;
-    HeightMap.prototype.updateEditor = function(t, stage, flags) {
-
-        // Press-once keys
-        if(lastKeyCount < Config.input.keyEvents) {
-            lastKeyCount = Config.input.keyEvents;
-            console.log("Editor not enabled");
-        }
-    };
-
 
     HeightMap.FLAG_GENERATE_MIPMAP = 0x01;
     HeightMap.FLAG_REPEAT_TILES = 0x10;

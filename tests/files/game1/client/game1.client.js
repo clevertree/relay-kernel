@@ -13,7 +13,7 @@
     var ROOT = 'tests/files/game1/';
     var Config = {}, Util = {};
     var pressedKeys = {}, keyCount = {};
-    Config.fragment = {};
+    Config.fragment = {editor:{}};
     Config.character = {};
     Config.level = {};
     Config.input = { pressedKeys:pressedKeys, keyCount: keyCount, keyEvents: 0, lastKey: null };

@@ -9,6 +9,10 @@
     var Config = window.games.game1;
     var ROOT = Config.path.root;
     var DIR_STAGE = ROOT + 'stages/stage1/';
+    var DIR_LEVEL_MAP = DIR_STAGE + 'map/default.tilemap.png';
+    var DIR_TILE_SHEET = DIR_STAGE + 'tiles/default.tiles.png';
+    var DIR_HEIGHT_MAP = DIR_STAGE + 'map/main.heightmap.png';
+
     var PATH_TILE_DEFAULT = DIR_STAGE + 'tiles/default.tiles.png';
     var PATH_MAP_BKLAYER = DIR_STAGE + 'map/bklayer.map.png';
     var SCRIPT_ASSETS = [
@@ -20,12 +24,13 @@
         ROOT + 'fragment/tilemap.fragment.editor.js',
 
         ROOT + 'fragment/heightmap.fragment.js',
+        ROOT + 'fragment/heightmap.fragment.editor.js',
 
         ROOT + 'sprite/player1.sprite.js',
         ROOT + 'sprite/player2.sprite.js',
 
         // Levels
-        DIR_STAGE + 'level/level1.level.js',
+        // DIR_STAGE + 'level/level1.level.js',
     ];
 
     // Load and Render
@@ -52,10 +57,11 @@
         Player1.move([0, 10, 0]);
 
         // Level Sprites
-        var Level1 = new Config.level.Level1(gl);
+        var pfMain = new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64);
+        var hmMain = new Config.fragment.HeightMap(gl, DIR_HEIGHT_MAP);
 
         var renders = [
-            Player1, Level1
+            Player1, pfMain, hmMain
         ];
         var selectedRender = renders.length - 1;
 
@@ -178,6 +184,7 @@
         }
 
         this.testHit = function (x, y, z) {
+            return false;
             return Level1.testHit(x, y, z);
         };
 

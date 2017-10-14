@@ -521,7 +521,7 @@
         "   vec4 tile = texture2D(uLevelMap, vTextureCoordinate);",
         // "   if(tile.x == 1.0 && tile.y == 1.0) { discard; }",
         "   if(tile.z == 0.00) { discard; }",
-        "   if(vTextureCoordinate.y + vTextureCoordinate.x + vTextureCoordinate.x < 0.8) { discard; }",
+        // "   if(vTextureCoordinate.y + vTextureCoordinate.x + vTextureCoordinate.x < 0.8) { discard; }",
 
         "   vec2 spriteOffset = floor(tile.xy * 256.0) * uTileSize;", // xy = rg
         "   vec2 spriteCoord = mod(vPixelCoordinate, uTileSize);",

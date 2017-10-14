@@ -10,7 +10,7 @@
     var ROOT = Config.path.root;
     var SPRITE_RESOLUTION = 128;
     var DIR_CHARACTER = ROOT + 'sprite/';
-    var DIR_SHEET = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
+        var DIR_SHEET = DIR_CHARACTER + 'sheet/lem/lem-default.'+SPRITE_RESOLUTION+'.sprite-sheet.png';
     Config.character.Player1 = Player1;
     var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 

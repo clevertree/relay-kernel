@@ -49,6 +49,8 @@
         // Players
         var Player1 = new Config.character.Player1(gl);
 
+        Player1.move([0, 10, 0]);
+
         // Level Sprites
         var Level1 = new Config.level.Level1(gl);
 
@@ -58,7 +60,7 @@
         var selectedRender = renders.length - 1;
 
         // Default FOV
-        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, -3, -4, 3, 0, 5];
+        this.mProjection = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, -3, -4, -3, 0, 10];
         this.mGravity = [0, -0.001, 0];
 
         // Set up render loop

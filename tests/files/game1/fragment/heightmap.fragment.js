@@ -313,11 +313,11 @@
             // Put a unit quad in the buffer
             return new Float32Array([
                 -0, 0,
-                -0, -sy,
+                -0, sy,
                 sx, 0,
                 sx, 0,
-                -0, -sy,
-                sx, -sy,
+                -0, sy,
+                sx, sy,
             ]);
         }
 
@@ -466,7 +466,7 @@
         "   vec4 pxHeight = getValueFromTexture(vTextureCoordinate.x);",
 
         // "   if(tile.z == 0.00) { discard; }",
-        "   if(vTextureCoordinate.y < pxHeight.w) { discard; }",
+        "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
         "   pxHeight.w = 1.00;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
 
         // "   sprite.w *= tile.w;", //  * vColor

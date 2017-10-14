@@ -33,7 +33,7 @@
         var HeightMapData, idLevelMapData, levelMapSize = [1,1];
 
 
-        mModelView = Util.scale(mModelView, 500, 5, 1);
+        mModelView = Util.scale(mModelView, 500, 15, 1);
 
         // Initiate Shader program
         if(!PROGRAM)
@@ -88,10 +88,10 @@
             // gl.uniform1i(uLevelMap, 1);
             // gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
-            // for(var i=0; i<20; i++) {
-            //     gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
-            //     gl.drawArrays(gl.TRIANGLES, 0, 6);
-            // }
+            for(var i=20; i>0; i--) {
+                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+            }
 
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             // draw the quad (2 triangles, 6 vertices)
@@ -298,7 +298,7 @@
                 } else {
                     // MUST be filtered with NEAREST or tile lookup fails
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 }
             }
 
@@ -388,7 +388,7 @@
     HeightMap.FLAG_GENERATE_MIPMAP = 0x01;
     HeightMap.FLAG_REPEAT_TILES = 0x10;
     HeightMap.FLAG_REPEAT_MAP = 0x20;
-    HeightMap.FLAG_DEFAULTS = 0x11; // HeightMap.FLAG_GENERATE_MIPMAP;
+    HeightMap.FLAG_DEFAULTS = 0x10; // HeightMap.FLAG_GENERATE_MIPMAP;
 
     var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
@@ -449,7 +449,7 @@
         "uniform vec4 uColorRange;",
 
 
-        "vec2 textureSize = vec2(100.0, 100.0);",
+        "vec2 textureSize = vec2(64.0, 32.0);",
 
         "vec4 getValueFromTexture(float index) {",
         "   index *= textureSize.x * textureSize.y;",

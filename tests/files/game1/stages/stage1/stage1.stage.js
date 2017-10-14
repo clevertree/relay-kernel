@@ -15,8 +15,11 @@
         ROOT + 'fragment/color.fragment.js',
         ROOT + 'fragment/texture.fragment.js',
         ROOT + 'fragment/spritesheet.fragment.js',
+
         ROOT + 'fragment/tilemap.fragment.js',
         ROOT + 'fragment/tilemap.fragment.editor.js',
+
+        ROOT + 'fragment/heightmap.fragment.js',
 
         ROOT + 'sprite/player1.sprite.js',
         ROOT + 'sprite/player2.sprite.js',

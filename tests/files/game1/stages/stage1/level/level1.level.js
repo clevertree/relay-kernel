@@ -9,33 +9,21 @@
     var Util = Config.util;
     var ROOT = Config.path.root;
     var DIR_STAGE = ROOT + 'stages/stage1/';
-    var DIR_LEVEL_MAP = DIR_STAGE + 'map/default.map.png';
+    var DIR_LEVEL_MAP = DIR_STAGE + 'map/default.tilemap.png';
     var DIR_TILE_SHEET = DIR_STAGE + 'tiles/default.tiles.png';
+    var DIR_HEIGHT_MAP = DIR_STAGE + 'map/main.heightmap.png';
     Config.level.Level1 = Level1;
 
     function Level1(gl) {
         var pfMain = new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64);
+        var hmMain = new Config.fragment.HeightMap(gl, DIR_HEIGHT_MAP);
         // pfMain.move(0, -15);
 
         var renders = [
             pfMain,
+            hmMain
             // new Fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 16),
         ];
-
-        for(var i=0; i<renders.length; i++) {
-            var render = renders[i];
-            // render.setAcceleration(0,0,-0.00002 * i);
-            // render.setVelocity(-0.001,0.0003,0.003);
-        }
-
-
-        /**
-         * Update Sprite Logic
-         * @param t
-         */
-        this.update = function(t) {
-
-        };
 
         /**
          * Render Sprite
@@ -49,6 +37,14 @@
                 var render = renders[i];
                 render.render(t, gl, stage, flags);
             }
+        };
+
+        /**
+         * Update Sprite Logic
+         * @param t
+         */
+        this.update = function(t) {
+
         };
 
         this.testHit = function(x, y, z) {

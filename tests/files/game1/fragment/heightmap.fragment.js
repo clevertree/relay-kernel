@@ -17,6 +17,8 @@
         if(!Array.isArray(pathTextures))
             pathTextures = [pathTextures];
 
+        
+
         // Variables
         var THIS =              this;
         pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
@@ -467,7 +469,8 @@
 
         // "   if(tile.z == 0.00) { discard; }",
         "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
-        "   pxHeight.w = 1.00;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
+        // "   pxHeight.w = 1.00;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
+        "   pxHeight.w = (pxHeight.w - vTextureCoordinate.y)/0.005;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
 
         // "   sprite.w *= tile.w;", //  * vColor
         // "   if(tile.x > uColorRange.x && tile.y > uColorRange.y && tile.x < uColorRange.z && tile.y < uColorRange.w)",

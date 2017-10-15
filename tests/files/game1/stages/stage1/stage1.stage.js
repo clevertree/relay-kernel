@@ -48,21 +48,22 @@
         // Flags
         var stageFlags = Config.flags.MODE_DEFAULT;
 
-        // Point of View / Perspective
-        // var POV = UTIL.getPOV(gl);
-
         // Players
-        var Player1 = new Config.character.Player1(gl);
+        var player1 = new Config.character.Player1(gl);
 
-        Player1.move([0, 10, 0]);
+        player1.move([0, 10, 0]);
 
         // Level Sprites
         var pfMain = new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64);
         var hmMain = new Config.fragment.HeightMap(gl, DIR_HEIGHT_MAP);
 
         var renders = [
-            Player1, pfMain, hmMain
+            player1, pfMain, hmMain
         ];
+        var hitBoxes = [
+            pfMain, hmMain
+        ];
+
         var selectedRender = renders.length - 1;
 
         // Default FOV
@@ -184,8 +185,12 @@
         }
 
         this.testHit = function (x, y, z) {
+            for(var i=0; i<hitBoxes.length; i++) {
+                var pixel = hitBoxes[i].testHit(x, y, z);
+                if(pixel)
+                    return pixel;
+            }
             return false;
-            return Level1.testHit(x, y, z);
         };
 
         // Set up Stage Object

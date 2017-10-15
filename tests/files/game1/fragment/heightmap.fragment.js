@@ -10,7 +10,7 @@
 
     var PROGRAM;
 
-    function HeightMap(gl, pathTextures, flags, pixelsPerUnit, mPosition, mVelocity, mAcceleration, vColor) {
+    function HeightMap(gl, pathTextures, flags) {
         if(typeof flags === 'undefined')
             flags = HeightMap.FLAG_DEFAULTS;
 
@@ -21,28 +21,31 @@
 
         // Variables
         var THIS =              this;
-        pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
-        mPosition =             mPosition || [0, 0, 0];
+        // pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
+        var mapLength =         2048;
+        var mPosition =         [0, 0, 0];
+        var mScale =            [500, 5, 1];
         var mModelView =        defaultModelViewMatrix;
-        vColor =                vColor || defaultColor;
-        var vActiveColor =      vColor.slice(0);
+        // vColor =                vColor || defaultColor;
+        var vActiveColor =      defaultColor.slice(0);
         var vActiveColorRange = [0,0];
 
         // Set up private properties
-        var mVertexPosition = getVertexPositions(1, 1);
+        var mVertexPosition = defaultTextureCoordinates;
         var mTextureCoordinates = defaultTextureCoordinates;
-        var textures = [];
-        var HeightMapData, idLevelMapData, levelMapSize = [1,1];
+        var textures = [], textureConfigs = [];
 
 
-        mModelView = Util.scale(mModelView, 500, 15, 1);
+        mModelView = Util.scale(mModelView, mScale[0], mScale[1], mScale[2]);
 
         // Initiate Shader program
         if(!PROGRAM)
             initProgram(gl);
 
-        for(var i=0; i<pathTextures.length; i++)
+        for(var i=0; i<pathTextures.length; i++) {
             loadTexture(pathTextures[i]);
+            textureConfigs.push([0, 0, 0, 0]);
+        }
 
 
         // Functions
@@ -90,10 +93,10 @@
             // gl.uniform1i(uLevelMap, 1);
             // gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
-            for(var i=20; i>0; i--) {
-                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
-            }
+            // for(var i=20; i>0; i--) {
+            //     gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
+            //     gl.drawArrays(gl.TRIANGLES, 0, 6);
+            // }
 
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             // draw the quad (2 triangles, 6 vertices)
@@ -105,68 +108,68 @@
         this.update = function(t, stage, flags) {
             frameCount++;
 
-            if(mAcceleration)
-                mVelocity = Util.multiply(mVelocity, mAcceleration);
+            // if(mAcceleration)
+            //     mVelocity = Util.multiply(mVelocity, mAcceleration);
 
-            if(mVelocity)
-                mModelView = Util.multiply(mModelView, mVelocity);
+            // if(mVelocity)
+            //     mModelView = Util.multiply(mModelView, mVelocity);
 
             if(flags & Config.flags.RENDER_SELECTED) {
-                if(vActiveColor === vColor)
-                    vActiveColor = vColor.slice(0);
-                vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
-                vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
-                vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
-                vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
-                updateEditor(t, this, stage, flags);
+                // if(vActiveColor === vColor)
+                //     vActiveColor = vColor.slice(0);
+                // vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
+                // vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
+                // vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
+                // vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+                updateEditor(t, stage, flags);
             } else {
-                vActiveColor = vColor
+                // vActiveColor = vColor
             }
 
         };
 
         // Map Data
 
-        this.getTilePixel = function(x, y) {
-            if(x < 0 || y < 0 || x > levelMapSize[0] || y > levelMapSize[1])
-                return null;
-            var pos = (x+y*levelMapSize[0])*4;
-            return idLevelMapData.data.slice(pos, pos+4);
-        };
-
-        this.getPixel = function(x, y) {
-            var lx = Math.floor(x/tileSize);
-            var ly = Math.floor(y/tileSize);
-            if(lx < 0 || ly < 0 || lx > levelMapSize[0] || ly > levelMapSize[1])
-                return null;
-            var tpixel = this.getTilePixel(lx, ly);
-            if(!tpixel || tpixel[2] === 0)
-                return tpixel;
-
-            var tx = (tpixel[0]*tileSize) + (x%tileSize);
-            var ty = (tpixel[1]*tileSize) + (y%tileSize);
-            var tpos = (tx+ty*HeightMapData.width)*4;
-            return HeightMapData.data.slice(tpos, tpos+4);
-        };
-
         this.testHit = function(x, y, z) {
-            if(z !== mPosition[2] || !idLevelMapData)
-                return null;
-            
-            var tx = Math.round((x - mPosition[0])/tileSize * pixelsPerUnit);
-            var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
-            // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
-            var tpixel = this.getTilePixel(tx, ty);
-            if(!tpixel || tpixel[2] < 128)
+            if(z !== mPosition[2])
                 return null;
 
-            var px = (tpixel[0]*tileSize) + (tx%tileSize);
-            var py = (tpixel[1]*tileSize) + (ty%tileSize);
-            var tpos = (px+py*HeightMapData.width)*4;
-            var pixel = HeightMapData.data.slice(tpos, tpos+4);
-            if(pixel[3] < 200)
+            var rx = x / mScale[0] - mPosition[0];
+            if(rx < 0 || rx > 1)
                 return null;
-            return pixel;
+            var ry = y / mScale[1] - mPosition[1];
+            if(ry < 0 || ry > 1)
+                return null;
+
+            var px = Math.floor(rx * mapLength);
+            // var py = Math.floor(ry * mapSize[1]);
+            var leftHeight = 0, rightHeight = 0;
+            for(var i=0; i<textureConfigs.length; i++) {
+                var config = textureConfigs[i];
+                var texture = textures[config[0]];
+                leftHeight += texture.heightMapData[(px+0) % texture.heightMapData.length] / textureConfigs.length;
+                rightHeight += texture.heightMapData[(px+1) % texture.heightMapData.length] / textureConfigs.length;
+            }
+            console.log(rx, ry, px, leftHeight, rightHeight, leftHeight/256, rightHeight/256);
+
+            return ry < leftHeight/256;
+            //
+            // var ry = y / mScale[1] - mPosition[1];
+            //
+            // var tx = Math.round((x - mPosition[0])/tileSize * pixelsPerUnit);
+            // var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
+            // // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
+            // var tpixel = this.getTilePixel(tx, ty);
+            // if(!tpixel || tpixel[2] < 128)
+            //     return null;
+            //
+            // var px = (tpixel[0]*tileSize) + (tx%tileSize);
+            // var py = (tpixel[1]*tileSize) + (ty%tileSize);
+            // var tpos = (px+py*heightMapData.width)*4;
+            // var pixel = heightMapData.data.slice(tpos, tpos+4);
+            // if(pixel[3] < 200)
+            //     return null;
+            // return pixel;
         };
 
         // Editor
@@ -281,7 +284,6 @@
 
                 texture.srcImage = image;
 
-
                 // Set the parameters so we can render any size image.
 
                 if(flags & HeightMap.FLAG_REPEAT_TILES) {
@@ -302,36 +304,51 @@
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 }
+
+
+                var canvas = document.createElement('canvas');
+                var mapContext = canvas.getContext('2d');
+                mapContext.drawImage(image, 0, 0);
+                var imageData = mapContext.getImageData(0, 0, image.width, image.height).data;
+                var heightMapData = new Uint8ClampedArray(imageData.length/4);
+
+                for(var i=0; i<imageData.length; i+=4) {
+                    heightMapData[i/4] = imageData[i+3];
+                }
+
+                texture.heightMapData = heightMapData;
+                console.log(heightMapData);
             }
 
         }
 
         // Editor
 
-        var updateEditor = function(t, heightMap, stage, flags) {
+        var updateEditor = function(t, stage, flags) {
             if(Config.fragment.editor.HeightMapEditor) {
-                var Editor = Config.fragment.editor.HeightMapEditor;
-                updateEditor = Editor.update;
-                updateEditor(t, heightMap, stage, flags);
+                var editor = new Config.fragment.editor.HeightMapEditor(THIS);
+                updateEditor = editor.update;
+                updateEditor(t, stage, flags);
+                THIS.editor = editor;
             }
         };
 
         // Init
 
-        function getVertexPositions(sx, sy) {
-            sx /= 2;
-            sy /= 2;
-
-            // Put a unit quad in the buffer
-            return new Float32Array([
-                -0, 0,
-                -0, sy,
-                sx, 0,
-                sx, 0,
-                -0, sy,
-                sx, sy,
-            ]);
-        }
+        // function getVertexPositions(sx, sy) {
+        //     sx /= 2;
+        //     sy /= 2;
+        //
+        //     // Put a unit quad in the buffer
+        //     return new Float32Array([
+        //         -0, 0,
+        //         -0, sy,
+        //         sx, 0,
+        //         sx, 0,
+        //         -0, sy,
+        //         sx, sy,
+        //     ]);
+        // }
 
         function initProgram(gl) {
 
@@ -393,7 +410,6 @@
 
     var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
-
 
     // Put texcoords in the buffer
     var defaultTextureCoordinates = new Float32Array([

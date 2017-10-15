@@ -150,9 +150,9 @@
                 leftHeight += texture.heightMapData[(px+0) % texture.heightMapData.length] / textureConfigs.length;
                 rightHeight += texture.heightMapData[(px+1) % texture.heightMapData.length] / textureConfigs.length;
             }
-            console.log(rx, ry, px, leftHeight, rightHeight, leftHeight/256, rightHeight/256);
+            // console.log(rx, ry, px, leftHeight, rightHeight, leftHeight/256, rightHeight/256);
 
-            return ry < leftHeight/256;
+            return ry < (leftHeight+rightHeight)/(2*256);
             //
             // var ry = y / mScale[1] - mPosition[1];
             //

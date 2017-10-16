@@ -76,7 +76,7 @@
                     break;
 
                 case 84: // T
-                    this.printEditorTilePattern();
+                    this.printHeightPattern();
                     break;
 
 
@@ -153,7 +153,7 @@
     };
 
 
-    TileMap.prototype.printEditorTilePattern = function() {
+    TileMap.prototype.printHeightPattern = function() {
         var range = this.editor.range;
         var left = range[0];
         var top = range[1];

@@ -6,6 +6,7 @@
     var Config = window.games.game1;
     var Util = Config.util;
     Config.fragment.editor.HeightMapEditor = HeightMapEditor;
+    var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
     var CHAR_SHIFT = 16;
     var lastKeyCount = 0;
@@ -15,8 +16,10 @@
         if(!heightMap instanceof HeightMap)
             throw new Error("Invalid Height Map: ", heightMap);
 
-        var range = [0, 100];
+        var THIS = this;
+        var selectedTexture = 0;
 
+        var lastHoldTime = 0, lastHoldDelay = 200;
         this.update = function(t, stage, flags) {
 
             var PK = Config.input.pressedKeys;
@@ -25,10 +28,10 @@
             // Hold-down keys
             if(PK[37] || PK[38] || PK[39] || PK[40]) {
                 if(t > lastHoldTime) {
-                    if (PK[39]) heightMap.moveEditorSelection(noShift, 0, 1, 0);     // Right
-                    if (PK[37]) heightMap.moveEditorSelection(-noShift, 0, -1, 0);   // Left
-                    if (PK[40]) heightMap.moveEditorSelection(0, noShift, 0, 1);     // Down
-                    if (PK[38]) heightMap.moveEditorSelection(0, -noShift, 0, -1);   // Up
+                    if (PK[39]) THIS.moveSelection(noShift, 1);     // Right
+                    if (PK[37]) THIS.moveSelection(-noShift, -1);   // Left
+                    if (PK[40]) THIS.changePixel(0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT);     // Down
+                    if (PK[38]) THIS.changePixel(0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT);   // Up
                     lastHoldTime = t + lastHoldDelay;
                     if(lastHoldDelay > 20)
                         lastHoldDelay-=20;
@@ -44,46 +47,172 @@
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
                     case 65: // A
-                        heightMap.setEditorSelection(0, 0, 99999999, 99999999);
+                        heightMap.setHighlightRange(0, heightMap.getMapLength());
                         break;
 
-                    case 78: // N:
-                        heightMap.changeEditorNextPixel();
+                    case 82: // R:
+                        THIS.changePixel([noShift ? -1 : 1, 0, 0, 0]);
                         break;
-
-                    case 76: // L
-                        heightMap.changeEditorLastPixel();
+                    case 71: // G:
+                        THIS.changePixel([0, noShift ? -1 : 1, 0, 0]);
                         break;
-
+                    case 66: // B:
+                        THIS.changePixel([0, 0, noShift ? -1 : 1, 0]);
+                        break;
 
                     case 67: // C
-                        heightMap.copyEditorPixel();
+                        THIS.copyPixel();
                         break;
 
                     case 46: // DEL
                     case 68: // D
-                        heightMap.changeEditorPixel([0, 0, 0, 0]);
+                        THIS.setPixel([0, 0, 0, 0]);
                         break;
 
                     case 45: // INS
                     case 86: // V
-                        heightMap.pasteEditorPixel();
+                        THIS.pasteEditorPixel();
                         break;
 
                     case 83: // S
-                        heightMap.saveEditorMap();
+                        THIS.saveEditorMap();
                         break;
 
                     case 84: // T
-                        heightMap.printEditorTilePattern();
+                        THIS.printHeightPattern();
                         break;
 
+                    case 48: // 0
+                    case 49: // 1
+                    case 50: // 2
+                    case 51: // 3
+                    case 52: // 4
+                    case 53: // 5
+                    case 54: // 6
+                    case 55: // 7
+                    case 56: // 8
+                    case 57: // 9
+                        THIS.printHeightPattern();
+                        break;
 
                     default:
 //                     console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         };
+
+        function loadImageData(image) {
+            var canvas = document.createElement('canvas');
+            var mapContext = canvas.getContext('2d');
+            mapContext.drawImage(image, 0, 0);
+            return mapContext.getImageData(0, 0, image.width, image.height).data;
+        }
+
+        this.setPixel = function(pixelData) {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            var pos = 0, range = heightMap.getHighlightRange();
+            for (var i=range[0]; i<range[1]; i++) {
+                var offset = (i%image.width) * 4;
+                imageData[offset + 0] = pixelData[pos + 0];
+                imageData[offset + 1] = pixelData[pos + 1];
+                imageData[offset + 2] = pixelData[pos + 2];
+                imageData[offset + 3] = pixelData[pos + 3];
+                pos += 4;
+                if(pos >= pixelData.length)
+                    pos = 0;
+            }
+
+            heightMap.updateTexture(selectedTexture, imageData);
+            // TODO: save
+        };
+
+        this.changePixel = function(pixelData) {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            var pos = 0, range = heightMap.getHighlightRange();
+            for (var i=range[0]; i<range[1]; i++) {
+                var offset = (i%image.width) * 4;
+                imageData[offset + 0] += pixelData[pos + 0];
+                imageData[offset + 1] += pixelData[pos + 1];
+                imageData[offset + 2] += pixelData[pos + 2];
+                imageData[offset + 3] += pixelData[pos + 3];
+                pos += 4;
+                if(pos >= pixelData.length)
+                    pos = 0;
+            }
+
+            heightMap.updateTexture(selectedTexture, imageData);
+            // TODO: save
+        };
+
+        var pixelCache;
+        this.copyPixel = function() {
+            var texture = heightMap.getTextures()[selectedTexture];
+            var image = texture.srcImage;
+            var imageData = loadImageData(image);
+            var range = heightMap.getHighlightRange();
+            var aRange = [range[0] * 4, range[1] * 4];
+
+            pixelCache = new Uint8ClampedArray((range[1]-range[0])*4);
+
+            for (var i=aRange[0]; i<aRange[1]; i++)
+                pixelCache[i] = imageData[i];
+
+            console.log("Copied: ", pixelCache);
+        };
+
+        this.pasteEditorPixel = function() {
+            if(!pixelCache)
+                throw new Error("No pixel cache");
+
+            this.changePixel(pixelCache);
+        };
+
+        this.moveSelection = function(start, length) {
+            var range = heightMap.getHighlightRange();
+            range[0] += start;
+            range[1] += length;
+            heightMap.setHighlightRange(range[0], range[1]);
+        };
+
+
+        this.printHeightPattern = function(pattern) {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            pattern = pattern || function(e, oldPixel) {
+                oldPixel[3] = 256 - oldPixel[3];
+                return oldPixel;
+            };
+
+            var e = {
+                firstPixel: imageData.slice(range[0]*4, 4),
+                lastPixel: imageData.slice(range[1]*4, 4),
+                image: image,
+                imageData: imageData
+            };
+            var range = heightMap.getHighlightRange();
+            for (var pos=range[0]; pos<range[1]; pos++) {
+                var offset = (pos%image.width) * 4;
+                var oldPixel = imageData.slice(offset, 4);
+                e.pos = pos;
+                var newPixel = pattern(e, oldPixel);
+                imageData[offset + 0] += newPixel[0];
+                imageData[offset + 1] += newPixel[1];
+                imageData[offset + 2] += newPixel[2];
+                imageData[offset + 3] += newPixel[3];
+            }
+
+            heightMap.updateTexture(selectedTexture, imageData);
+            // TODO: save
+        };
+
     }
 
     // Static

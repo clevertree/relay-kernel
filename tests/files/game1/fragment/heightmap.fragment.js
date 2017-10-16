@@ -10,7 +10,7 @@
 
     var PROGRAM;
 
-    function HeightMap(gl, pathTextures, flags) {
+    function HeightMap(gl, pathTextures, mapLength, flags) {
         if(typeof flags === 'undefined')
             flags = HeightMap.FLAG_DEFAULTS;
 
@@ -22,7 +22,7 @@
         // Variables
         var THIS =              this;
         // pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
-        var mapLength =         2048;
+        mapLength =             mapLength || 2048;
         var mPosition =         [0, 0, 0];
         var mScale =            [500, 5, 1];
         var mModelView =        defaultModelViewMatrix;
@@ -128,6 +128,18 @@
 
         };
 
+        // Properties
+
+        this.getMapLength = function()              { return mapLength; };
+        this.setMapLength = function(newLength)     { mapLength = newLength; };
+        this.getHighlightRange = function()         { return vActiveColorRange; };
+        this.setHighlightRange = function(left, right) {
+            if(left < 0 || left > mapLength) left = 0;
+            if(right < left) right = left;
+            else if(right > mapLength) right = mapLength;
+            vActiveColorRange = [left, right];
+        };
+
         // Map Data
 
         this.testHit = function(x, y, z) {
@@ -147,6 +159,8 @@
             for(var i=0; i<textureConfigs.length; i++) {
                 var config = textureConfigs[i];
                 var texture = textures[config[0]];
+                if(!texture.heightMapData)
+                    continue;
                 leftHeight += texture.heightMapData[(px+0) % texture.heightMapData.length] / textureConfigs.length;
                 rightHeight += texture.heightMapData[(px+1) % texture.heightMapData.length] / textureConfigs.length;
             }
@@ -183,16 +197,6 @@
             Util.assetSavePNG(pathLevelMap, idLevelMapData.data, left, top, width, height);
         };
 
-        this.setEditorSelection = function(left, top, right, bottom) {
-            if(left < 0) left = 0;
-            if(top < 0) top = 0;
-            if(right > levelMapSize[0]) right = levelMapSize[0];
-            if(bottom > levelMapSize[1]) bottom = levelMapSize[1];
-            if(left >= right) right = left+1;
-            if(top >= bottom) bottom = top+1;
-            vActiveColorRange = [tileSize*left, tileSize*top, tileSize*right, tileSize*bottom];
-            return [left, top, right, bottom];
-        };
 
         this.changeEditorPixel = function(toPixel) {
             var left = vActiveColorRange[0] / tileSize;
@@ -222,16 +226,6 @@
 
         // Model/View
 
-        this.setVelocity = function(vx, vy, vz) {
-            mVelocity = Util.translation(vx, vy, vz);
-        };
-
-        this.setAcceleration = function(ax, ay, az) {
-            if(!mVelocity)
-                setVelocity(0,0,0);
-            mAcceleration = Util.translation(ax, ay, az);
-        };
-
         this.move = function(tx, ty, tz) {
             mPosition[0] += tx || 0;
             mPosition[1] += ty || 0;
@@ -258,6 +252,23 @@
 
         // Textures
 
+        this.getTextures = function () { return textures; };
+
+        this.updateTexture = function(texture, imageData) {
+            // Upload the image into the texture.
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+
+
+            var heightMapData = new Uint8ClampedArray(imageData.data.length/4);
+
+            for(var i=0; i<imageData.data.length; i+=4) {
+                heightMapData[i/4] = imageData.datacd devc[i+3];
+            }
+
+            texture.heightMapData = heightMapData;
+        };
+
         function loadTexture(pathTexture) {
 
             // Create a tile sheet texture.
@@ -277,14 +288,16 @@
             textures.push(texture);
 
             function onLoadTexture(e) {
-                // Now that the image has loaded make copy it to the texture.
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                // Upload the image into the texture.
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+                var canvas = document.createElement('canvas');
+                var mapContext = canvas.getContext('2d');
+                mapContext.drawImage(image, 0, 0);
+                var imageData = mapContext.getImageData(0, 0, image.width, image.height);
 
                 texture.srcImage = image;
+                THIS.updateTexture(texture, imageData);
 
-                // Set the parameters so we can render any size image.
+                gl.bindTexture(gl.TEXTURE_2D, texture);
 
                 if(flags & HeightMap.FLAG_REPEAT_TILES) {
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
@@ -293,7 +306,6 @@
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
                 }
-
 
                 if(flags & HeightMap.FLAG_GENERATE_MIPMAP) {
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -305,19 +317,6 @@
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 }
 
-
-                var canvas = document.createElement('canvas');
-                var mapContext = canvas.getContext('2d');
-                mapContext.drawImage(image, 0, 0);
-                var imageData = mapContext.getImageData(0, 0, image.width, image.height).data;
-                var heightMapData = new Uint8ClampedArray(imageData.length/4);
-
-                for(var i=0; i<imageData.length; i+=4) {
-                    heightMapData[i/4] = imageData[i+3];
-                }
-
-                texture.heightMapData = heightMapData;
-                console.log(heightMapData);
             }
 
         }

@@ -459,7 +459,8 @@
 
         "   float pos    = column + row * uTextureSize.x;",
         "   if(pos >= uHighlightRange[0] && pos <= uHighlightRange[1])",
-        "       pxHeight = uHighlightColor;",
+        "       pxHeight.w = 0.5;",
+        // "       pxHeight = uHighlightColor;",
 
         "   gl_FragColor = pxHeight;", //  * vColor
         "}"

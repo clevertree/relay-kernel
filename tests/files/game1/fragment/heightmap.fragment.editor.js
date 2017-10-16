@@ -26,12 +26,17 @@
             var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
 
             // Hold-down keys
-            if(PK[37] || PK[38] || PK[39] || PK[40]) {
+            if(PK[37] || PK[38] || PK[39] || PK[40] || PK[82] || PK[71] || PK[66]) {
                 if(t > lastHoldTime) {
-                    if (PK[39]) THIS.moveSelection(1, noShift ? 0 : 1);     // Right
-                    if (PK[37]) THIS.moveSelection(-1, noShift  ? 0 : -1);   // Left
+                    if (PK[39]) THIS.moveSelection(noShift, 1-noShift);     // Right
+                    if (PK[37]) THIS.moveSelection(-noShift, noShift-1);   // Left
                     if (PK[40]) THIS.changePixel([0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT]);     // Down
                     if (PK[38]) THIS.changePixel([0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT]);   // Up
+
+                    if (PK[82]) THIS.changePixel([noShift ? 1 : -1, 0, 0, 0]);  // R
+                    if (PK[71]) THIS.changePixel([0, noShift ? 1 : -1, 0, 0]);  // G
+                    if (PK[66]) THIS.changePixel([0, 0, noShift ? 1 : -1, 0]);  // B
+
                     lastHoldTime = t + lastHoldDelay;
                     if(lastHoldDelay > 20)
                         lastHoldDelay-=20;
@@ -48,16 +53,6 @@
                 switch(Config.input.lastKey) {
                     case 65: // A
                         heightMap.setHighlightRange(0, heightMap.getMapLength());
-                        break;
-
-                    case 82: // R:
-                        THIS.changePixel([noShift ? -1 : 1, 0, 0, 0]);
-                        break;
-                    case 71: // G:
-                        THIS.changePixel([0, noShift ? -1 : 1, 0, 0]);
-                        break;
-                    case 66: // B:
-                        THIS.changePixel([0, 0, noShift ? -1 : 1, 0]);
                         break;
 
                     case 67: // C
@@ -151,6 +146,7 @@
             }
 
             heightMap.updateTexture(texture, imageData);
+            console.log("Change Pixel: ",  pixelData);
             // TODO: save
         };
 
@@ -180,9 +176,9 @@
         this.moveSelection = function(vStart, vLength) {
             var range = heightMap.getHighlightRange();
             range[0] += vStart;
-            range[1] += vLength;
+            range[1] += vStart + vLength;
             heightMap.setHighlightRange(range[0], range[1]);
-            console.log("Range: ", range[0], range[1]);
+            // console.log("Range: ",  heightMap.getHighlightRange(), vStart, vLength);
         };
 
 

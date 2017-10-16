@@ -255,6 +255,7 @@
         this.getTextures = function () { return textures; };
 
         this.updateTexture = function(texture, imageData) {
+            
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
@@ -267,6 +268,7 @@
             }
 
             texture.heightMapData = heightMapData;
+//             console.log("Heightmap updated: ", imageData);
         };
 
         function loadTexture(pathTexture) {

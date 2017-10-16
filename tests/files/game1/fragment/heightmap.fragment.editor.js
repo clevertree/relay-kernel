@@ -28,8 +28,8 @@
             // Hold-down keys
             if(PK[37] || PK[38] || PK[39] || PK[40]) {
                 if(t > lastHoldTime) {
-                    if (PK[39]) THIS.moveSelection(1, noShift);     // Right
-                    if (PK[37]) THIS.moveSelection(-1, -noShift);   // Left
+                    if (PK[39]) THIS.moveSelection(1, noShift ? 0 : 1);     // Right
+                    if (PK[37]) THIS.moveSelection(-1, noShift  ? 0 : -1);   // Left
                     if (PK[40]) THIS.changePixel([0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT]);     // Down
                     if (PK[38]) THIS.changePixel([0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT]);   // Up
                     lastHoldTime = t + lastHoldDelay;
@@ -102,10 +102,14 @@
         };
 
         function loadImageData(image) {
+            if(image.imageDataCache)
+                return image.imageDataCache;
             var canvas = document.createElement('canvas');
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(image, 0, 0);
-            return mapContext.getImageData(0, 0, image.width, image.height);
+            var imageData = mapContext.getImageData(0, 0, image.width, image.height);
+            image.imageDataCache = imageData;
+            return imageData;
         }
 
         this.setPixel = function(pixelData) {

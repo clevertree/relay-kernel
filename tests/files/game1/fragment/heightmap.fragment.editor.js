@@ -178,6 +178,7 @@
             range[0] += vStart;
             range[1] += vLength;
             heightMap.setHighlightRange(range[0], range[1]);
+            console.log("Range: ", range[0], range[1]);
         };
 
 

@@ -26,9 +26,9 @@
         var mPosition =         [0, 0, 0];
         var mScale =            [500, 5, 1];
         var mModelView =        defaultModelViewMatrix;
-        // vColor =                vColor || defaultColor;
-        var vActiveColor =      defaultColor.slice(0);
-        var vActiveColorRange = [0,0];
+        // vColor =             vColor || defaultColor;
+        var vHighlightColor =   defaultColor.slice(0);
+        var vHighlightRange =   [0,0];
 
         // Set up private properties
         var mVertexPosition = defaultTextureCoordinates;
@@ -74,8 +74,10 @@
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             // gl.uniform2fv(uMapSize, mMapSize);
-            gl.uniform4fv(uColor, vActiveColor);
-            gl.uniform4fv(uColorRange, vActiveColorRange);
+
+            gl.uniform4fv(uHighlightColor, vHighlightColor);
+            gl.uniform2fv(uHighlightRange, vHighlightRange);
+            gl.uniform2fv(uTextureSize, [textures[0].srcImage.width, textures[0].srcImage.height]);
 
 
             // gl.uniform2fv(uInverseSpriteTextureSize, inverseTextureSize);
@@ -115,12 +117,10 @@
             //     mModelView = Util.multiply(mModelView, mVelocity);
 
             if(flags & Config.flags.RENDER_SELECTED) {
-                // if(vActiveColor === vColor)
-                //     vActiveColor = vColor.slice(0);
-                // vActiveColor[0] = vColor[0] * Math.abs(Math.sin(t/500));
-                // vActiveColor[1] = vColor[1] * Math.abs(Math.sin(t/1800));
-                // vActiveColor[2] = vColor[2] * Math.abs(Math.sin(t/1000));
-                // vActiveColor[3] = vColor[3] * Math.abs(Math.sin(t/300));
+                vHighlightColor[0] = 256 * Math.abs(Math.sin(t/500));
+                vHighlightColor[1] = 256 * Math.abs(Math.sin(t/1800));
+                vHighlightColor[2] = 256 * Math.abs(Math.sin(t/1000));
+                vHighlightColor[3] = 256 * Math.abs(Math.sin(t/300));
                 updateEditor(t, stage, flags);
             } else {
                 // vActiveColor = vColor
@@ -132,12 +132,12 @@
 
         this.getMapLength = function()              { return mapLength; };
         this.setMapLength = function(newLength)     { mapLength = newLength; };
-        this.getHighlightRange = function()         { return vActiveColorRange; };
+        this.getHighlightRange = function()         { return vHighlightRange; };
         this.setHighlightRange = function(left, right) {
             if(left < 0 || left > mapLength) left = 0;
             if(right <= left) right = left+1;
             else if(right > mapLength) right = mapLength;
-            vActiveColorRange = [left, right];
+            vHighlightRange = [left, right];
         };
 
         // Map Data
@@ -196,33 +196,6 @@
 
             Util.assetSavePNG(pathLevelMap, idLevelMapData.data, left, top, width, height);
         };
-
-
-        this.changeEditorPixel = function(toPixel) {
-            var left = vActiveColorRange[0] / tileSize;
-            var top = vActiveColorRange[1] / tileSize;
-            var width = (vActiveColorRange[2] - vActiveColorRange[0]) / tileSize;
-            var height = (vActiveColorRange[3] - vActiveColorRange[1]) / tileSize;
-
-            var ppos = 0;
-            for(var y=top; y<top+height; y++) {
-                for(var x=left; x<left+width; x++) {
-                    var pos = (x)*4 + (y)*4*levelMapSize[0];
-                    idLevelMapData.data[pos+0] = toPixel[ppos+0];
-                    idLevelMapData.data[pos+1] = toPixel[ppos+1];
-                    idLevelMapData.data[pos+2] = toPixel[ppos+2];
-                    idLevelMapData.data[pos+3] = toPixel[ppos+3];
-                    ppos+=4;
-                    if(ppos >= toPixel.length)
-                        ppos = 0;
-                }
-            }
-
-            // Upload the image into the texture.
-            gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, idLevelMapData);
-        };
-
 
         // Model/View
 
@@ -373,8 +346,10 @@
             uTexture3 = gl.getUniformLocation(program, "uTexture3");
 
             // uLevelMap = gl.getUniformLocation(program, "uLevelMap");
-            uColor = gl.getUniformLocation(program, "uColor");
-            uColorRange = gl.getUniformLocation(program, "uColorRange");
+            uHighlightColor = gl.getUniformLocation(program, "uHighlightColor");
+            uHighlightRange = gl.getUniformLocation(program, "uHighlightRange");
+            uTextureSize = gl.getUniformLocation(program, "uTextureSize");
+
 
             // Create a Vertex Position Buffer.
             bufVertexPosition = gl.createBuffer();
@@ -426,7 +401,8 @@
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uMapSize, uLevelMap, uTexture0, uTexture1, uTexture2, uTexture3, uTileSize, uInverseTileSize, uInverseTileTextureSize, uInverseSpriteTextureSize, uColor, uColorRange;
+    var uPMatrix, uMVMatrix, uTexture0, uTexture1, uTexture2, uTexture3,
+        uHighlightColor, uHighlightRange, uTextureSize;
 
     // Shader
     HeightMap.VS = [
@@ -461,40 +437,29 @@
         "uniform sampler2D uTexture2;",
         "uniform sampler2D uTexture3;",
 
-        "uniform vec4 uColor;",
-        "uniform vec4 uColorRange;",
-
-
-        "vec2 textureSize = vec2(64.0, 32.0);",
-
-        "vec4 getValueFromTexture(float index) {",
-        "   index *= textureSize.x * textureSize.y;",
-        "   float column = mod(index, textureSize.x);",
-        "   float row    = floor(index / textureSize.x);",
-        "   vec2 uv = vec2(",
-        "       (column + 0.5) / textureSize.x,",
-        "       (row    + 0.5) / textureSize.y);",
-        "   return texture2D(uTexture0, uv);",
-        "}",
+        "uniform vec4 uHighlightColor;",
+        "uniform vec2 uHighlightRange;",
+        "uniform vec2 uTextureSize;",
 
 
         "void main(void) {",
-        "   vec4 pxHeight = getValueFromTexture(vTextureCoordinate.x);",
+        "   float index = vTextureCoordinate.x * uTextureSize.x * uTextureSize.y;",
+        "   float column = mod(index, uTextureSize.x);",
+        "   float row    = floor(index / uTextureSize.x);",
+        "   vec2 uv = vec2(",
+        "       (column + 0.5) / uTextureSize.x,",
+        "       (row    + 0.5) / uTextureSize.y);",
+        "   vec4 pxHeight = texture2D(uTexture0, uv);",
+        // "   getValueFromTexture(vTextureCoordinate.x);",
 
-        // "   if(tile.z == 0.00) { discard; }",
         "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
-        // "   pxHeight.w = 1.00;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
         "   pxHeight.w = (pxHeight.w - vTextureCoordinate.y)/0.005;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
 
-        // "   sprite.w *= tile.w;", //  * vColor
-        // "   if(tile.x > uColorRange.x && tile.y > uColorRange.y && tile.x < uColorRange.z && tile.y < uColorRange.w)",
-        // "   if(vPixelCoordinate.x >= uColorRange.x && vPixelCoordinate.y >= uColorRange.y && vPixelCoordinate.x <= uColorRange.z && vPixelCoordinate.y <= uColorRange.w)",
-        // "       sprite *= uColor;", //  * vColor
-
+        "   float pos    = column + row * uTextureSize.x;",
+        "   if(pos >= uHighlightRange[0] && pos <= uHighlightRange[1])",
+        "       pxHeight = uHighlightColor;",
 
         "   gl_FragColor = pxHeight;", //  * vColor
-        // "    gl_FragColor = texture2D(uTileSheet, vTextureCoordinate);",
-// "   gl_FragColor = tile;",
         "}"
     ].join("\n");
 

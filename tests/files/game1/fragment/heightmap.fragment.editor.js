@@ -28,10 +28,10 @@
             // Hold-down keys
             if(PK[37] || PK[38] || PK[39] || PK[40]) {
                 if(t > lastHoldTime) {
-                    if (PK[39]) THIS.moveSelection(noShift, 1);     // Right
-                    if (PK[37]) THIS.moveSelection(-noShift, -1);   // Left
-                    if (PK[40]) THIS.changePixel(0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT);     // Down
-                    if (PK[38]) THIS.changePixel(0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT);   // Up
+                    if (PK[39]) THIS.moveSelection(1, noShift);     // Right
+                    if (PK[37]) THIS.moveSelection(-1, -noShift);   // Left
+                    if (PK[40]) THIS.changePixel([0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT]);     // Down
+                    if (PK[38]) THIS.changePixel([0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT]);   // Up
                     lastHoldTime = t + lastHoldDelay;
                     if(lastHoldDelay > 20)
                         lastHoldDelay-=20;
@@ -105,7 +105,7 @@
             var canvas = document.createElement('canvas');
             var mapContext = canvas.getContext('2d');
             mapContext.drawImage(image, 0, 0);
-            return mapContext.getImageData(0, 0, image.width, image.height).data;
+            return mapContext.getImageData(0, 0, image.width, image.height);
         }
 
         this.setPixel = function(pixelData) {
@@ -116,16 +116,16 @@
             var pos = 0, range = heightMap.getHighlightRange();
             for (var i=range[0]; i<range[1]; i++) {
                 var offset = (i%image.width) * 4;
-                imageData[offset + 0] = pixelData[pos + 0];
-                imageData[offset + 1] = pixelData[pos + 1];
-                imageData[offset + 2] = pixelData[pos + 2];
-                imageData[offset + 3] = pixelData[pos + 3];
+                imageData.data[offset + 0] = pixelData[pos + 0];
+                imageData.data[offset + 1] = pixelData[pos + 1];
+                imageData.data[offset + 2] = pixelData[pos + 2];
+                imageData.data[offset + 3] = pixelData[pos + 3];
                 pos += 4;
                 if(pos >= pixelData.length)
                     pos = 0;
             }
 
-            heightMap.updateTexture(selectedTexture, imageData);
+            heightMap.updateTexture(texture, imageData);
             // TODO: save
         };
 
@@ -137,16 +137,16 @@
             var pos = 0, range = heightMap.getHighlightRange();
             for (var i=range[0]; i<range[1]; i++) {
                 var offset = (i%image.width) * 4;
-                imageData[offset + 0] += pixelData[pos + 0];
-                imageData[offset + 1] += pixelData[pos + 1];
-                imageData[offset + 2] += pixelData[pos + 2];
-                imageData[offset + 3] += pixelData[pos + 3];
+                imageData.data[offset + 0] += pixelData[pos + 0];
+                imageData.data[offset + 1] += pixelData[pos + 1];
+                imageData.data[offset + 2] += pixelData[pos + 2];
+                imageData.data[offset + 3] += pixelData[pos + 3];
                 pos += 4;
                 if(pos >= pixelData.length)
                     pos = 0;
             }
 
-            heightMap.updateTexture(selectedTexture, imageData);
+            heightMap.updateTexture(texture, imageData);
             // TODO: save
         };
 
@@ -161,7 +161,7 @@
             pixelCache = new Uint8ClampedArray((range[1]-range[0])*4);
 
             for (var i=aRange[0]; i<aRange[1]; i++)
-                pixelCache[i] = imageData[i];
+                pixelCache[i] = imageData.data[i];
 
             console.log("Copied: ", pixelCache);
         };
@@ -173,10 +173,10 @@
             this.changePixel(pixelCache);
         };
 
-        this.moveSelection = function(start, length) {
+        this.moveSelection = function(vStart, vLength) {
             var range = heightMap.getHighlightRange();
-            range[0] += start;
-            range[1] += length;
+            range[0] += vStart;
+            range[1] += vLength;
             heightMap.setHighlightRange(range[0], range[1]);
         };
 
@@ -192,24 +192,24 @@
             };
 
             var e = {
-                firstPixel: imageData.slice(range[0]*4, 4),
-                lastPixel: imageData.slice(range[1]*4, 4),
+                firstPixel: imageData.data.slice(range[0]*4, 4),
+                lastPixel: imageData.data.slice(range[1]*4, 4),
                 image: image,
                 imageData: imageData
             };
             var range = heightMap.getHighlightRange();
             for (var pos=range[0]; pos<range[1]; pos++) {
                 var offset = (pos%image.width) * 4;
-                var oldPixel = imageData.slice(offset, 4);
+                var oldPixel = imageData.data.slice(offset, 4);
                 e.pos = pos;
                 var newPixel = pattern(e, oldPixel);
-                imageData[offset + 0] += newPixel[0];
-                imageData[offset + 1] += newPixel[1];
-                imageData[offset + 2] += newPixel[2];
-                imageData[offset + 3] += newPixel[3];
+                imageData.data[offset + 0] += newPixel[0];
+                imageData.data[offset + 1] += newPixel[1];
+                imageData.data[offset + 2] += newPixel[2];
+                imageData.data[offset + 3] += newPixel[3];
             }
 
-            heightMap.updateTexture(selectedTexture, imageData);
+            heightMap.updateTexture(texture, imageData);
             // TODO: save
         };
 

@@ -135,7 +135,7 @@
         this.getHighlightRange = function()         { return vActiveColorRange; };
         this.setHighlightRange = function(left, right) {
             if(left < 0 || left > mapLength) left = 0;
-            if(right < left) right = left;
+            if(right <= left) right = left+1;
             else if(right > mapLength) right = mapLength;
             vActiveColorRange = [left, right];
         };

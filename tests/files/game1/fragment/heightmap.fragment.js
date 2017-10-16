@@ -263,7 +263,7 @@
             var heightMapData = new Uint8ClampedArray(imageData.data.length/4);
 
             for(var i=0; i<imageData.data.length; i+=4) {
-                heightMapData[i/4] = imageData.datacd devc[i+3];
+                heightMapData[i/4] = imageData.data[i+3];
             }
 
             texture.heightMapData = heightMapData;

@@ -24,7 +24,7 @@
         // pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
         mapLength =             mapLength || 2048;
         var mPosition =         [0, 0, 0];
-        var mScale =            [500, 5, 1];
+        var mScale =            [200, 50, 1];
         var mModelView =        defaultModelViewMatrix;
         // vColor =             vColor || defaultColor;
         var vHighlightColor =   defaultColor.slice(0);
@@ -117,10 +117,10 @@
             //     mModelView = Util.multiply(mModelView, mVelocity);
 
             if(flags & Config.flags.RENDER_SELECTED) {
-                vHighlightColor[0] = 256 * Math.abs(Math.sin(t/500));
-                vHighlightColor[1] = 256 * Math.abs(Math.sin(t/1800));
-                vHighlightColor[2] = 256 * Math.abs(Math.sin(t/1000));
-                vHighlightColor[3] = 256 * Math.abs(Math.sin(t/300));
+                vHighlightColor[0] = Math.abs(Math.sin(t/500));
+                vHighlightColor[1] = Math.abs(Math.sin(t/1800));
+                vHighlightColor[2] = Math.abs(Math.sin(t/1000));
+                vHighlightColor[3] = Math.abs(Math.sin(t/600)/2)+0.3;
                 updateEditor(t, stage, flags);
             } else {
                 // vActiveColor = vColor
@@ -382,7 +382,7 @@
     HeightMap.FLAG_GENERATE_MIPMAP = 0x01;
     HeightMap.FLAG_REPEAT_TILES = 0x10;
     HeightMap.FLAG_REPEAT_MAP = 0x20;
-    HeightMap.FLAG_DEFAULTS = 0x10; // HeightMap.FLAG_GENERATE_MIPMAP;
+    HeightMap.FLAG_DEFAULTS = 0; //0x10; // HeightMap.FLAG_GENERATE_MIPMAP;
 
     var defaultModelViewMatrix = Util.translation(0,0,0); //[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     var defaultColor = new Float32Array([1,1,1,1]);
@@ -455,12 +455,13 @@
         // "   getValueFromTexture(vTextureCoordinate.x);",
 
         "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
-        "   pxHeight.w = (pxHeight.w - vTextureCoordinate.y)/0.005;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
+        // "   pxHeight.w = (pxHeight.w - vTextureCoordinate.y)/0.005;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
+        "   pxHeight.w = 1.0;",
 
         "   float pos    = column + row * uTextureSize.x;",
         "   if(pos >= uHighlightRange[0] && pos <= uHighlightRange[1])",
-        "       pxHeight.w = 0.5;",
-        // "       pxHeight = uHighlightColor;",
+        // "       pxHeight.w = 0.5;",
+        "       pxHeight.w = uHighlightColor.w;",
 
         "   gl_FragColor = pxHeight;", //  * vColor
         "}"
@@ -469,34 +470,3 @@
 })();
 
 
-// "uniform int repeatTiles;",
-
-// TODO: allow multiple arrays + offset, allow them each to repeat, no color arrays,
-// SOL: array of data + array of settings, loop one offset array + data array + color array?
-// SOL2: need to use textures for random access. repeat primary textures at different offsets. array of secondary texture positions?
-// SOL3: Array of highmaps selects texture, repeat, breaks on -1, allow looped map; alternating map; etc
-
-//         struct my_struct {
-//             float r;
-//     float g;
-//     float b;
-//     float a;
-// };
-//     uniform my_struct u_colors[2];
-
-// Use a texture if you want random access to lots of data in a shader.
-//
-//     If you have 10000 values you might make a texture that's 100x100 pixels. you can then get each value from the texture with something like
-//
-// uniform sampler2D u_texture;
-//
-// vec2 textureSize = vec2(100.0, 100.0);
-//
-// vec4 getValueFromTexture(float index) {
-//     float column = mod(index, textureSize.x);
-//     float row    = floor(index / textureSize.x);
-//     vec2 uv = vec2(
-//         (column + 0.5) / textureSize.x,
-//         (row    + 0.5) / textureSize.y);
-//     return texture2D(u_texture, uv);
-// }

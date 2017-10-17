@@ -8,7 +8,7 @@
     Config.fragment.editor.HeightMapEditor = HeightMapEditor;
     var PIXELS_PER_UNIT = Config.constants.PIXELS_PER_UNIT;
 
-    var CHAR_SHIFT = 16;
+    var keyConstants = Config.input.keyConstants;
     var lastKeyCount = 0;
 
     function HeightMapEditor(heightMap) {
@@ -19,32 +19,24 @@
         var THIS = this;
         var selectedTexture = 0;
 
-        var lastHoldTime = 0, lastHoldDelay = 200;
         this.update = function(t, stage, flags) {
 
+            var V = 1;
             var PK = Config.input.pressedKeys;
-            var noShift = Config.input.pressedKeys[CHAR_SHIFT] ? 0 : 1;
+            var ctrl = PK[keyConstants.CHAR_CTRL] ? 1 : 0;
+            if(ctrl) V = PIXELS_PER_UNIT;
+            var shift = PK[keyConstants.CHAR_SHIFT] ? V : 0;
+
 
             // Hold-down keys
-            if(PK[37] || PK[38] || PK[39] || PK[40] || PK[82] || PK[71] || PK[66]) {
-                if(t > lastHoldTime) {
-                    if (PK[39]) THIS.moveSelection(noShift, 1-noShift);     // Right
-                    if (PK[37]) THIS.moveSelection(-noShift, noShift-1);   // Left
-                    if (PK[40]) THIS.changePixel([0, 0, 0, noShift ? -1 : -PIXELS_PER_UNIT]);     // Down
-                    if (PK[38]) THIS.changePixel([0, 0, 0, noShift ? 1 : PIXELS_PER_UNIT]);   // Up
+            if (PK[39]) THIS.moveSelection(V-shift, shift);     // Right
+            if (PK[37]) THIS.moveSelection(shift-V, -shift);   // Left
+            if (PK[40]) THIS.changePixel([0, 0, 0, -V]);     // Down
+            if (PK[38]) THIS.changePixel([0, 0, 0, V]);   // Up
 
-                    if (PK[82]) THIS.changePixel([noShift ? 1 : -1, 0, 0, 0]);  // R
-                    if (PK[71]) THIS.changePixel([0, noShift ? 1 : -1, 0, 0]);  // G
-                    if (PK[66]) THIS.changePixel([0, 0, noShift ? 1 : -1, 0]);  // B
-
-                    lastHoldTime = t + lastHoldDelay;
-                    if(lastHoldDelay > 20)
-                        lastHoldDelay-=20;
-                }
-            } else {
-                lastHoldTime = t;
-                lastHoldDelay=200;
-            }
+            if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
+            if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
+            if (PK[66]) THIS.changePixel([0, 0, shift ? -V : V, 0]);  // B
 
 
             // Press-once keys
@@ -91,7 +83,7 @@
                         break;
 
                     default:
-//                     console.log("Key Change", noShift, Config.input.lastKey);
+                    // console.log("Key Change", noShift, Config.input.lastKey);
                 }
             }
         };
@@ -135,7 +127,8 @@
 
             var pos = 0, range = heightMap.getHighlightRange();
             for (var i=range[0]; i<range[1]; i++) {
-                var offset = (i%image.width) * 4;
+                var offset = i*4;
+//                 var offset = (Math.floor(i/image.width)*image.width + (i%image.width)) * 4;
                 imageData.data[offset + 0] += pixelData[pos + 0];
                 imageData.data[offset + 1] += pixelData[pos + 1];
                 imageData.data[offset + 2] += pixelData[pos + 2];

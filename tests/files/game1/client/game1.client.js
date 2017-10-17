@@ -16,7 +16,9 @@
     Config.fragment = {editor:{}};
     Config.character = {};
     Config.level = {};
-    Config.input = { pressedKeys:pressedKeys, keyCount: keyCount, keyEvents: 0, lastKey: null };
+    Config.input = { pressedKeys:pressedKeys, keyCount: keyCount, keyEvents: 0, lastKey: null, keyConstants: {
+        CHAR_SHIFT: 16, CHAR_CTRL: 176
+    } };
     Config.util = Util;
     Config.path = {
         root: ROOT,

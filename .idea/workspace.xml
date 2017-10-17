@@ -4,7 +4,7 @@
     <list default="true" id="fc2c039f-26f5-44e3-9318-bb3afac42ebb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
@@ -21,41 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tilemap.fragment.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4740">
-              <caret line="237" column="0" lean-forward="false" selection-start-line="234" selection-start-column="0" selection-end-line="237" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="746">
-              <caret line="461" column="27" lean-forward="true" selection-start-line="461" selection-start-column="27" selection-end-line="461" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spritesheet.fragment.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="743">
-              <caret line="317" column="0" lean-forward="true" selection-start-line="317" selection-start-column="0" selection-end-line="317" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="520">
+              <caret line="26" column="39" lean-forward="false" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -65,15 +35,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>editor</find>
-      <find>updateEditor</find>
-      <find>getVertexPositions</find>
-      <find>defaultTextureCoordinates</find>
       <find>heightMapData</find>
       <find>Int8</find>
       <find>Int8Array</find>
       <find>mPosition</find>
-      <find>mapLength</find>
       <find>this</find>
       <find>mapSize</find>
       <find>lastHoldDelay</find>
@@ -91,10 +56,15 @@
       <find>changeEditorPixel</find>
       <find>setH</find>
       <find>vActiveColorRange</find>
-      <find>uHighlightColor</find>
-      <find>uHighlightRange</find>
       <find>moveSelection</find>
+      <find>uHighlightRange</find>
+      <find>defaultColor</find>
+      <find>uHighlightColor</find>
+      <find>Math.abs(Math</find>
+      <find>vHighlightColor</find>
       <find>mouse s</find>
+      <find>mapLength</find>
+      <find>vHigh</find>
     </findStrings>
     <replaceStrings>
       <replace>HeightMap</replace>
@@ -115,11 +85,11 @@
         <option value="$PROJECT_DIR$/../scripts/lib/getID3/getid3/module.audio.mp3.php" />
         <option value="$PROJECT_DIR$/../scripts/organize-music.php" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.editor.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       </list>
@@ -324,12 +294,12 @@
       <workItem from="1507940284378" duration="8781000" />
       <workItem from="1507998974619" duration="14655000" />
       <workItem from="1508082042090" duration="11761000" />
-      <workItem from="1508177546865" duration="2534000" />
+      <workItem from="1508177546865" duration="5532000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96507000" />
+    <option name="totallyTimeSpent" value="99505000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -663,14 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.editor.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="703">
@@ -694,13 +656,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="237" column="16" lean-forward="false" selection-start-line="237" selection-start-column="16" selection-end-line="237" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/EcmaScript.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="443">
@@ -716,18 +671,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="57" column="47" lean-forward="true" selection-start-line="57" selection-start-column="47" selection-end-line="57" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="19" column="38" lean-forward="false" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="377">
+          <caret line="32" column="51" lean-forward="true" selection-start-line="32" selection-start-column="51" selection-end-line="32" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="746">
-          <caret line="461" column="27" lean-forward="true" selection-start-line="461" selection-start-column="27" selection-end-line="461" selection-end-column="27" />
+        <state relative-caret-position="520">
+          <caret line="26" column="39" lean-forward="false" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
           <folding />
         </state>
       </provider>

@@ -185,22 +185,22 @@
                 return oldPixel;
             };
 
+            var range = heightMap.getHighlightRange();
             var e = {
-                firstPixel: imageData.data.slice(range[0]*4, 4),
-                lastPixel: imageData.data.slice(range[1]*4, 4),
+                firstPixel: imageData.data.slice(range[0]*4, range[0]*4+4),
+                lastPixel: imageData.data.slice(range[1]*4, range[1]*4+4),
                 image: image,
                 imageData: imageData
             };
-            var range = heightMap.getHighlightRange();
             for (var pos=range[0]; pos<range[1]; pos++) {
-                var offset = (pos%image.width) * 4;
-                var oldPixel = imageData.data.slice(offset, 4);
+                var offset = pos * 4;
+                var oldPixel = imageData.data.slice(offset, offset+4);
                 e.pos = pos;
-                var newPixel = pattern(e, oldPixel);
-                imageData.data[offset + 0] += newPixel[0];
-                imageData.data[offset + 1] += newPixel[1];
-                imageData.data[offset + 2] += newPixel[2];
-                imageData.data[offset + 3] += newPixel[3];
+                var newPixel = pattern(e, oldPixel.slice());
+                imageData.data[offset + 0] = newPixel[0];
+                imageData.data[offset + 1] = newPixel[1];
+                imageData.data[offset + 2] = newPixel[2];
+                imageData.data[offset + 3] = newPixel[3];
             }
 
             heightMap.updateTexture(texture, imageData);

@@ -5,9 +5,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.interface.php" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.interface.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
     </list>
@@ -23,61 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tilemap.fragment.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="200" column="24" lean-forward="true" selection-start-line="200" selection-start-column="24" selection-end-line="200" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="246" column="29" lean-forward="true" selection-start-line="246" selection-start-column="18" selection-end-line="246" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
-              <caret line="217" column="36" lean-forward="false" selection-start-line="217" selection-start-column="36" selection-end-line="217" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game1.client.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="643">
-              <caret line="129" column="52" lean-forward="true" selection-start-line="129" selection-start-column="52" selection-end-line="129" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="stage1.stage.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-300">
-              <caret line="41" column="14" lean-forward="false" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game1.interface.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.interface.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="407">
+              <caret line="183" column="0" lean-forward="false" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -143,8 +90,8 @@
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.interface.php" />
-        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       </list>
     </option>
   </component>
@@ -359,12 +306,12 @@
       <workItem from="1507940284378" duration="8781000" />
       <workItem from="1507998974619" duration="14655000" />
       <workItem from="1508082042090" duration="11761000" />
-      <workItem from="1508177546865" duration="9477000" />
+      <workItem from="1508177546865" duration="10651000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103450000" />
+    <option name="totallyTimeSpent" value="104624000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -746,14 +693,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="217" column="36" lean-forward="false" selection-start-line="217" selection-start-column="36" selection-end-line="217" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-300">
@@ -766,6 +705,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="643">
           <caret line="129" column="52" lean-forward="true" selection-start-line="129" selection-start-column="52" selection-end-line="129" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="407">
+          <caret line="183" column="0" lean-forward="false" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
           <folding />
         </state>
       </provider>

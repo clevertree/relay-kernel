@@ -56,9 +56,8 @@
                         THIS.commitTextureData(heightMap.getTextures()[0]);
                         break;
 
-                        
-                    case 48: // 0
-                    case 84: THIS.printHeightPattern(patternLinear);    break;  // T
+
+                    case 48: THIS.printHeightPattern(patternLinear);    break;  // 0
                     case 49: THIS.printHeightPattern(patternFlip);      break;  // 1
                     case 50: // 2
                     case 51: // 3

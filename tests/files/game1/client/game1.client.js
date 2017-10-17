@@ -17,7 +17,7 @@
     Config.character = {};
     Config.level = {};
     Config.input = { pressedKeys:pressedKeys, keyCount: keyCount, keyEvents: 0, lastKey: null, keyConstants: {
-        CHAR_SHIFT: 16, CHAR_CTRL: 176
+        CHAR_SHIFT: 16, CHAR_CTRL: 17
     } };
     Config.util = Util;
     Config.path = {

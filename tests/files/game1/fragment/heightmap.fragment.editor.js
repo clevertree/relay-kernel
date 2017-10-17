@@ -24,23 +24,14 @@
             var V = 1;
             var PK = Config.input.pressedKeys;
             var ctrl = PK[keyConstants.CHAR_CTRL] ? 1 : 0;
-            if(ctrl) V = PIXELS_PER_UNIT;
+            // if(ctrl) V = PIXELS_PER_UNIT;
             var shift = PK[keyConstants.CHAR_SHIFT] ? V : 0;
 
-
-            // Hold-down keys
-            if (PK[39]) THIS.moveSelection(V-shift, shift);     // Right
-            if (PK[37]) THIS.moveSelection(shift-V, -shift);   // Left
-            if (PK[40]) THIS.changePixel([0, 0, 0, -V]);     // Down
-            if (PK[38]) THIS.changePixel([0, 0, 0, V]);   // Up
-
-            if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
-            if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
-            if (PK[66]) THIS.changePixel([0, 0, shift ? -V : V, 0]);  // B
-
+            var allowHold = !ctrl;
 
             // Press-once keys
             if(lastKeyCount < Config.input.keyEvents) {
+                allowHold = true;
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
                     case 65: // A
@@ -65,12 +56,10 @@
                         THIS.commitTextureData(heightMap.getTextures()[0]);
                         break;
 
-                    case 84: // T
-                        THIS.printHeightPattern();
-                        break;
-
+                        
                     case 48: // 0
-                    case 49: // 1
+                    case 84: THIS.printHeightPattern(patternLinear);    break;  // T
+                    case 49: THIS.printHeightPattern(patternFlip);      break;  // 1
                     case 50: // 2
                     case 51: // 3
                     case 52: // 4
@@ -85,6 +74,19 @@
                     default:
                     // console.log("Key Change", noShift, Config.input.lastKey);
                 }
+            }
+
+            // Hold-down keys
+
+            if(allowHold) {
+                if (PK[39]) THIS.moveSelection(V - shift, shift);     // Right
+                if (PK[37]) THIS.moveSelection(shift - V, -shift);   // Left
+                if (PK[40]) THIS.changePixel([0, 0, 0, -V]);     // Down
+                if (PK[38]) THIS.changePixel([0, 0, 0, V]);   // Up
+
+                if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
+                if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
+                if (PK[66]) THIS.changePixel([0, 0, shift ? -V : V, 0]);  // B
             }
         };
 
@@ -180,10 +182,7 @@
                 image = texture.srcImage,
                 imageData = loadImageData(image);
 
-            pattern = pattern || function(e, oldPixel) {
-                oldPixel[3] = 256 - oldPixel[3];
-                return oldPixel;
-            };
+            pattern = pattern || patternLinear;
 
             var range = heightMap.getHighlightRange();
             var e = {
@@ -196,6 +195,7 @@
                 var offset = pos * 4;
                 var oldPixel = imageData.data.slice(offset, offset+4);
                 e.pos = pos;
+                e.percent = (pos - range[0]) / (range[1] - range[0]);
                 var newPixel = pattern(e, oldPixel.slice());
                 imageData.data[offset + 0] = newPixel[0];
                 imageData.data[offset + 1] = newPixel[1];
@@ -253,4 +253,22 @@
 
     // Static
 
+    var printPatterns = {
+        current: 0,
+        patterns: [
+            patternLinear,
+            patternFlip
+        ]
+    };
+
+    function patternFlip(e, oldPixel) {
+        oldPixel[3] = 256 - oldPixel[3];
+        return oldPixel;
+    }
+
+    function patternLinear(e, oldPixel) {
+        var diff = e.lastPixel[3] - e.firstPixel[3];
+        oldPixel[3] = e.firstPixel[3] + diff * e.percent;
+        return oldPixel;
+    }
 })();

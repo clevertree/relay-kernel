@@ -62,7 +62,7 @@
                         break;
 
                     case 83: // S
-                        THIS.saveEditorMap();
+                        THIS.commitTextureData(heightMap.getTextures()[0]);
                         break;
 
                     case 84: // T
@@ -205,6 +205,39 @@
 
             heightMap.updateTexture(texture, imageData);
             // TODO: save
+        };
+
+
+        // Save
+
+        this.commitTextureData = function(texture) {
+            var image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            var POST = {
+                "action": "asset-save-png",
+                "path": image.srcRelative,
+                "data": imageData.data,
+                "left": 0,
+                "top": 0,
+                "width": image.width,
+                "height": image.height
+            };
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4) {
+                    if(this.status !== 200)
+                        throw new Error(this.responseText);
+                    var json = JSON.parse(this.responseText);
+                    console.log(json);
+                }
+            };
+
+            xhttp.open("POST", Config.path.root + '/client/game1.interface.php', true);
+            xhttp.setRequestHeader('Content-type', 'application/json');
+            xhttp.send(JSON.stringify(POST));
+
+            console.info("Saving texture data: ", Config.path.root);
         };
 
     }

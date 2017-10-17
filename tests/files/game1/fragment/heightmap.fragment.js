@@ -185,18 +185,6 @@
             //     return null;
             // return pixel;
         };
-
-        // Editor
-
-        this.saveEditorMap = function(left, top, width, height) {
-            if(typeof left === 'undefined') left = 0;
-            if(typeof top === 'undefined') top = 0;
-            if(typeof width === 'undefined') width = iLevelMap.width;
-            if(typeof height === 'undefined') height = iLevelMap.height;
-
-            Util.assetSavePNG(pathLevelMap, idLevelMapData.data, left, top, width, height);
-        };
-
         // Model/View
 
         this.move = function(tx, ty, tz) {
@@ -256,6 +244,7 @@
 
             // Asynchronously load the spritesheet
             var image = new Image();
+            image.srcRelative = pathTexture;
             image.src = pathTexture;
             image.addEventListener('load', onLoadTexture);
             texture.srcImage = image;

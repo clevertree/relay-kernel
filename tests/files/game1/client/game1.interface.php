@@ -46,8 +46,8 @@ function assetSavePNG($params) {
     $realpath = realpath($root . '/' . $path); //  . rand(1111, 9999) . '.save.png'
 
     $gd = imageCreateFromPng($realpath);
-//    imageAlphaBlending($gd, true);
-//    imageSaveAlpha($gd, true);
+    imageAlphaBlending($gd, true);
+    imageSaveAlpha($gd, true);
 
 //    $gd = imagecreatetruecolor($width, $height);
 //    imagesavealpha($gd, true);

@@ -214,12 +214,21 @@
             var image = texture.srcImage,
                 imageData = loadImageData(image);
 
+            var canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            var mapContext = canvas.getContext('2d');
+            // mapContext.drawImage(imageData, 0, 0);
+            mapContext.putImageData(imageData, 0, 0);
+                
+            var data = canvas.toDataURL();
+
             var POST = {
                 "action": "asset-save-png",
                 "path": image.srcRelative,
-                "data": imageData.data,
-                "left": 0,
-                "top": 0,
+                "data": data,
+                // "left": 0,
+                // "top": 0,
                 "width": image.width,
                 "height": image.height
             };

@@ -42,7 +42,7 @@
     document.addEventListener('keydown', handleKeyDown); // TODO: too strong?
     document.addEventListener('keyup', handleKeyUp);
 
-    // window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleWindowResize);
 
     // Canvas Loading
 
@@ -94,7 +94,7 @@
         if(canvasList.length === 0) {
             var newCanvas = document.createElement('canvas');
             newCanvas.setAttribute('id', 'play:canvas');
-            newCanvas.setAttribute('class', 'play:canvas game1-default-canvas');
+            newCanvas.setAttribute('class', 'play:canvas game1-default-canvas fullscreen');
             // newCanvas.setAttribute('width', 600);
             // newCanvas.setAttribute('height', 300);
             document.body.appendChild(newCanvas);
@@ -118,6 +118,21 @@
             if (!event.defaultPrevented)
                 throw new Error("Render event was not handled");
         });
+    }
+
+    function handleWindowResize(e) {
+        var canvasList = document.getElementsByClassName('play:canvas');
+
+        for(var i=0; i<canvasList.length; i++) {
+            var canvas = canvasList[i];
+            if(canvas.classList.contains('play:canvas')) {
+                if(canvas.classList.contains('fullscreen')) {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    console.log("Resized: ", canvas, canvas.width, canvas.height);
+                }
+            }
+        }
     }
 
     function handleClickEvent(e) {

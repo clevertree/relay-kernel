@@ -107,7 +107,7 @@
 
             var pos = 0, range = heightMap.getHighlightRange();
             for (var i=range[0]; i<range[1]; i++) {
-                var offset = (i%image.width) * 4;
+                var offset = i*4;
                 imageData.data[offset + 0] = pixelData[pos + 0];
                 imageData.data[offset + 1] = pixelData[pos + 1];
                 imageData.data[offset + 2] = pixelData[pos + 2];
@@ -154,8 +154,9 @@
 
             pixelCache = new Uint8ClampedArray((range[1]-range[0])*4);
 
+            var pos = 0;
             for (var i=aRange[0]; i<aRange[1]; i++)
-                pixelCache[i] = imageData.data[i];
+                pixelCache[pos++] = imageData.data[i];
 
             console.log("Copied: ", pixelCache);
         };
@@ -164,7 +165,7 @@
             if(!pixelCache)
                 throw new Error("No pixel cache");
 
-            this.changePixel(pixelCache);
+            this.setPixel(pixelCache);
         };
 
         this.moveSelection = function(vStart, vLength) {
@@ -252,13 +253,8 @@
 
     // Static
 
-    var printPatterns = {
-        current: 0,
-        patterns: [
-            patternLinear,
-            patternFlip
-        ]
-    };
+
+    // Print patterns
 
     function patternFlip(e, oldPixel) {
         oldPixel[3] = 256 - oldPixel[3];

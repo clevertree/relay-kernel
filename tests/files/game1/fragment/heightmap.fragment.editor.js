@@ -165,7 +165,34 @@
             if(!pixelCache)
                 throw new Error("No pixel cache");
 
-            this.setPixel(pixelCache);
+            var shift = Config.input.pressedKeys[keyConstants.CHAR_SHIFT];
+
+            var range = heightMap.getHighlightRange();
+            var pastePixels = pixelCache;
+            var pasteLength = (range[1]-range[0]);
+            if(pixelCache.length !== pasteLength*4 && !shift) {
+                pastePixels = new Uint8ClampedArray(pasteLength*4);
+                var ratio = pixelCache.length / (pasteLength*4);
+                for (var i=0; i<pasteLength; i++) {
+                    var offset = i*4;
+                    var pos = i * ratio;
+                    var leftPos = Math.floor(pos);
+                    var rightPos = Math.ceil(pos);
+                    var leftPerc = 0.5, rightPerc = 0.5;
+                    if(rightPos === pixelCache.length/4) rightPos--;
+                    if(leftPos !== rightPos) {
+                        leftPerc = 1-(pos - leftPos);
+                        rightPerc = 1-(rightPos - pos);
+                    }
+                    pastePixels[offset + 0] = (pixelCache[leftPos*4 + 0]*leftPerc + pixelCache[rightPos*4 + 0]*rightPerc);
+                    pastePixels[offset + 1] = (pixelCache[leftPos*4 + 1]*leftPerc + pixelCache[rightPos*4 + 1]*rightPerc);
+                    pastePixels[offset + 2] = (pixelCache[leftPos*4 + 2]*leftPerc + pixelCache[rightPos*4 + 2]*rightPerc);
+                    pastePixels[offset + 3] = (pixelCache[leftPos*4 + 3]*leftPerc + pixelCache[rightPos*4 + 3]*rightPerc);
+                }
+            }
+
+
+            this.setPixel(pastePixels);
         };
 
         this.moveSelection = function(vStart, vLength) {

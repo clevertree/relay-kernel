@@ -24,7 +24,7 @@
             var V = 1;
             var PK = Config.input.pressedKeys;
             var ctrl = PK[keyConstants.CHAR_CTRL] ? 1 : 0;
-            // if(ctrl) V = PIXELS_PER_UNIT;
+            var alt = PK[keyConstants.CHAR_ALT] ? 1 : 0;
             var shift = PK[keyConstants.CHAR_SHIFT] ? V : 0;
 
             var allowHold = !ctrl;
@@ -40,6 +40,10 @@
 
                     case 67: // C
                         THIS.copyPixel();
+                        break;
+
+                    case 70: // F
+                        THIS.flipPixels();
                         break;
 
                     case 46: // DEL
@@ -71,17 +75,18 @@
                         break;
 
                     default:
-                    // console.log("Key Change", noShift, Config.input.lastKey);
+                    // console.log("Key Change", shift, Config.input.lastKey);
                 }
             }
 
             // Hold-down keys
 
             if(allowHold) {
-                if (PK[39]) THIS.moveSelection(V - shift, shift);     // Right
-                if (PK[37]) THIS.moveSelection(shift - V, -shift);   // Left
-                if (PK[40]) THIS.changePixel([0, 0, 0, -V]);     // Down
-                if (PK[38]) THIS.changePixel([0, 0, 0, V]);   // Up
+                if(ctrl && alt) V = 16;
+                if (PK[39]) THIS.moveSelection(V - shift, shift);   // Right
+                if (PK[37]) THIS.moveSelection(shift - V, -shift);  // Left
+                if (PK[40]) THIS.changePixel([0, 0, 0, -V]);        // Down
+                if (PK[38]) THIS.changePixel([0, 0, 0, V]);         // Up
 
                 if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
                 if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
@@ -144,6 +149,29 @@
             // TODO: save
         };
 
+        this.flipPixels = function() {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            var flippedData = imageData.data.slice();
+            var range = heightMap.getHighlightRange();
+            for (var i=range[0]; i<range[1]; i++) {
+                var offset = i*4;
+                var foffset = (range[1]-(i-range[0]))*4;
+//                 var offset = (Math.floor(i/image.width)*image.width + (i%image.width)) * 4;
+                imageData.data[offset + 0] = flippedData[foffset + 0];
+                imageData.data[offset + 1] = flippedData[foffset + 1];
+                imageData.data[offset + 2] = flippedData[foffset + 2];
+                imageData.data[offset + 3] = flippedData[foffset + 3];
+            }
+
+            imageData.data = flippedData;
+            heightMap.updateTexture(texture, imageData);
+            console.log("Flipped Pixels: ",  range);
+            // TODO: save
+        };
+
         var pixelCache;
         this.copyPixel = function() {
             var texture = heightMap.getTextures()[selectedTexture];
@@ -203,38 +231,6 @@
             // console.log("Range: ",  heightMap.getHighlightRange(), vStart, vLength);
         };
 
-
-        this.printHeightPattern = function(pattern) {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
-                imageData = loadImageData(image);
-
-            pattern = pattern || patternLinear;
-
-            var range = heightMap.getHighlightRange();
-            var e = {
-                firstPixel: imageData.data.slice(range[0]*4, range[0]*4+4),
-                lastPixel: imageData.data.slice(range[1]*4, range[1]*4+4),
-                image: image,
-                imageData: imageData
-            };
-            for (var pos=range[0]; pos<range[1]; pos++) {
-                var offset = pos * 4;
-                var oldPixel = imageData.data.slice(offset, offset+4);
-                e.pos = pos;
-                e.percent = (pos - range[0]) / (range[1] - range[0]);
-                var newPixel = pattern(e, oldPixel.slice());
-                imageData.data[offset + 0] = newPixel[0];
-                imageData.data[offset + 1] = newPixel[1];
-                imageData.data[offset + 2] = newPixel[2];
-                imageData.data[offset + 3] = newPixel[3];
-            }
-
-            heightMap.updateTexture(texture, imageData);
-            // TODO: save
-        };
-
-
         // Save
 
         this.commitTextureData = function(texture) {
@@ -276,10 +272,38 @@
             console.info("Saving texture data: ", Config.path.root);
         };
 
+
+        this.printHeightPattern = function(pattern) {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            pattern = pattern || patternLinear;
+
+            var range = heightMap.getHighlightRange();
+            var e = {
+                firstPixel: imageData.data.slice(range[0]*4, range[0]*4+4),
+                lastPixel: imageData.data.slice(range[1]*4, range[1]*4+4),
+                image: image,
+                imageData: imageData,
+                range: range
+            };
+            for (var pos=range[0]; pos<range[1]; pos++) {
+                var offset = pos * 4;
+                var oldPixel = imageData.data.slice(offset, offset+4);
+                e.pos = pos;
+                var newPixel = pattern(e, oldPixel.slice());
+                imageData.data[offset + 0] = newPixel[0];
+                imageData.data[offset + 1] = newPixel[1];
+                imageData.data[offset + 2] = newPixel[2];
+                imageData.data[offset + 3] = newPixel[3];
+            }
+
+            heightMap.updateTexture(texture, imageData);
+            // TODO: save
+        };
+
     }
-
-    // Static
-
 
     // Print patterns
 
@@ -290,7 +314,18 @@
 
     function patternLinear(e, oldPixel) {
         var diff = e.lastPixel[3] - e.firstPixel[3];
-        oldPixel[3] = e.firstPixel[3] + diff * e.percent;
+        var percent = (e.pos - e.range[0]) / (e.range[1] - e.range[0]);
+        var newHeight = e.firstPixel[3] + diff * percent;
+        var heightDiff = newHeight - oldPixel[3];
+        // if(Math.abs(heightDiff) > 8) heightDiff = 8 * (heightDiff/Math.abs(heightDiff));
+        // oldPixel[3] += heightDiff;
+        if(Math.abs(heightDiff) > 4) heightDiff *= 0.2;
+        oldPixel[3] += heightDiff;
         return oldPixel;
+    }
+
+    function patternCurveDown(e, oldPixel) {
+        var mid = (e.range[1] - e.range[0]) / 2;
+        oldPixel[3] = e.firstPixel[3]
     }
 })();

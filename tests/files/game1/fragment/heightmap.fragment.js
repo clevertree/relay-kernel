@@ -24,7 +24,7 @@
         // pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
         mapLength =             mapLength || 2048;
         var mPosition =         [0, 0, 0];
-        var mScale =            [200, 50, 1];
+        var mScale =            [100, 20, 1];
         var mModelView =        defaultModelViewMatrix;
         // vColor =             vColor || defaultColor;
         var vHighlightColor =   defaultColor.slice(0);

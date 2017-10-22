@@ -21,10 +21,10 @@
 
         // Variables
         var THIS =              this;
-        // pixelsPerUnit =         pixelsPerUnit || PIXELS_PER_UNIT;
+        var pixelsPerUnit =     PIXELS_PER_UNIT;
         mapLength =             mapLength || 2048;
         var mPosition =         [0, 0, 0];
-        var mScale =            [100, 20, 1];
+        var mScale =            [16, 8, 1];
         var mModelView =        defaultModelViewMatrix;
         // vColor =             vColor || defaultColor;
         var vHighlightColor =   defaultColor.slice(0);
@@ -48,6 +48,17 @@
         }
 
 
+
+        // Bind Texture Coordinate
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+        gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.STATIC_DRAW);
+        gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
+
+        // Bind Vertex Coordinate
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+        gl.bufferData(gl.ARRAY_BUFFER, mVertexPosition, gl.STATIC_DRAW);
+        gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
+
         // Functions
 
         this.render = function(t, gl, stage, flags) {
@@ -58,26 +69,24 @@
             // Render
             gl.useProgram(PROGRAM);
 
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
+
             // Bind Vertex Coordinate
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexPosition);
-            gl.bufferData(gl.ARRAY_BUFFER, mVertexPosition, gl.DYNAMIC_DRAW);
             gl.vertexAttribPointer(aVertexPosition, 2, gl.FLOAT, false, 0, 0);
 
-
             // Bind Texture Coordinate
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufTextureCoordinate);
-            gl.bufferData(gl.ARRAY_BUFFER, mTextureCoordinates, gl.DYNAMIC_DRAW);
             gl.vertexAttribPointer(aTextureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
 
             // Set the projection and viewport.
             gl.uniformMatrix4fv(uPMatrix, false, stage.mProjection);
             gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
-            // gl.uniform2fv(uMapSize, mMapSize);
+            gl.uniform1f(uMapLength, mapLength);
 
             gl.uniform4fv(uHighlightColor, vHighlightColor);
             gl.uniform2fv(uHighlightRange, vHighlightRange);
-            gl.uniform2fv(uTextureSize, [textures[0].srcImage.width, textures[0].srcImage.height]);
+            gl.uniform2fv(uTexture0Size, [textures[0].srcImage.width, textures[0].srcImage.height]);
 
 
             // gl.uniform2fv(uInverseSpriteTextureSize, inverseTextureSize);
@@ -95,12 +104,11 @@
             // gl.uniform1i(uLevelMap, 1);
             // gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
-            // for(var i=20; i>0; i--) {
-            //     gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
-            //     gl.drawArrays(gl.TRIANGLES, 0, 6);
-            // }
+            for(var i=20; i>0; i--) {
+                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+            }
 
-            gl.uniformMatrix4fv(uMVMatrix, false, mModelView);
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -130,8 +138,9 @@
 
         // Properties
 
-        this.getMapLength = function()              { return mapLength; };
-        this.setMapLength = function(newLength)     { mapLength = newLength; };
+        this.getMapLength = function()                      { return mapLength; };
+        this.getMapSize = function()                        { return mapSize; };
+        this.setMapSize = function(newLength, newHeight)    { mapSize = [newLength, newHeight]; };
         this.getHighlightRange = function()         { return vHighlightRange; };
         this.setHighlightRange = function(left, right) {
             if(left < 0 || left > mapLength) left = 0;
@@ -153,7 +162,7 @@
             if(ry < 0 || ry > 1)
                 return null;
 
-            var px = Math.floor(rx * mapLength);
+            var px = Math.floor(rx * textures[0].srcImage.width);
             // var py = Math.floor(ry * mapSize[1]);
             var leftHeight = 0, rightHeight = 0;
             for(var i=0; i<textureConfigs.length; i++) {
@@ -331,6 +340,8 @@
             uPMatrix = gl.getUniformLocation(program, "uPMatrix");
             uMVMatrix = gl.getUniformLocation(program, "uMVMatrix");
 
+            uMapLength = gl.getUniformLocation(program, "uMapLength");
+
             uTexture0 = gl.getUniformLocation(program, "uTexture0");
             uTexture1 = gl.getUniformLocation(program, "uTexture1");
             uTexture2 = gl.getUniformLocation(program, "uTexture2");
@@ -339,7 +350,7 @@
             // uLevelMap = gl.getUniformLocation(program, "uLevelMap");
             uHighlightColor = gl.getUniformLocation(program, "uHighlightColor");
             uHighlightRange = gl.getUniformLocation(program, "uHighlightRange");
-            uTextureSize = gl.getUniformLocation(program, "uTextureSize");
+            uTexture0Size = gl.getUniformLocation(program, "uTexture0Size");
 
 
             // Create a Vertex Position Buffer.
@@ -392,8 +403,9 @@
 
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
-    var uPMatrix, uMVMatrix, uTexture0, uTexture1, uTexture2, uTexture3,
-        uHighlightColor, uHighlightRange, uTextureSize;
+    var uPMatrix, uMVMatrix, uMapLength,
+        uTexture0, uTexture1, uTexture2, uTexture3,
+        uHighlightColor, uHighlightRange, uTexture0Size;
 
     // Shader
     HeightMap.VS = [
@@ -428,27 +440,41 @@
         "uniform sampler2D uTexture2;",
         "uniform sampler2D uTexture3;",
 
+        "uniform float uMapLength;",
+
+        "uniform vec4 uTexture0Config;",
+
         "uniform vec4 uHighlightColor;",
         "uniform vec2 uHighlightRange;",
-        "uniform vec2 uTextureSize;",
+        "uniform vec2 uTexture0Size;",
 
+        "vec4 getHeightMapPixel(float index, sampler2D texture, vec2 textureSize) {",
+        // "   float index = vTextureCoordinate.x * textureSize.x * textureSize.y;",
+        "   float column = mod(index, textureSize.x);",
+        "   float row    = floor(index / textureSize.x);",
+        "   vec2 uv = vec2(",
+        "       (column + 0.5) / textureSize.x,",
+        "       (row    + 0.5) / textureSize.y);",
+        "   return texture2D(texture, uv);",
+        "}",
 
         "void main(void) {",
-        "   float index = vTextureCoordinate.x * uTextureSize.x * uTextureSize.y;",
-        "   float column = mod(index, uTextureSize.x);",
-        "   float row    = floor(index / uTextureSize.x);",
-        "   vec2 uv = vec2(",
-        "       (column + 0.5) / uTextureSize.x,",
-        "       (row    + 0.5) / uTextureSize.y);",
-        "   vec4 pxHeight = texture2D(uTexture0, uv);",
+        "   float index = vTextureCoordinate.x * uMapLength;",
+        // "   float index = vTextureCoordinate.x * uTextureSize.x * uTextureSize.y;",
+        // "   float column = mod(index, uTextureSize.x);",
+        // "   float row    = floor(index / uTextureSize.x);",
+        // "   vec2 uv = vec2(",
+        // "       (column + 0.5) / uTextureSize.x,",
+        // "       (row    + 0.5) / uTextureSize.y);",
+        "   vec4 pxHeight = getHeightMapPixel(index, uTexture0, uTexture0Size);",
         // "   getValueFromTexture(vTextureCoordinate.x);",
 
         "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
         // "   pxHeight.w = (pxHeight.w - vTextureCoordinate.y)/0.005;", // (pxHeight.w - vTextureCoordinate.y) { discard; }",
         "   pxHeight.w = 1.0;",
 
-        "   float pos    = column + row * uTextureSize.x;",
-        "   if(pos >= uHighlightRange[0] && pos <= uHighlightRange[1])",
+        // "   float pos    = column + row * uTextureSize.x;",
+        "   if(index >= uHighlightRange[0] && index <= uHighlightRange[1])",
         // "       pxHeight.w = 0.5;",
         "       pxHeight.w = uHighlightColor.w;",
 

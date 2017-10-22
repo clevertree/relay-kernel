@@ -34,6 +34,10 @@
                 allowHold = true;
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
+                    case 13: // Enter
+                        THIS.openPopupWindow();
+                        break;
+
                     case 65: // A
                         heightMap.setHighlightRange(0, heightMap.getMapLength());
                         break;
@@ -273,6 +277,9 @@
         };
 
 
+
+        // Print
+
         this.printHeightPattern = function(pattern) {
             var texture = heightMap.getTextures()[selectedTexture],
                 image = texture.srcImage,
@@ -303,29 +310,45 @@
             // TODO: save
         };
 
-    }
 
-    // Print patterns
+        // Print patterns
 
-    function patternFlip(e, oldPixel) {
-        oldPixel[3] = 256 - oldPixel[3];
-        return oldPixel;
-    }
+        function patternFlip(e, oldPixel) {
+            oldPixel[3] = 256 - oldPixel[3];
+            return oldPixel;
+        }
 
-    function patternLinear(e, oldPixel) {
-        var diff = e.lastPixel[3] - e.firstPixel[3];
-        var percent = (e.pos - e.range[0]) / (e.range[1] - e.range[0]);
-        var newHeight = e.firstPixel[3] + diff * percent;
-        var heightDiff = newHeight - oldPixel[3];
-        // if(Math.abs(heightDiff) > 8) heightDiff = 8 * (heightDiff/Math.abs(heightDiff));
-        // oldPixel[3] += heightDiff;
-        if(Math.abs(heightDiff) > 4) heightDiff *= 0.2;
-        oldPixel[3] += heightDiff;
-        return oldPixel;
-    }
+        function patternLinear(e, oldPixel) {
+            var diff = e.lastPixel[3] - e.firstPixel[3];
+            var percent = (e.pos - e.range[0]) / (e.range[1] - e.range[0]);
+            var newHeight = e.firstPixel[3] + diff * percent;
+            var heightDiff = newHeight - oldPixel[3];
+            // if(Math.abs(heightDiff) > 8) heightDiff = 8 * (heightDiff/Math.abs(heightDiff));
+            // oldPixel[3] += heightDiff;
+            if(Math.abs(heightDiff) > 4) heightDiff *= 0.2;
+            oldPixel[3] += heightDiff;
+            return oldPixel;
+        }
 
-    function patternCurveDown(e, oldPixel) {
-        var mid = (e.range[1] - e.range[0]) / 2;
-        oldPixel[3] = e.firstPixel[3]
+        function patternCurveDown(e, oldPixel) {
+            var mid = (e.range[1] - e.range[0]) / 2;
+            oldPixel[3] = e.firstPixel[3]
+        }
+
+        // Popup window
+
+        this.openPopupWindow = function() {
+            var ROOT = Config.path.root;
+
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                title = "Edit Heightmap: " + texture.srcImage.srcRelative;
+
+            var popup = window.open(ROOT + 'fragment/editor/heightmap.html', "editor_heightmap", "titlebar=1&scrollbars=1&resizable=1", true);
+            popup.loadHeightMapEditor = function(e) {
+                console.log(e, popup.document.body);
+            }
+
+        }
     }
 })();

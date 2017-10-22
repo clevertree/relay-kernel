@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc2c039f-26f5-44e3-9318-bb3afac42ebb" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$" afterPath="$PROJECT_DIR$" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
@@ -22,31 +26,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="451">
-              <caret line="160" column="43" lean-forward="true" selection-start-line="160" selection-start-column="43" selection-end-line="160" selection-end-column="43" />
+            <state relative-caret-position="0">
+              <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1275">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+            <state relative-caret-position="480">
+              <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
               <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.heightmap.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
           </provider>
         </entry>
       </file>
       <file leaf-file-name="game1.client.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="19" column="51" lean-forward="false" selection-start-line="19" selection-start-column="51" selection-end-line="19" selection-end-column="51" />
+            <state relative-caret-position="0">
+              <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -54,22 +65,17 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mapSize</find>
-      <find>lastHoldDelay</find>
-      <find>heightMap</find>
-      <find>TileMap.prototype</find>
-      <find>moveEditorSele</find>
-      <find>changeEditor</find>
-      <find>shift =</find>
-      <find>UInt</find>
-      <find>Clamped</find>
-      <find>clamped</find>
-      <find>updateTexture</find>
-      <find>heightmapdata</find>
-      <find>imageData</find>
-      <find>changeEditorPixel</find>
       <find>setH</find>
       <find>vActiveColorRange</find>
       <find>moveSelection</find>
@@ -79,13 +85,27 @@
       <find>Math.abs(Math</find>
       <find>vHighlightColor</find>
       <find>mouse s</find>
-      <find>mapLength</find>
       <find>vHigh</find>
       <find>saveEditorMap</find>
       <find>$realpath</find>
       <find>pattern(</find>
       <find>changePixel</find>
       <find>shift</find>
+      <find>path</find>
+      <find>&quot;DOM</find>
+      <find>1</find>
+      <find>mapLen</find>
+      <find>mapLength</find>
+      <find>PIXELS_PER_UNIT</find>
+      <find>getMapLen</find>
+      <find>etMapLength</find>
+      <find>mapSize</find>
+      <find>mapSize[0]</find>
+      <find>index</find>
+      <find>mTextureCoordinates</find>
+      <find>mVertexPosition</find>
+      <find>uTextureSize</find>
+      <find>uMapLength</find>
     </findStrings>
     <replaceStrings>
       <replace>HeightMap</replace>
@@ -112,8 +132,11 @@
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.interface.php" />
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.css" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       </list>
     </option>
   </component>
@@ -137,10 +160,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="3832" />
-    <option name="y" value="1072" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="3828" />
+    <option name="y" value="1068" />
+    <option name="width" value="1944" />
+    <option name="height" value="1064" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -166,6 +189,78 @@
               <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
               <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="fragment" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="fragment" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="editor" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="fragment" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="editor" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="assets" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stages" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stages" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stage1" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="relay-kernel" type="b2602c69:ProjectViewProjectNode" />
+              <item name="relay-kernel" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="files" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="game1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stages" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="stage1" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="map" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -177,6 +272,8 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../scripts" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -253,12 +350,18 @@
       <workItem from="1508254483956" duration="848000" />
       <workItem from="1508292270090" duration="1550000" />
       <workItem from="1508303025139" duration="246000" />
-      <workItem from="1508372878728" duration="6205000" />
+      <workItem from="1508372878728" duration="9464000" />
+      <workItem from="1508427050838" duration="6710000" />
+      <workItem from="1508513198536" duration="97000" />
+      <workItem from="1508559421141" duration="2057000" />
+      <workItem from="1508621252735" duration="9000" />
+      <workItem from="1508621593762" duration="17000" />
+      <workItem from="1508622476163" duration="2955000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="116128000" />
+    <option name="totallyTimeSpent" value="131232000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -270,16 +373,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="3832" y="1072" width="1936" height="1056" extended-state="6" />
+    <frame x="3828" y="1068" width="1944" height="1064" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1953125" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30520833" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32829374" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39848813" sideWeight="0.50208336" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32918552" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3921875" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3921875" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1953125" sideWeight="0.5058997" order="3" side_tool="true" content_ui="tabs" />
@@ -290,7 +394,6 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -319,35 +422,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-140">
-          <caret line="270" column="78" lean-forward="false" selection-start-line="270" selection-start-column="78" selection-end-line="270" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="95" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js" />
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/spritesheet.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -581,7 +655,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="703">
           <caret line="173" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -620,37 +693,84 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/stubs/dom/dom_c.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="1846" column="6" lean-forward="false" selection-start-line="1846" selection-start-column="6" selection-end-line="1846" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-300">
-          <caret line="41" column="14" lean-forward="false" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="9" column="32" lean-forward="false" selection-start-line="8" selection-start-column="36" selection-end-line="9" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="7" column="27" lean-forward="false" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="5" column="53" lean-forward="false" selection-start-line="5" selection-start-column="53" selection-end-line="5" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="2" column="11" lean-forward="false" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="19" column="51" lean-forward="false" selection-start-line="19" selection-start-column="51" selection-end-line="19" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1275">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="160" column="43" lean-forward="true" selection-start-line="160" selection-start-column="43" selection-end-line="160" selection-end-column="43" />
+        <state relative-caret-position="0">
+          <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

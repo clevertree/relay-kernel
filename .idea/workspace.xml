@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="fc2c039f-26f5-44e3-9318-bb3afac42ebb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$" afterPath="$PROJECT_DIR$" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +26,7 @@
       <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="820">
               <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
               <folding />
             </state>
@@ -32,8 +36,18 @@
       <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="456" column="75" lean-forward="false" selection-start-line="456" selection-start-column="75" selection-end-line="456" selection-end-column="75" />
+            <state relative-caret-position="482">
+              <caret line="170" column="91" lean-forward="false" selection-start-line="170" selection-start-column="91" selection-end-line="170" selection-end-column="91" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="stage1.stage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1200">
+              <caret line="60" column="12" lean-forward="false" selection-start-line="60" selection-start-column="12" selection-end-line="60" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -49,9 +63,45 @@
       <file leaf-file-name="game1.client.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="680">
               <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
-              <folding />
+              <folding>
+                <marker date="1508686433919" expanded="true" signature="5010:7047" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="6552:6709" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="6816:7016" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7126:7650" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7326:7590" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7596:7644" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7711:8079" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7789:7885" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="7969:8073" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="8148:9815" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="8751:9752" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="9123:9276" ph="//..." />
+                <marker date="1508686433919" expanded="true" signature="9910:10675" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="9931:10141" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
+                <marker date="1508686433919" expanded="true" signature="10231:10486" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="10272:10476" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="10752:10975" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="10835:10968" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="11013:13015" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="12054:13008" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="13062:13204" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="13079:13197" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="13253:13469" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="13355:13462" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="13518:13734" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="13620:13727" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="13783:13999" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="13885:13992" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="14042:14184" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="14059:14177" ph="[...]" />
+                <marker date="1508686433919" expanded="true" signature="14232:14302" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="14352:14424" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="14474:14546" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="14596:14668" ph="{...}" />
+                <marker date="1508686433919" expanded="true" signature="14712:14778" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -69,15 +119,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setH</find>
-      <find>vActiveColorRange</find>
-      <find>moveSelection</find>
-      <find>uHighlightRange</find>
-      <find>defaultColor</find>
-      <find>uHighlightColor</find>
-      <find>Math.abs(Math</find>
-      <find>vHighlightColor</find>
-      <find>mouse s</find>
       <find>vHigh</find>
       <find>saveEditorMap</find>
       <find>$realpath</find>
@@ -99,12 +140,23 @@
       <find>mVertexPosition</find>
       <find>uTextureSize</find>
       <find>uMapLength</find>
+      <find>uTexture0Config</find>
+      <find>Texture1Size</find>
+      <find>vTextureSizes</find>
+      <find>textureSize.y</find>
+      <find>textureSize.x</find>
+      <find>heightMapData</find>
+      <find>onLoadText</find>
+      <find>updateTexture</find>
+      <find>updateTexture</find>
     </findStrings>
     <replaceStrings>
       <replace>HeightMap</replace>
       <replace>HeightMapEditor</replace>
       <replace>THIS</replace>
       <replace>change</replace>
+      <replace>textureHeight</replace>
+      <replace>textureWidth</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -120,7 +172,6 @@
         <option value="$PROJECT_DIR$/../scripts/organize-music.php" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.editor.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/level/level1.level.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/sprite/player1.sprite.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/client/game1.interface.php" />
@@ -129,6 +180,7 @@
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       </list>
     </option>
@@ -174,7 +226,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -259,6 +310,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -349,12 +401,13 @@
       <workItem from="1508559421141" duration="2057000" />
       <workItem from="1508621252735" duration="9000" />
       <workItem from="1508621593762" duration="17000" />
-      <workItem from="1508622476163" duration="4072000" />
+      <workItem from="1508622476163" duration="4311000" />
+      <workItem from="1508681142391" duration="3543000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="132349000" />
+    <option name="totallyTimeSpent" value="136131000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -369,11 +422,10 @@
     <frame x="3828" y="1068" width="1944" height="1064" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30520833" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24583334" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32829374" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39848813" sideWeight="0.50208336" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32918552" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3921875" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -387,6 +439,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32918552" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -686,13 +739,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="9" column="32" lean-forward="false" selection-start-line="8" selection-start-column="36" selection-end-line="9" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -716,15 +762,51 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="680">
           <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
-          <folding />
+          <folding>
+            <marker date="1508686433919" expanded="true" signature="5010:7047" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="6552:6709" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="6816:7016" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7126:7650" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7326:7590" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7596:7644" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7711:8079" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7789:7885" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="7969:8073" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="8148:9815" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="8751:9752" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="9123:9276" ph="//..." />
+            <marker date="1508686433919" expanded="true" signature="9910:10675" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="9931:10141" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
+            <marker date="1508686433919" expanded="true" signature="10231:10486" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="10272:10476" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="10752:10975" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="10835:10968" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="11013:13015" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="12054:13008" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="13062:13204" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="13079:13197" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="13253:13469" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="13355:13462" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="13518:13734" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="13620:13727" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="13783:13999" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="13885:13992" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="14042:14184" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="14059:14177" ph="[...]" />
+            <marker date="1508686433919" expanded="true" signature="14232:14302" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="14352:14424" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="14474:14546" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="14596:14668" ph="{...}" />
+            <marker date="1508686433919" expanded="true" signature="14712:14778" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="820">
           <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
           <folding />
         </state>
@@ -743,10 +825,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1200">
+          <caret line="60" column="12" lean-forward="false" selection-start-line="60" selection-start-column="12" selection-end-line="60" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="456" column="75" lean-forward="false" selection-start-line="456" selection-start-column="75" selection-end-line="456" selection-end-column="75" />
+        <state relative-caret-position="482">
+          <caret line="170" column="91" lean-forward="false" selection-start-line="170" selection-start-column="91" selection-end-line="170" selection-end-column="91" />
           <folding />
         </state>
       </provider>

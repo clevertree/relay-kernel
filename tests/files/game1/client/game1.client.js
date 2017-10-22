@@ -169,7 +169,7 @@
         // Check if it compiled
         success = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
         if (!success)
-            throw "could not compile shader:" + gl.getShaderInfoLog(fragmentShader);
+            throw "could not compile shader:" + gl.getShaderInfoLog(fragmentShader) + fragmentShaderSource;
 
 
         // create a program.

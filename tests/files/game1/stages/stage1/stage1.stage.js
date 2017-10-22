@@ -58,7 +58,7 @@
         var hmMain = new Config.fragment.HeightMap(gl, DIR_HEIGHT_MAP);
 
         var renders = [
-            player1, pfMain, hmMain
+            hmMain, player1, pfMain
         ];
         var hitBoxes = [
             pfMain, hmMain

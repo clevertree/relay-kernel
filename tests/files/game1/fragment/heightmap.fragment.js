@@ -102,10 +102,10 @@
             // gl.uniform1i(uLevelMap, 1);
             // gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
 
-            for(var i=20; i>0; i--) {
-                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
-            }
+            // for(var i=20; i>0; i--) {
+            //     gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
+            //     gl.drawArrays(gl.TRIANGLES, 0, 6);
+            // }
 
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -172,7 +172,7 @@
             }
             // console.log(rx, ry, px, leftHeight, rightHeight, leftHeight/256, rightHeight/256);
 
-            return ry < (leftHeight+rightHeight)/(2*256);
+            return ry < (leftHeight+rightHeight)/(2);
             //
             // var ry = y / mScale[1] - mPosition[1];
             //
@@ -223,10 +223,19 @@
 
         this.updateTexture = function(texture, imageData) {
 
-            var heightMapData = new Uint8ClampedArray(imageData.data.length/4);
+            // Upload the image into the texture.
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imageData);
+
+            var heightMapData = new Float32Array(imageData.data.length/4);
 
             for(var i=0; i<imageData.data.length; i+=4) {
-                heightMapData[i/4] = imageData.data[i+3];
+                heightMapData[i/4] =
+                    imageData.data[i+0]/256
+                    + imageData.data[i+1]/(256*256)
+                    + imageData.data[i+2]/(256*256*256);
+//                    + imageData.data[i+3]*256*256*256)
+//                     /(256*256*256);
             }
 
             texture.heightMapData = heightMapData;
@@ -264,10 +273,6 @@
                 texture.srcImage = image;
                 vTextureSizes[textureID*2] = image.width;
                 vTextureSizes[textureID*2 + 1] = image.height;
-
-                // Upload the image into the texture.
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
                 THIS.updateTexture(texture, imageData);
 
@@ -459,12 +464,18 @@
         "void main(void) {",
         "   float index = vTextureCoordinate.x * uMapLength;",
         "   vec4 pxHeight = getHeightMapPixel(index, uTexture0, uTextureSize[0], uTextureSize[1]);",
+
+        "   float height = pxHeight.x + pxHeight.y/256.0 + pxHeight.z/65536.0;",
+
         "   if(uTextureSize[2] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture1, uTextureSize[2], uTextureSize[3]);",
         "       if(uTextureSize[4] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture2, uTextureSize[4], uTextureSize[5]);",
         "           if(uTextureSize[6] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture3, uTextureSize[6], uTextureSize[7]);",
         "   }}}",
 
-        "   if(vTextureCoordinate.y > pxHeight.w) { discard; }",
+        "   if(vTextureCoordinate.y > height) { discard; }",
+        "   pxHeight.x = 1.0;",
+        "   pxHeight.y = 1.0;",
+        "   pxHeight.z = 1.0;",
         "   pxHeight.w = 1.0;",
 
         "   if(index >= uHighlightRange[0] && index <= uHighlightRange[1])",

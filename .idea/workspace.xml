@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="fc2c039f-26f5-44e3-9318-bb3afac42ebb" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$" afterPath="$PROJECT_DIR$" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" afterPath="$PROJECT_DIR$/tests/files/game1/client/game1.client.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,9 +23,42 @@
       <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="820">
-              <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
-              <folding />
+            <state relative-caret-position="255">
+              <caret line="336" column="35" lean-forward="false" selection-start-line="336" selection-start-column="22" selection-end-line="336" selection-end-column="35" />
+              <folding>
+                <marker date="1508703588256" expanded="true" signature="361:14854" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="630:3397" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="2795:3387" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="3438:3853" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="3899:4678" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="4176:4584" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="4736:6021" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="5084:5855" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="6071:7033" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="6348:6855" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="7073:8069" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="7395:7880" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="8132:8668" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="8714:10330" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="9082:10278" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="9267:10264" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="9621:9754" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="10388:10677" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="10748:12167" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="11230:11498" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
+                <marker date="1508703588256" expanded="true" signature="11365:11407" ph="//..." />
+                <marker date="1508703588256" expanded="true" signature="11596:11879" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="11641:11865" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="12242:13390" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="12529:12792" ph="{&quot;image&quot;: image...}" />
+                <marker date="1508703588256" expanded="true" signature="12850:13296" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="13463:13548" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="13594:14120" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="13857:13982" ph="//..." />
+                <marker date="1508703588256" expanded="true" signature="14169:14275" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="14344:14848" ph="{...}" />
+                <marker date="1508703588256" expanded="true" signature="14769:14837" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -36,8 +66,8 @@
       <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="482">
-              <caret line="170" column="91" lean-forward="false" selection-start-line="170" selection-start-column="91" selection-end-line="170" selection-end-column="91" />
+            <state relative-caret-position="255">
+              <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -119,10 +149,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>vHigh</find>
-      <find>saveEditorMap</find>
-      <find>$realpath</find>
-      <find>pattern(</find>
       <find>changePixel</find>
       <find>shift</find>
       <find>path</find>
@@ -145,9 +171,13 @@
       <find>vTextureSizes</find>
       <find>textureSize.y</find>
       <find>textureSize.x</find>
-      <find>heightMapData</find>
       <find>onLoadText</find>
       <find>updateTexture</find>
+      <find>Change Pixel</find>
+      <find>testH</find>
+      <find>heightMapData</find>
+      <find>RGBA</find>
+      <find>updateTe</find>
       <find>updateTexture</find>
     </findStrings>
     <replaceStrings>
@@ -179,8 +209,8 @@
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.css" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
       </list>
     </option>
@@ -205,8 +235,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="3828" />
-    <option name="y" value="1068" />
+    <option name="x" value="-12" />
+    <option name="y" value="-12" />
     <option name="width" value="1944" />
     <option name="height" value="1064" />
   </component>
@@ -402,12 +432,12 @@
       <workItem from="1508621252735" duration="9000" />
       <workItem from="1508621593762" duration="17000" />
       <workItem from="1508622476163" duration="4311000" />
-      <workItem from="1508681142391" duration="3543000" />
+      <workItem from="1508681142391" duration="8975000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="136131000" />
+    <option name="totallyTimeSpent" value="141563000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -419,7 +449,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="3828" y="1068" width="1944" height="1064" extended-state="6" />
+    <frame x="-12" y="-12" width="1944" height="1022" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24583334" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
@@ -804,14 +834,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="41" column="65" lean-forward="false" selection-start-line="41" selection-start-column="65" selection-end-line="41" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -833,10 +855,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="336" column="35" lean-forward="false" selection-start-line="336" selection-start-column="22" selection-end-line="336" selection-end-column="35" />
+          <folding>
+            <marker date="1508703588256" expanded="true" signature="361:14854" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="630:3397" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="2795:3387" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="3438:3853" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="3899:4678" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="4176:4584" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="4736:6021" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="5084:5855" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="6071:7033" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="6348:6855" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="7073:8069" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="7395:7880" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="8132:8668" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="8714:10330" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="9082:10278" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="9267:10264" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="9621:9754" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="10388:10677" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="10748:12167" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="11230:11498" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
+            <marker date="1508703588256" expanded="true" signature="11365:11407" ph="//..." />
+            <marker date="1508703588256" expanded="true" signature="11596:11879" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="11641:11865" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="12242:13390" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="12529:12792" ph="{&quot;image&quot;: image...}" />
+            <marker date="1508703588256" expanded="true" signature="12850:13296" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="13463:13548" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="13594:14120" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="13857:13982" ph="//..." />
+            <marker date="1508703588256" expanded="true" signature="14169:14275" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="14344:14848" ph="{...}" />
+            <marker date="1508703588256" expanded="true" signature="14769:14837" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="170" column="91" lean-forward="false" selection-start-line="170" selection-start-column="91" selection-end-line="170" selection-end-column="91" />
+        <state relative-caret-position="255">
+          <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="20" />
           <folding />
         </state>
       </provider>

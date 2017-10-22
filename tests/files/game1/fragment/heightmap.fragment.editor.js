@@ -89,8 +89,8 @@
                 if(ctrl && alt) V = 16;
                 if (PK[39]) THIS.moveSelection(V - shift, shift);   // Right
                 if (PK[37]) THIS.moveSelection(shift - V, -shift);  // Left
-                if (PK[40]) THIS.changePixel([0, 0, 0, -V]);        // Down
-                if (PK[38]) THIS.changePixel([0, 0, 0, V]);         // Up
+                if (PK[40]) THIS.changeHeightPixel(-0.01);        // Down
+                if (PK[38]) THIS.changeHeightPixel(0.01);         // Up
 
                 if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
                 if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
@@ -130,6 +130,34 @@
             // TODO: save
         };
 
+        this.changeHeightPixel = function (heightData) {
+            var texture = heightMap.getTextures()[selectedTexture],
+                image = texture.srcImage,
+                imageData = loadImageData(image);
+
+            if(!Array.isArray(heightData)) heightData = [heightData];
+
+            var pos = 0, range = heightMap.getHighlightRange();
+            for (var i=range[0]; i<range[1]; i++) {
+                var offset = i*4;
+                var oldPixel = imageData.data.slice(offset, offset+4);
+                var height = oldPixel[0]/256 + oldPixel[1]/(256*256) + oldPixel[2]/(256*256*256);
+                height += heightData[pos];
+//                 var offset = (Math.floor(i/image.width)*image.width + (i%image.width)) * 4;
+                imageData.data[offset + 0] = height * (256);
+                imageData.data[offset + 1] = (height * (256*256)) % 256;
+                imageData.data[offset + 2] = (height * (256*256*256)) % (256);
+                imageData.data[offset + 3] = 0; // (height % (256*256*256*256))/(256*256*256);
+                pos ++;
+                if(pos >= heightData.length)
+                    pos = 0;
+            }
+
+            heightMap.updateTexture(texture, imageData);
+            console.log("Change Pixel Height: ",  imageData.data.slice(range[0]*4, range[1]*4));
+
+        };
+
         this.changePixel = function(pixelData) {
             var texture = heightMap.getTextures()[selectedTexture],
                 image = texture.srcImage,
@@ -149,7 +177,7 @@
             }
 
             heightMap.updateTexture(texture, imageData);
-            console.log("Change Pixel: ",  pixelData);
+            console.log("Change Pixel: ",  imageData.data.slice(offset, offset+4));
             // TODO: save
         };
 

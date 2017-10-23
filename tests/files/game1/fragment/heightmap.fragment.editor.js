@@ -347,7 +347,7 @@
         // Print patterns
 
         function patternFlip(e, height) {
-            console.log("Height: ", height, 1 - height);
+//             console.log("Height: ", height, 1 - height);
             return 1 - height;
         }
 
@@ -355,7 +355,7 @@
             var diff = e.lastHeight - e.firstHeight;
             var percent = (e.pos - e.range[0]) / (e.range[1] - e.range[0]);
             var newHeight = e.firstHeight + diff * percent;
-            console.log("Linear: ", diff, percent, newHeight);
+//             console.log("Linear: ", diff, percent, newHeight);
             return newHeight;
         }
 

@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc2c039f-26f5-44e3-9318-bb3afac42ebb" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png.old.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../payment-gateway" afterPath="$PROJECT_DIR$/../payment-gateway" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/lib/getID3" afterPath="$PROJECT_DIR$/../scripts/lib/getID3" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" afterPath="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" afterPath="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../scripts/organize-music.php" afterPath="$PROJECT_DIR$/../scripts/organize-music.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,54 +24,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="heightmap.fragment.editor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="336" column="35" lean-forward="false" selection-start-line="336" selection-start-column="22" selection-end-line="336" selection-end-column="35" />
-              <folding>
-                <marker date="1508703588256" expanded="true" signature="361:14854" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="630:3397" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="2795:3387" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="3438:3853" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="3899:4678" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="4176:4584" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="4736:6021" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="5084:5855" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="6071:7033" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="6348:6855" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="7073:8069" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="7395:7880" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="8132:8668" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="8714:10330" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="9082:10278" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="9267:10264" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="9621:9754" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="10388:10677" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="10748:12167" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="11230:11498" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
-                <marker date="1508703588256" expanded="true" signature="11365:11407" ph="//..." />
-                <marker date="1508703588256" expanded="true" signature="11596:11879" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="11641:11865" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="12242:13390" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="12529:12792" ph="{&quot;image&quot;: image...}" />
-                <marker date="1508703588256" expanded="true" signature="12850:13296" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="13463:13548" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="13594:14120" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="13857:13982" ph="//..." />
-                <marker date="1508703588256" expanded="true" signature="14169:14275" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="14344:14848" ph="{...}" />
-                <marker date="1508703588256" expanded="true" signature="14769:14837" ph="{...}" />
-              </folding>
+            <state relative-caret-position="686">
+              <caret line="198" column="13" lean-forward="true" selection-start-line="198" selection-start-column="13" selection-end-line="198" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="heightmap.fragment.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="20" />
+            <state relative-caret-position="-413">
+              <caret line="256" column="50" lean-forward="true" selection-start-line="256" selection-start-column="50" selection-end-line="256" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -76,62 +47,9 @@
       <file leaf-file-name="stage1.stage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="60" column="12" lean-forward="false" selection-start-line="60" selection-start-column="12" selection-end-line="60" selection-end-column="12" />
+            <state relative-caret-position="725">
+              <caret line="231" column="5" lean-forward="true" selection-start-line="231" selection-start-column="5" selection-end-line="231" selection-end-column="5" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.heightmap.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game1.client.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
-              <folding>
-                <marker date="1508686433919" expanded="true" signature="5010:7047" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="6552:6709" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="6816:7016" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7126:7650" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7326:7590" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7596:7644" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7711:8079" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7789:7885" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="7969:8073" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="8148:9815" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="8751:9752" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="9123:9276" ph="//..." />
-                <marker date="1508686433919" expanded="true" signature="9910:10675" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="9931:10141" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
-                <marker date="1508686433919" expanded="true" signature="10231:10486" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="10272:10476" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="10752:10975" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="10835:10968" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="11013:13015" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="12054:13008" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="13062:13204" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="13079:13197" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="13253:13469" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="13355:13462" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="13518:13734" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="13620:13727" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="13783:13999" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="13885:13992" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="14042:14184" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="14059:14177" ph="[...]" />
-                <marker date="1508686433919" expanded="true" signature="14232:14302" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="14352:14424" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="14474:14546" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="14596:14668" ph="{...}" />
-                <marker date="1508686433919" expanded="true" signature="14712:14778" ph="{...}" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -149,9 +67,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>changePixel</find>
-      <find>shift</find>
-      <find>path</find>
       <find>&quot;DOM</find>
       <find>1</find>
       <find>mapLen</find>
@@ -178,7 +93,10 @@
       <find>heightMapData</find>
       <find>RGBA</find>
       <find>updateTe</find>
-      <find>updateTexture</find>
+      <find>testHit</find>
+      <find>uTexture</find>
+      <find>imageData.data</find>
+      <find>rgb</find>
     </findStrings>
     <replaceStrings>
       <replace>HeightMap</replace>
@@ -210,8 +128,8 @@
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/heightmap.html" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/editor/assets/heightmap.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js" />
-        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
         <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js" />
+        <option value="$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js" />
       </list>
     </option>
   </component>
@@ -235,10 +153,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="y" value="-12" />
-    <option name="width" value="1944" />
-    <option name="height" value="1064" />
+    <option name="x" value="3832" />
+    <option name="y" value="1072" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -256,6 +174,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -339,8 +259,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -432,12 +350,13 @@
       <workItem from="1508621252735" duration="9000" />
       <workItem from="1508621593762" duration="17000" />
       <workItem from="1508622476163" duration="4311000" />
-      <workItem from="1508681142391" duration="8975000" />
+      <workItem from="1508681142391" duration="11029000" />
+      <workItem from="1508724432027" duration="3928000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="141563000" />
+    <option name="totallyTimeSpent" value="147545000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -449,10 +368,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-12" y="-12" width="1944" height="1022" extended-state="6" />
+    <frame x="3832" y="1072" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24583334" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2359375" sideWeight="0.4941003" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32829374" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39848813" sideWeight="0.50208336" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -792,51 +711,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/client/game1.client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
+        <state relative-caret-position="0">
           <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
-          <folding>
-            <marker date="1508686433919" expanded="true" signature="5010:7047" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="6552:6709" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="6816:7016" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7126:7650" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7326:7590" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7596:7644" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7711:8079" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7789:7885" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="7969:8073" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="8148:9815" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="8751:9752" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="9123:9276" ph="//..." />
-            <marker date="1508686433919" expanded="true" signature="9910:10675" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="9931:10141" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
-            <marker date="1508686433919" expanded="true" signature="10231:10486" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="10272:10476" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="10752:10975" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="10835:10968" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="11013:13015" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="12054:13008" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="13062:13204" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="13079:13197" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="13253:13469" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="13355:13462" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="13518:13734" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="13620:13727" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="13783:13999" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="13885:13992" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="14042:14184" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="14059:14177" ph="[...]" />
-            <marker date="1508686433919" expanded="true" signature="14232:14302" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="14352:14424" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="14474:14546" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="14596:14668" ph="{...}" />
-            <marker date="1508686433919" expanded="true" signature="14712:14778" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/map/main.heightmap.png">
       <provider selected="true" editor-type-id="images">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="725">
+          <caret line="231" column="5" lean-forward="true" selection-start-line="231" selection-start-column="5" selection-end-line="231" selection-end-column="5" />
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/tilemap.fragment.js">
@@ -847,59 +738,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/stages/stage1/stage1.stage.js">
+    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="60" column="12" lean-forward="false" selection-start-line="60" selection-start-column="12" selection-end-line="60" selection-end-column="12" />
+        <state relative-caret-position="-413">
+          <caret line="256" column="50" lean-forward="true" selection-start-line="256" selection-start-column="50" selection-end-line="256" selection-end-column="50" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.editor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="336" column="35" lean-forward="false" selection-start-line="336" selection-start-column="22" selection-end-line="336" selection-end-column="35" />
-          <folding>
-            <marker date="1508703588256" expanded="true" signature="361:14854" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="630:3397" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="2795:3387" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="3438:3853" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="3899:4678" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="4176:4584" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="4736:6021" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="5084:5855" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="6071:7033" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="6348:6855" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="7073:8069" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="7395:7880" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="8132:8668" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="8714:10330" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="9082:10278" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="9267:10264" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="9621:9754" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="10388:10677" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="10748:12167" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="11230:11498" ph="{&quot;action&quot;: &quot;asset-save-png&quot;...}" />
-            <marker date="1508703588256" expanded="true" signature="11365:11407" ph="//..." />
-            <marker date="1508703588256" expanded="true" signature="11596:11879" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="11641:11865" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="12242:13390" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="12529:12792" ph="{&quot;image&quot;: image...}" />
-            <marker date="1508703588256" expanded="true" signature="12850:13296" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="13463:13548" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="13594:14120" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="13857:13982" ph="//..." />
-            <marker date="1508703588256" expanded="true" signature="14169:14275" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="14344:14848" ph="{...}" />
-            <marker date="1508703588256" expanded="true" signature="14769:14837" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/files/game1/fragment/heightmap.fragment.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="13" selection-end-line="151" selection-end-column="20" />
+        <state relative-caret-position="686">
+          <caret line="198" column="13" lean-forward="true" selection-start-line="198" selection-start-column="13" selection-end-line="198" selection-end-column="13" />
           <folding />
         </state>
       </provider>

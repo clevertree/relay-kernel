@@ -144,10 +144,10 @@
                 var height = oldPixel[0]/256 + oldPixel[1]/(256*256) + oldPixel[2]/(256*256*256);
                 height += heightData[pos];
 //                 var offset = (Math.floor(i/image.width)*image.width + (i%image.width)) * 4;
-                imageData.data[offset + 0] = height * (256);
-                imageData.data[offset + 1] = (height * (256*256)) % 256;
-                imageData.data[offset + 2] = (height * (256*256*256)) % (256);
-                imageData.data[offset + 3] = 0; // (height % (256*256*256*256))/(256*256*256);
+                imageData.data[offset + 0] = Math.floor(height * (256));
+                imageData.data[offset + 1] = Math.floor((height * (256*256)) % 256);
+                imageData.data[offset + 2] = Math.floor((height * (256*256*256)) % (256));
+                // imageData.data[offset + 3] = 0; // (height % (256*256*256*256))/(256*256*256);
                 pos ++;
                 if(pos >= heightData.length)
                     pos = 0;
@@ -170,7 +170,7 @@
                 imageData.data[offset + 0] += pixelData[pos + 0];
                 imageData.data[offset + 1] += pixelData[pos + 1];
                 imageData.data[offset + 2] += pixelData[pos + 2];
-                imageData.data[offset + 3] += pixelData[pos + 3];
+                // imageData.data[offset + 3] += pixelData[pos + 3];
                 pos += 4;
                 if(pos >= pixelData.length)
                     pos = 0;
@@ -195,7 +195,7 @@
                 imageData.data[offset + 0] = flippedData[foffset + 0];
                 imageData.data[offset + 1] = flippedData[foffset + 1];
                 imageData.data[offset + 2] = flippedData[foffset + 2];
-                imageData.data[offset + 3] = flippedData[foffset + 3];
+                // imageData.data[offset + 3] = flippedData[foffset + 3];
             }
 
             imageData.data = flippedData;
@@ -297,11 +297,12 @@
                 }
             };
 
-            xhttp.open("POST", Config.path.root + '/client/game1.interface.php', true);
+            var filePath = Config.path.root + '/client/game1.interface.php';
+            xhttp.open("POST", filePath, true);
             xhttp.setRequestHeader('Content-type', 'application/json');
             xhttp.send(JSON.stringify(POST));
 
-            console.info("Saving texture data: ", Config.path.root);
+            console.info("Saving texture data: ", filePath);
         };
 
 
@@ -323,15 +324,19 @@
                 imageData: imageData,
                 range: range
             };
+            e.firstHeight = e.firstPixel[0]/256 + e.firstPixel[1]/(256*256) + e.firstPixel[2]/(256*256*256);
+            e.lastHeight = e.lastPixel[0]/256 + e.lastPixel[1]/(256*256) + e.lastPixel[2]/(256*256*256);
+
             for (var pos=range[0]; pos<range[1]; pos++) {
                 var offset = pos * 4;
                 var oldPixel = imageData.data.slice(offset, offset+4);
+                var height = oldPixel[0]/256 + oldPixel[1]/(256*256) + oldPixel[2]/(256*256*256);
                 e.pos = pos;
-                var newPixel = pattern(e, oldPixel.slice());
-                imageData.data[offset + 0] = newPixel[0];
-                imageData.data[offset + 1] = newPixel[1];
-                imageData.data[offset + 2] = newPixel[2];
-                imageData.data[offset + 3] = newPixel[3];
+                var newHeight = pattern(e, height);
+                imageData.data[offset + 0] = Math.floor(newHeight * (256));
+                imageData.data[offset + 1] = Math.floor((newHeight * (256*256)) % 256);
+                imageData.data[offset + 2] = Math.floor((newHeight * (256*256*256)) % (256));
+                // imageData.data[offset + 3] = newPixel[3];
             }
 
             heightMap.updateTexture(texture, imageData);
@@ -341,21 +346,17 @@
 
         // Print patterns
 
-        function patternFlip(e, oldPixel) {
-            oldPixel[3] = 256 - oldPixel[3];
-            return oldPixel;
+        function patternFlip(e, height) {
+            console.log("Height: ", height, 1 - height);
+            return 1 - height;
         }
 
-        function patternLinear(e, oldPixel) {
-            var diff = e.lastPixel[3] - e.firstPixel[3];
+        function patternLinear(e, height) {
+            var diff = e.lastHeight - e.firstHeight;
             var percent = (e.pos - e.range[0]) / (e.range[1] - e.range[0]);
-            var newHeight = e.firstPixel[3] + diff * percent;
-            var heightDiff = newHeight - oldPixel[3];
-            // if(Math.abs(heightDiff) > 8) heightDiff = 8 * (heightDiff/Math.abs(heightDiff));
-            // oldPixel[3] += heightDiff;
-            if(Math.abs(heightDiff) > 4) heightDiff *= 0.2;
-            oldPixel[3] += heightDiff;
-            return oldPixel;
+            var newHeight = e.firstHeight + diff * percent;
+            console.log("Linear: ", diff, percent, newHeight);
+            return newHeight;
         }
 
         function patternCurveDown(e, oldPixel) {

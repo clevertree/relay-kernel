@@ -28,7 +28,7 @@
         var mModelView =        defaultModelViewMatrix;
         // vColor =             vColor || defaultColor;
         var vHighlightColor =   defaultColor.slice(0);
-        var vHighlightRange =   [0,0];
+        var vHighlightRange =   [64,128];
 
         // Set up private properties
         var mVertexPosition = defaultTextureCoordinates;
@@ -94,7 +94,7 @@
 
             // Tell the shader to get the tile sheet from texture unit 0
             gl.activeTexture(gl.TEXTURE0);
-            gl.uniform1i(uTexture0, 0);
+            gl.uniform1i(uTextureHeightData, 0);
             gl.bindTexture(gl.TEXTURE_2D, textures[0]);
 
             // Tell the shader to get the level map from texture unit 0
@@ -225,7 +225,7 @@
 
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, imageData);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
             var heightMapData = new Float32Array(imageData.data.length/4);
 
@@ -346,9 +346,9 @@
 
             uMapLength = gl.getUniformLocation(program, "uMapLength");
 
-            uTexture0 = gl.getUniformLocation(program, "uTexture0");
-            uTexture1 = gl.getUniformLocation(program, "uTexture1");
-            uTexture2 = gl.getUniformLocation(program, "uTexture2");
+            uTextureHeightData = gl.getUniformLocation(program, "uTextureHeightData");
+            uTextureColor = gl.getUniformLocation(program, "uTextureColor");
+            uTextureHeightPattern = gl.getUniformLocation(program, "uTextureHeightPattern");
             uTexture3 = gl.getUniformLocation(program, "uTexture3");
 
             // uLevelMap = gl.getUniformLocation(program, "uLevelMap");
@@ -408,28 +408,21 @@
     var aVertexPosition, bufVertexPosition;
     var aTextureCoordinate, bufTextureCoordinate;
     var uPMatrix, uMVMatrix, uMapLength,
-        uTexture0, uTexture1, uTexture2, uTexture3,
+        uTextureHeightData, uTextureOffset=[], uTextureColor, uTextureHeightPattern,
         uHighlightColor, uHighlightRange, uTextureSize;
 
     // Shader
     HeightMap.VS = [
         "attribute vec4 aVertexPosition;",
         "attribute vec2 aTextureCoordinate;",
-        // "attribute vec4 aColor;",
-
-        // "varying vec2 vPixelCoordinate;",
         "varying vec2 vTextureCoordinate;",
 
         "uniform mat4 uPMatrix;",
         "uniform mat4 uMVMatrix;",
-        "uniform vec2 uMapSize;",
-        "uniform vec2 uInverseTileTextureSize;",
-        "uniform float uInverseTileSize;",
 
         "void main(void) {",
         "   vTextureCoordinate = aTextureCoordinate;",
         "   gl_Position = uPMatrix * uMVMatrix * aVertexPosition;",
-        // "   vColor = aColor;",
         "}"
     ].join("\n");
 
@@ -439,10 +432,10 @@
         // "varying vec2 vPixelCoordinate;",
         "varying vec2 vTextureCoordinate;",
 
-        "uniform sampler2D uTexture0;",
-        "uniform sampler2D uTexture1;",
-        "uniform sampler2D uTexture2;",
-        "uniform sampler2D uTexture3;",
+        "uniform sampler2D uTextureHeightData;",
+        "uniform sampler2D uTextureOffset[16];",
+        "uniform sampler2D uTextureColor;",
+        "uniform sampler2D uTextureHeightPattern;",
 
         "uniform float uMapLength;",
 
@@ -451,37 +444,34 @@
         "uniform vec2 uHighlightRange;",
         "uniform float uTextureSize[8] ;",
 
-        "vec4 getHeightMapPixel(float index, sampler2D texture, float textureWidth, float textureHeight) {",
-        // "   float index = vTextureCoordinate.x * textureWidth * textureSize.y;",
+        "float getMapHeight(float index, sampler2D texture, float textureWidth, float textureHeight) {",
         "   float column = mod(index, textureWidth);",
         "   float row    = mod(floor(index / textureWidth), textureHeight);",
         "   vec2 uv = vec2(",
         "       (column + 0.5) / textureWidth,",
         "       (row    + 0.5) / textureHeight);",
-        "   return texture2D(texture, uv);",
+        "   vec4 heightPixel = texture2D(texture, uv);",
+        "   return heightPixel.x + heightPixel.y/256.0 + heightPixel.z/65536.0;",
         "}",
 
         "void main(void) {",
         "   float index = vTextureCoordinate.x * uMapLength;",
-        "   vec4 pxHeight = getHeightMapPixel(index, uTexture0, uTextureSize[0], uTextureSize[1]);",
+        "   float height = getMapHeight(index, uTextureHeightData, uTextureSize[0], uTextureSize[1]);",
 
-        "   float height = pxHeight.x + pxHeight.y/256.0 + pxHeight.z/65536.0;",
 
-        "   if(uTextureSize[2] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture1, uTextureSize[2], uTextureSize[3]);",
-        "       if(uTextureSize[4] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture2, uTextureSize[4], uTextureSize[5]);",
-        "           if(uTextureSize[6] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture3, uTextureSize[6], uTextureSize[7]);",
-        "   }}}",
+        // "   if(uTextureSize[2] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture1, uTextureSize[2], uTextureSize[3]);",
+        // "       if(uTextureSize[4] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture2, uTextureSize[4], uTextureSize[5]);",
+        // "           if(uTextureSize[6] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture3, uTextureSize[6], uTextureSize[7]);",
+        // "   }}}",
 
         "   if(vTextureCoordinate.y > height) { discard; }",
-        "   pxHeight.x = 1.0;",
-        "   pxHeight.y = 1.0;",
-        "   pxHeight.z = 1.0;",
-        "   pxHeight.w = 1.0;",
+
+        "   vec4 pixel = vec4(1.0, 1.0, 1.0, 1.0);",
 
         "   if(index >= uHighlightRange[0] && index <= uHighlightRange[1])",
-        "       pxHeight.w = uHighlightColor.w;",
+        "       pixel.w = uHighlightColor.w;",
 
-        "   gl_FragColor = pxHeight;", //  * vColor
+        "   gl_FragColor = pixel;", //  * vColor
         "}"
     ].join("\n");
 

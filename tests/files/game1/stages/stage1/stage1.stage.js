@@ -55,7 +55,7 @@
 
         // Level Sprites
         var pfMain = new Config.fragment.TileMap(gl, DIR_LEVEL_MAP, DIR_TILE_SHEET, 64);
-        var hmMain = new Config.fragment.HeightMap(gl, DIR_HEIGHT_MAP);
+        var hmMain = new Config.fragment.HeightMap(gl, 9192, DIR_HEIGHT_MAP);
 
         var renders = [
             hmMain, player1, pfMain

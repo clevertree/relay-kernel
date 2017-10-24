@@ -29,13 +29,15 @@
 
             var allowHold = !ctrl;
 
+            var texture = heightMap.getHeightDataTexture();
+
             // Press-once keys
             if(lastKeyCount < Config.input.keyEvents) {
                 allowHold = true;
                 lastKeyCount = Config.input.keyEvents;
                 switch(Config.input.lastKey) {
                     case 13: // Enter
-                        THIS.openPopupWindow();
+                        THIS.openPopupWindow(texture);
                         break;
 
                     case 65: // A
@@ -43,30 +45,30 @@
                         break;
 
                     case 67: // C
-                        THIS.copyPixel();
+                        THIS.copyPixel(texture);
                         break;
 
                     case 70: // F
-                        THIS.flipPixels();
+                        THIS.flipPixels(texture);
                         break;
 
                     case 46: // DEL
                     case 68: // D
-                        THIS.setPixel([0, 0, 0, 0]);
+                        THIS.setPixel(texture, [0, 0, 0, 0]);
                         break;
 
                     case 45: // INS
                     case 86: // V
-                        THIS.pasteEditorPixel();
+                        THIS.pasteEditorPixel(texture);
                         break;
 
                     case 83: // S
-                        THIS.commitTextureData(heightMap.getTextures()[0]);
+                        THIS.commitTextureData(texture);
                         break;
 
 
-                    case 48: THIS.printHeightPattern(patternLinear);    break;  // 0
-                    case 49: THIS.printHeightPattern(patternFlip);      break;  // 1
+                    case 48: THIS.printHeightPattern(texture, patternLinear);    break;  // 0
+                    case 49: THIS.printHeightPattern(texture, patternFlip);      break;  // 1
                     case 50: // 2
                     case 51: // 3
                     case 52: // 4
@@ -75,7 +77,7 @@
                     case 55: // 7
                     case 56: // 8
                     case 57: // 9
-                        THIS.printHeightPattern();
+                        THIS.printHeightPattern(texture);
                         break;
 
                     default:
@@ -89,12 +91,12 @@
                 if(ctrl && alt) V = 16;
                 if (PK[39]) THIS.moveSelection(V - shift, shift);   // Right
                 if (PK[37]) THIS.moveSelection(shift - V, -shift);  // Left
-                if (PK[40]) THIS.changeHeightPixel(-0.01);        // Down
-                if (PK[38]) THIS.changeHeightPixel(0.01);         // Up
+                if (PK[40]) THIS.changeHeightPixel(texture, -0.01);        // Down
+                if (PK[38]) THIS.changeHeightPixel(texture, 0.01);         // Up
 
-                if (PK[82]) THIS.changePixel([shift ? -V : V, 0, 0, 0]);  // R
-                if (PK[71]) THIS.changePixel([0, shift ? -V : V, 0, 0]);  // G
-                if (PK[66]) THIS.changePixel([0, 0, shift ? -V : V, 0]);  // B
+                if (PK[82]) THIS.changePixel(texture, [shift ? -V : V, 0, 0, 0]);  // R
+                if (PK[71]) THIS.changePixel(texture, [0, shift ? -V : V, 0, 0]);  // G
+                if (PK[66]) THIS.changePixel(texture, [0, 0, shift ? -V : V, 0]);  // B
             }
         };
 
@@ -109,9 +111,8 @@
             return imageData;
         }
 
-        this.setPixel = function(pixelData) {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+        this.setPixel = function(texture, pixelData) {
+            var image = texture.srcImage,
                 imageData = loadImageData(image);
 
             var pos = 0, range = heightMap.getHighlightRange();
@@ -126,13 +127,12 @@
                     pos = 0;
             }
 
-            heightMap.updateTexture(texture, imageData);
+            heightMap.updateHeightMapTexture(texture, imageData);
             // TODO: save
         };
 
-        this.changeHeightPixel = function (heightData) {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+        this.changeHeightPixel = function (texture, heightData) {
+            var image = texture.srcImage,
                 imageData = loadImageData(image);
 
             if(!Array.isArray(heightData)) heightData = [heightData];
@@ -153,14 +153,13 @@
                     pos = 0;
             }
 
-            heightMap.updateTexture(texture, imageData);
+            heightMap.updateHeightMapTexture(texture, imageData);
             console.log("Change Pixel Height: ",  imageData.data.slice(range[0]*4, range[1]*4));
 
         };
 
-        this.changePixel = function(pixelData) {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+        this.changePixel = function(texture, pixelData) {
+            var image = texture.srcImage,
                 imageData = loadImageData(image);
 
             var pos = 0, range = heightMap.getHighlightRange();
@@ -176,14 +175,13 @@
                     pos = 0;
             }
 
-            heightMap.updateTexture(texture, imageData);
+            heightMap.updateHeightMapTexture(texture, imageData);
             console.log("Change Pixel: ",  imageData.data.slice(offset, offset+4));
             // TODO: save
         };
 
-        this.flipPixels = function() {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+        this.flipPixels = function(texture) {
+            var image = texture.srcImage,
                 imageData = loadImageData(image);
 
             var flippedData = imageData.data.slice();
@@ -199,14 +197,13 @@
             }
 
             imageData.data = flippedData;
-            heightMap.updateTexture(texture, imageData);
+            heightMap.updateHeightMapTexture(texture, imageData);
             console.log("Flipped Pixels: ",  range);
             // TODO: save
         };
 
         var pixelCache;
-        this.copyPixel = function() {
-            var texture = heightMap.getTextures()[selectedTexture];
+        this.copyPixel = function(texture) {
             var image = texture.srcImage;
             var imageData = loadImageData(image);
             var range = heightMap.getHighlightRange();
@@ -309,9 +306,8 @@
 
         // Print
 
-        this.printHeightPattern = function(pattern) {
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+        this.printHeightPattern = function(texture, pattern) {
+            var image = texture.srcImage,
                 imageData = loadImageData(image);
 
             pattern = pattern || patternLinear;
@@ -339,7 +335,7 @@
                 // imageData.data[offset + 3] = newPixel[3];
             }
 
-            heightMap.updateTexture(texture, imageData);
+            heightMap.updateHeightMapTexture(texture, imageData);
             // TODO: save
         };
 
@@ -366,11 +362,10 @@
 
         // Popup window
 
-        this.openPopupWindow = function() {
+        this.openPopupWindow = function(texture) {
             var ROOT = Config.path.root;
 
-            var texture = heightMap.getTextures()[selectedTexture],
-                image = texture.srcImage,
+            var image = texture.srcImage,
                 title = "Edit Heightmap: " + texture.srcImage.srcRelative;
 
             var popup = window.open(ROOT + 'fragment/editor/heightmap.html', "editor_heightmap", "titlebar=1&scrollbars=1&resizable=1", true);

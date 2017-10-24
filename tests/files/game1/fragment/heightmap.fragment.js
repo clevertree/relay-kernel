@@ -10,19 +10,15 @@
 
     var PROGRAM;
 
-    function HeightMap(gl, pathTextures, mapLength, flags) {
+    function HeightMap(gl, mapLength, pathHeightMapTexture, pathColorTexture, pathHeightPatternTexture, flags) {
         if(typeof flags === 'undefined')
             flags = HeightMap.FLAG_DEFAULTS;
-
-        if(!Array.isArray(pathTextures))
-            pathTextures = [pathTextures];
-
 
 
         // Variables
         var THIS =              this;
         var pixelsPerUnit =     PIXELS_PER_UNIT;
-        mapLength =             mapLength || 9192;
+        mapLength =             mapLength || 1024;
         var mPosition =         [0, 0, 0];
         var mScale =            [128, 8, 1];
         var mModelView =        defaultModelViewMatrix;
@@ -33,7 +29,7 @@
         // Set up private properties
         var mVertexPosition = defaultTextureCoordinates;
         var mTextureCoordinates = defaultTextureCoordinates;
-        var textures = [], vTextureSizes = [0, 0, 0, 0, 0, 0, 0, 0];
+        var tHeightData, tColor, tHeightPattern, vTextureSizes = [0, 0, 0, 0, 0, 0, 0, 0];
 
 
         mModelView = Util.scale(mModelView, mScale[0], mScale[1], mScale[2]);
@@ -42,8 +38,9 @@
         if(!PROGRAM)
             initProgram(gl);
 
-        for(var i=0; i<pathTextures.length; i++)
-            loadTexture(pathTextures[i]);
+        loadHeightMapTexture(pathHeightMapTexture);
+        loadColorTexture(pathColorTexture);
+        loadHeightPatternTexture(pathHeightPatternTexture);
 
 
         // Bind Texture Coordinate
@@ -84,28 +81,28 @@
             gl.uniform4fv(uHighlightColor, vHighlightColor);
             gl.uniform2fv(uHighlightRange, vHighlightRange);
 
+
+
+
             gl.uniform1fv(uTextureSize, vTextureSizes);
 
-
-            // gl.uniform2fv(uInverseSpriteTextureSize, inverseTextureSize);
-            // gl.uniform2fv(uInverseTileTextureSize, inverseTileTextureSize);
-
-
-
-            // Tell the shader to get the tile sheet from texture unit 0
             gl.activeTexture(gl.TEXTURE0);
             gl.uniform1i(uTextureHeightData, 0);
-            gl.bindTexture(gl.TEXTURE_2D, textures[0]);
+            gl.bindTexture(gl.TEXTURE_2D, tHeightData);
 
-            // Tell the shader to get the level map from texture unit 0
-            // gl.activeTexture(gl.TEXTURE1);
-            // gl.uniform1i(uLevelMap, 1);
-            // gl.bindTexture(gl.TEXTURE_2D, tLevelMap);
+            gl.activeTexture(gl.TEXTURE1);
+            gl.uniform1i(uTextureColor, 1);
+            gl.bindTexture(gl.TEXTURE_2D, tColor);
 
-            // for(var i=20; i>0; i--) {
-            //     gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.5*i));
-            //     gl.drawArrays(gl.TRIANGLES, 0, 6);
-            // }
+            // gl.activeTexture(gl.TEXTURE2);
+            // gl.uniform1i(uTextureHeightPattern, 0);
+            // gl.bindTexture(gl.TEXTURE_2D, tHeightPattern);
+
+
+            for(var i=2000; i>-200; i--) {
+                gl.uniformMatrix4fv(uMVMatrix, false, Util.translate(mModelView, 0, 0, -0.1*i));
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+            }
 
             // draw the quad (2 triangles, 6 vertices)
             gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -160,36 +157,17 @@
             if(ry < 0 || ry > 1)
                 return null;
 
+            if(!tHeightData.heightMapData)
+                return null;
+
             var px = Math.floor(rx * mapLength);
             // var py = Math.floor(ry * mapSize[1]);
-            var leftHeight = 0, rightHeight = 0;
-            for(var i=0; i<textures.length; i++) {
-                var texture = textures[i];
-                if(!texture.heightMapData)
-                    continue;
-                leftHeight += texture.heightMapData[(px+0) % texture.heightMapData.length];
-                rightHeight += texture.heightMapData[(px+1) % texture.heightMapData.length];
-            }
-            // console.log(rx, ry, px, leftHeight, rightHeight, leftHeight/256, rightHeight/256);
+
+            var data = tHeightData.heightMapData;
+            var leftHeight = data [(px+0) % data .length];
+            var rightHeight = data [(px+1) % data .length];
 
             return ry < (leftHeight+rightHeight)/(2);
-            //
-            // var ry = y / mScale[1] - mPosition[1];
-            //
-            // var tx = Math.round((x - mPosition[0])/tileSize * pixelsPerUnit);
-            // var ty = Math.round(-(y - mPosition[1])/tileSize * pixelsPerUnit);
-            // // console.log("Test Hit: ", x, y, ' => ', px, py, this.getPixel(px, py));
-            // var tpixel = this.getTilePixel(tx, ty);
-            // if(!tpixel || tpixel[2] < 128)
-            //     return null;
-            //
-            // var px = (tpixel[0]*tileSize) + (tx%tileSize);
-            // var py = (tpixel[1]*tileSize) + (ty%tileSize);
-            // var tpos = (px+py*heightMapData.width)*4;
-            // var pixel = heightMapData.data.slice(tpos, tpos+4);
-            // if(pixel[3] < 200)
-            //     return null;
-            // return pixel;
         };
         // Model/View
 
@@ -219,9 +197,9 @@
 
         // Textures
 
-        this.getTextures = function () { return textures; };
+        this.getHeightDataTexture = function () { return tHeightData; };
 
-        this.updateTexture = function(texture, imageData) {
+        this.updateHeightMapTexture = function(texture, imageData) {
 
             // Upload the image into the texture.
             gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -242,15 +220,12 @@
 //             console.log("Heightmap updated: ", imageData);
         };
 
-        function loadTexture(pathTexture) {
+        function loadHeightMapTexture(pathTexture) {
 
             // Create a tile sheet texture.
-            var texture = gl.createTexture();
-            var textureID = textures.length;
-            textures[textureID] = texture;
-            texture.textureID = textureID;
+            tHeightData = gl.createTexture();
 
-            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.bindTexture(gl.TEXTURE_2D, tHeightData);
 
             // Fill the texture with a 1x1 blue pixel.
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -261,7 +236,7 @@
             image.srcRelative = pathTexture;
             image.src = pathTexture;
             image.addEventListener('load', onLoadTexture);
-            texture.srcImage = image;
+            tHeightData.srcImage = image;
 
             function onLoadTexture(e) {
 
@@ -270,34 +245,63 @@
                 mapContext.drawImage(image, 0, 0);
                 var imageData = mapContext.getImageData(0, 0, image.width, image.height);
 
-                texture.srcImage = image;
-                vTextureSizes[textureID*2] = image.width;
-                vTextureSizes[textureID*2 + 1] = image.height;
+                vTextureSizes[0] = image.width;
+                vTextureSizes[1] = image.height;
 
-                THIS.updateTexture(texture, imageData);
+                THIS.updateHeightMapTexture(tHeightData, imageData);
 
-                if(flags & HeightMap.FLAG_REPEAT_TILES) {
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-                } else {
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                }
-
-//                 if(flags & HeightMap.FLAG_GENERATE_MIPMAP) {
-//                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-//                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-//                     gl.generateMipmap(gl.TEXTURE_2D);
-//                 } else {
-                    // MUST be filtered with NEAREST or tile lookup fails
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-//                 }
-
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             }
 
         }
 
+        function loadColorTexture(pathColorTexture) {
+
+            // Create a tile sheet texture.
+            tColor = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, tColor);
+
+            // Fill the texture with a 1x2 pixel.
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                new Uint8Array([
+                    0, 0, 0, 0,     0, 0, 0, 128,
+                    255, 255, 255, 255,     255, 255, 255, 255]));
+
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+            if(pathColorTexture) {
+
+                // Asynchronously load the spritesheet
+                var image = new Image();
+                image.srcRelative = pathColorTexture;
+                image.src = image.srcRelative;
+                image.addEventListener('load', onLoadTexture);
+                tColor.srcImage = image;
+
+                function onLoadTexture(e) {
+                    vTextureSizes[2] = image.width;
+                    vTextureSizes[3] = image.height;
+
+                    gl.bindTexture(gl.TEXTURE_2D, tColor);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                }
+            }
+        }
+        
+        function loadHeightPatternTexture() {
+
+        }
         // Editor
 
         var updateEditor = function(t, stage, flags) {
@@ -349,7 +353,6 @@
             uTextureHeightData = gl.getUniformLocation(program, "uTextureHeightData");
             uTextureColor = gl.getUniformLocation(program, "uTextureColor");
             uTextureHeightPattern = gl.getUniformLocation(program, "uTextureHeightPattern");
-            uTexture3 = gl.getUniformLocation(program, "uTexture3");
 
             // uLevelMap = gl.getUniformLocation(program, "uLevelMap");
             uHighlightColor = gl.getUniformLocation(program, "uHighlightColor");
@@ -433,9 +436,9 @@
         "varying vec2 vTextureCoordinate;",
 
         "uniform sampler2D uTextureHeightData;",
-        "uniform sampler2D uTextureOffset[16];",
         "uniform sampler2D uTextureColor;",
         "uniform sampler2D uTextureHeightPattern;",
+        "uniform sampler2D uTextureOffset[16];",
 
         "uniform float uMapLength;",
 
@@ -464,14 +467,16 @@
         "   float rightHeight = rightHeightPixel.x + rightHeightPixel.y/256.0 + rightHeightPixel.z/65536.0;",
         "   float height = (rightHeight * (index - leftIndex) + leftHeight * ((leftIndex + 1.0) - index))   ;       "   ,
 
-        "   vec4 pixel = vec4(1.0, 1.0, 1.0, (leftHeightPixel.w + rightHeightPixel.w) / 2.0);",
+        "   if(vTextureCoordinate.y > height) { discard; }",
+
+        "   vec4 pixel = texture2D(uTextureColor, vTextureCoordinate);",
+        // "   pixel.w = (leftHeightPixel.w + rightHeightPixel.w) / 2.0;",
 
         // "   if(uTextureSize[2] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture1, uTextureSize[2], uTextureSize[3]);",
         // "       if(uTextureSize[4] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture2, uTextureSize[4], uTextureSize[5]);",
         // "           if(uTextureSize[6] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture3, uTextureSize[6], uTextureSize[7]);",
         // "   }}}",
 
-        "   if(vTextureCoordinate.y > height) { discard; }",
 
 
         "   if(index >= uHighlightRange[0] && index <= uHighlightRange[1])",

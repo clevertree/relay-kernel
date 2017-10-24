@@ -444,20 +444,27 @@
         "uniform vec2 uHighlightRange;",
         "uniform float uTextureSize[8] ;",
 
-        "float getMapHeight(float index, sampler2D texture, float textureWidth, float textureHeight) {",
+        "vec4 getMapHeightPixel(float index, sampler2D texture, float textureWidth, float textureHeight) {",
         "   float column = mod(index, textureWidth);",
         "   float row    = mod(floor(index / textureWidth), textureHeight);",
         "   vec2 uv = vec2(",
         "       (column + 0.5) / textureWidth,",
         "       (row    + 0.5) / textureHeight);",
-        "   vec4 heightPixel = texture2D(texture, uv);",
-        "   return heightPixel.x + heightPixel.y/256.0 + heightPixel.z/65536.0;",
+        "   return texture2D(texture, uv);",
         "}",
 
         "void main(void) {",
-        "   float index = vTextureCoordinate.x * uMapLength;",
-        "   float height = getMapHeight(index, uTextureHeightData, uTextureSize[0], uTextureSize[1]);",
 
+        "   float index = vTextureCoordinate.x * uMapLength;",
+        "   float leftIndex = floor(index);",
+        // "   float rightIndex = leftIndex + 1.0;", // floor(vTextureCoordinate.x * uMapLength);",
+        "   vec4 leftHeightPixel = getMapHeightPixel(leftIndex, uTextureHeightData, uTextureSize[0], uTextureSize[1]);",
+        "   vec4 rightHeightPixel = getMapHeightPixel(leftIndex + 1.0, uTextureHeightData, uTextureSize[0], uTextureSize[1]);",
+        "   float leftHeight = leftHeightPixel.x + leftHeightPixel.y/256.0 + leftHeightPixel.z/65536.0;",
+        "   float rightHeight = rightHeightPixel.x + rightHeightPixel.y/256.0 + rightHeightPixel.z/65536.0;",
+        "   float height = (rightHeight * (index - leftIndex) + leftHeight * ((leftIndex + 1.0) - index))   ;       "   ,
+
+        "   vec4 pixel = vec4(1.0, 1.0, 1.0, (leftHeightPixel.w + rightHeightPixel.w) / 2.0);",
 
         // "   if(uTextureSize[2] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture1, uTextureSize[2], uTextureSize[3]);",
         // "       if(uTextureSize[4] > 0.0) { pxHeight += getHeightMapPixel(index, uTexture2, uTextureSize[4], uTextureSize[5]);",
@@ -466,13 +473,14 @@
 
         "   if(vTextureCoordinate.y > height) { discard; }",
 
-        "   vec4 pixel = vec4(1.0, 1.0, 1.0, 1.0);",
 
         "   if(index >= uHighlightRange[0] && index <= uHighlightRange[1])",
         "       pixel.w = uHighlightColor.w;",
 
         "   gl_FragColor = pixel;", //  * vColor
         "}"
+
+
     ].join("\n");
 
 })();

@@ -6,6 +6,7 @@
 // Handle worker command
 if (!module) var module = {exports:{}};
 module.exports.handleWorkerCommand = function(e, commandString) {
+    var SCRIPT_ROOT = e.target.SCRIPT_ROOT;
 
     console.log("Handling " + commandString);
     e.target.postMessage(

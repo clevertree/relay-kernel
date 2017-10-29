@@ -32,21 +32,36 @@ var relay = (function() {
         var headersLoading = [];
         document.USE_SHARED_WORKER = true;
 
+        var SCRIPT_ROOT = '';
+        var scripts = document.head.getElementsByTagName('script');
+        for(var i=0; i<scripts.length; i++) {
+            var src = scripts[0].getAttribute('src');
+            if(!src) continue;
+            var pos = src.indexOf('relay.js');
+            if(!pos) continue;
+            SCRIPT_ROOT = src.substr(0, pos);
+            console.log("Found script root: ", SCRIPT_ROOT);
+            break;
+        }
+
         // Set up SharedWorker or WebWorker
         if(typeof SharedWorker === 'function' && !document.USE_SHARED_WORKER) {
             // Create Shared WebWorker
-            worker = new SharedWorker('relay.js');
+            worker = new SharedWorker(SCRIPT_ROOT + 'relay.js');
             port = worker.port;
             port.start();
 
         } else if (typeof Worker === 'function') {
             // Create Normal WebWorker
-            worker = new Worker('relay.js');
+            worker = new Worker(SCRIPT_ROOT + 'relay.js');
             port = worker;
 
         } else {
             throw new Error("WebWorker unavailable");
         }
+
+        worker.postMessage("SCRIPT_ROOT " + SCRIPT_ROOT);
+        worker.SCRIPT_ROOT = SCRIPT_ROOT;
 
         // Set up message handling
         port.addEventListener('message', function (e) {
@@ -111,7 +126,7 @@ var relay = (function() {
 //                 console.log("Including " + scriptPath);
                 var scriptElm = document.createElement('script');
                 headersLoading++;
-                scriptElm.src = scriptPath;
+                scriptElm.src =  scriptPath;
                 scriptElm.onload = function() {
                     headersLoading--;
                     executeNextWorkerCommand();
@@ -204,8 +219,15 @@ var relay = (function() {
 
         var PATHS = ['exec'];
 
-        var typeCommands = {};
-
+        var typeCommands = {
+            'script_root': function(e, commandString) {
+                var SCRIPT_ROOT = commandString.split(' ')[1];
+                if(!SCRIPT_ROOT) throw new Error("Invalid script root: " + commandString);
+                worker.SCRIPT_ROOT = SCRIPT_ROOT;
+                worker.RELATIVE_ROOT = '../'.repeat((SCRIPT_ROOT.match(/\//g) || []).length);
+                console.log("Set relative root: ", worker.RELATIVE_ROOT);
+            }
+        };
 
         // Define command
         function handleMessage(e) {

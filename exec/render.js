@@ -10,7 +10,7 @@ if (!module) var module = {exports:{}};
     module.exports.handleWorkerCommand = function(e, commandString) {
         if(!includesLoaded) {
             e.target.postMessage(
-                "INCLUDE system/client/render.listener.js;"
+                "INCLUDE " + e.target.SCRIPT_ROOT + "system/client/render.listener.js;"
             );
             includesLoaded = true;
         }

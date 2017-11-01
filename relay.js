@@ -225,7 +225,7 @@ var relay = (function() {
                 if(!SCRIPT_ROOT) throw new Error("Invalid script root: " + commandString);
                 worker.SCRIPT_ROOT = SCRIPT_ROOT;
                 worker.RELATIVE_ROOT = '../'.repeat((SCRIPT_ROOT.match(/\//g) || []).length);
-                console.log("Set relative root: ", worker.RELATIVE_ROOT);
+                // console.log("Set relative root: ", worker.RELATIVE_ROOT);
             }
         };
 
